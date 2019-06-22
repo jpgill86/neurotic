@@ -31,6 +31,9 @@ def _auth_needed(url):
     # escape spaces and other unsafe characters
     url = urllib.parse.quote(url, safe='/:')
 
+    error = None
+    error_code = None
+
     try:
         # try to connect
         with urllib.request.urlopen(url) as dist:
@@ -39,34 +42,36 @@ def _auth_needed(url):
 
     except urllib.error.HTTPError as e:
 
-        if e.code == 401:
-            # unauthorized
-            return True
-
-        elif e.code == 403:
-            # forbidden
-            raise
-
-        else:
-            raise
+        error = e
+        error_code = e.code
 
     except urllib.error.URLError as e:
 
-        # special case for ftp errors
-        if e.reason.startswith("ftp error: error_perm('"):
-            reason = e.reason[23:-2]
-            code = int(reason[:3])
+        error = e
 
-            if code in [530, 553]:
-                # unauthorized
-                return True
+        if isinstance(e.reason, str):
 
+            # special cases for ftp errors
+            if e.reason.startswith('ftp error: error_perm('):
+                reason = e.reason[23:-2]
+                error_code = int(reason[:3])
             else:
                 raise
 
         else:
-            # http server unresponsive or server refused
-            raise
+
+            error_code = e.reason.errno
+
+    finally:
+
+        if error_code is not None:
+
+            if error_code in [401, 530, 553]:
+                # unauthorized
+                return True
+
+            else:
+                raise error
 
 
 def _authenticate(url):
@@ -79,6 +84,10 @@ def _authenticate(url):
 
     bad_login_attempts = 0
     while True:
+
+        error = None
+        error_code = None
+
         try:
             # try to connect
             with urllib.request.urlopen(url) as dist:
@@ -87,35 +96,40 @@ def _authenticate(url):
 
         except urllib.error.HTTPError as e:
 
-            if e.code == 401:
-                # unauthorized -- will try to authenticate with handler
-                handler = _http_auth_handler
-
-            elif e.code == 403:
-                # forbidden
-                raise
-
-            else:
-                raise
+            error = e
+            error_code = e.code
 
         except urllib.error.URLError as e:
 
-            # special case for ftp errors
-            if e.reason.startswith("ftp error: error_perm('"):
-                reason = e.reason[23:-2]
-                code = int(reason[:3])
+            error = e
 
-                if code in [530, 553]:
-                    # unauthorized -- will try to authenticate with handler
-                    handler = _ftp_auth_handler
+            if isinstance(e.reason, str):
 
+                # special cases for ftp errors
+                if e.reason.startswith('ftp error: error_perm('):
+                    reason = e.reason[23:-2]
+                    error_code = int(reason[:3])
                 else:
                     raise
 
             else:
-                # http server unresponsive or server refused
-                raise
 
+                error_code = e.reason.errno
+
+        finally:
+
+            if error_code is not None:
+
+                if error_code == 401:
+                    # unauthorized -- will try to authenticate with http handler
+                    handler = _http_auth_handler
+
+                elif error_code in [530, 553]:
+                    # unauthorized -- will try to authenticate with ftp handler
+                    handler = _ftp_auth_handler
+
+                else:
+                    raise error
 
         if bad_login_attempts >= _max_bad_login_attempts:
             print('Unauthorized: Aborting login')
@@ -176,8 +190,68 @@ def safe_download(url, local_file, **kwargs):
     """
     Download unless the file already exists locally
     """
-    if not os.path.exists(local_file):
-        print(f'Downloading {os.path.basename(local_file)}')
-        _download(url, local_file, **kwargs)
-    else:
+    if os.path.exists(local_file):
         print(f'Skipping {os.path.basename(local_file)} (already exists)')
+        return
+
+    error = None
+    error_code = None
+
+    print(f'Downloading {os.path.basename(local_file)}')
+    try:
+        _download(url, local_file, **kwargs)
+
+    except urllib.error.HTTPError as e:
+
+        error = e
+        error_code = e.code
+
+    except urllib.error.URLError as e:
+
+        error = e
+
+        if isinstance(e.reason, str):
+
+            # special cases for ftp errors
+            if e.reason.startswith('ftp error: error_perm('):
+                reason = e.reason[23:-2]
+                error_code = int(reason[:3])
+            elif e.reason.startswith('ftp error: TimeoutError('):
+                reason = e.reason[24:-2]
+                error_code = int(reason[:5])
+            else:
+                error_code = -1
+
+        else:
+
+            error_code = e.reason.errno
+
+    finally:
+
+        if error_code is not None:
+
+            if error_code == 404:
+                # not found
+                print(f'Skipping {os.path.basename(local_file)} (not found on server)')
+                return
+
+            elif error_code == 550:
+                # no such file or folder, or permission denied
+                print(f'Skipping {os.path.basename(local_file)} (not found on server, or user is unauthorized)')
+                return
+
+            elif error_code == 10060:
+                # timeout
+                hostname = urllib.parse.urlparse(url).hostname
+                print(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
+                return
+
+            elif error_code == 11001:
+                # could not reach server or resolve hostname
+                hostname = urllib.parse.urlparse(url).hostname
+                print(f'Skipping {os.path.basename(local_file)} (cannot connect to {hostname})')
+                return
+
+            else:
+                print(f'Encountered a problem: {error}')
+                return
