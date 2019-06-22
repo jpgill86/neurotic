@@ -43,29 +43,23 @@ def _auth_needed(url):
             # unauthorized
             return True
 
-        elif e.code == 403:
-            # forbidden
-            raise
-
         else:
             raise
 
     except urllib.error.URLError as e:
 
         # special case for ftp errors
-        if e.reason.startswith("ftp error: error_perm('"):
+        if e.reason.startswith("ftp error: error_perm("):
             reason = e.reason[23:-2]
             code = int(reason[:3])
+        else:
+            code = None
 
-            if code in [530, 553]:
-                # unauthorized
-                return True
-
-            else:
-                raise
+        if code in [530, 553]:
+            # unauthorized
+            return True
 
         else:
-            # http server unresponsive or server refused
             raise
 
 
@@ -91,29 +85,23 @@ def _authenticate(url):
                 # unauthorized -- will try to authenticate with handler
                 handler = _http_auth_handler
 
-            elif e.code == 403:
-                # forbidden
-                raise
-
             else:
                 raise
 
         except urllib.error.URLError as e:
 
             # special case for ftp errors
-            if e.reason.startswith("ftp error: error_perm('"):
+            if e.reason.startswith("ftp error: error_perm("):
                 reason = e.reason[23:-2]
                 code = int(reason[:3])
+            else:
+                code = None
 
-                if code in [530, 553]:
-                    # unauthorized -- will try to authenticate with handler
-                    handler = _ftp_auth_handler
-
-                else:
-                    raise
+            if code in [530, 553]:
+                # unauthorized -- will try to authenticate with handler
+                handler = _ftp_auth_handler
 
             else:
-                # http server unresponsive or server refused
                 raise
 
 
@@ -176,8 +164,39 @@ def safe_download(url, local_file, **kwargs):
     """
     Download unless the file already exists locally
     """
-    if not os.path.exists(local_file):
-        print(f'Downloading {os.path.basename(local_file)}')
-        _download(url, local_file, **kwargs)
-    else:
+    if os.path.exists(local_file):
         print(f'Skipping {os.path.basename(local_file)} (already exists)')
+        return
+
+    print(f'Downloading {os.path.basename(local_file)}')
+    try:
+        _download(url, local_file, **kwargs)
+
+    except urllib.error.HTTPError as e:
+
+        if e.code == 404:
+            # not found
+            print(f'Skipping {os.path.basename(local_file)} (not found on server)')
+            return
+
+        else:
+            print(f'Encountered a problem: {e}')
+            return
+
+    except urllib.error.URLError as e:
+
+        # special case for ftp errors
+        if e.reason.startswith("ftp error: error_perm("):
+            reason = e.reason[23:-2]
+            code = int(reason[:3])
+        else:
+            code = None
+
+        if code == 550:
+            # no such file or folder, or permission denied
+            print(f'Skipping {os.path.basename(local_file)} (not found on server)')
+            return
+
+        else:
+            print(f'Encountered a problem: {e}')
+            return
