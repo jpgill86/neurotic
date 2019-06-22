@@ -46,3 +46,11 @@ Questions and support
 
 Please post any questions, problems, comments, or suggestions in the `GitHub
 issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
+
+Changes
+-------
+
+0.1.0
+~~~~~
+
+* First release
