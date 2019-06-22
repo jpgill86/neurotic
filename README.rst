@@ -50,6 +50,12 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.1.1
+~~~~~
+
+* Fix various downloader errors
+  (`#7 <https://github.com/jpgill86/neurotic/pull/7>`__)
+
 0.1.0
 ~~~~~
 
