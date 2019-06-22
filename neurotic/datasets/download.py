@@ -51,8 +51,8 @@ def _auth_needed(url):
 
         if isinstance(e.reason, str):
 
-            # special case for ftp errors
-            if e.reason.startswith("ftp error: error_perm("):
+            # special cases for ftp errors
+            if e.reason.startswith('ftp error: error_perm('):
                 reason = e.reason[23:-2]
                 code = int(reason[:3])
             else:
@@ -98,8 +98,8 @@ def _authenticate(url):
 
             if isinstance(e.reason, str):
 
-                # special case for ftp errors
-                if e.reason.startswith("ftp error: error_perm("):
+                # special cases for ftp errors
+                if e.reason.startswith('ftp error: error_perm('):
                     reason = e.reason[23:-2]
                     code = int(reason[:3])
                 else:
@@ -198,16 +198,25 @@ def safe_download(url, local_file, **kwargs):
 
         if isinstance(e.reason, str):
 
-            # special case for ftp errors
-            if e.reason.startswith("ftp error: error_perm("):
+            # special cases for ftp errors
+            if e.reason.startswith('ftp error: error_perm('):
                 reason = e.reason[23:-2]
                 code = int(reason[:3])
+            elif e.reason.startswith('ftp error: TimeoutError('):
+                reason = e.reason[24:-2]
+                code = int(reason[:5])
             else:
                 code = None
 
             if code == 550:
                 # no such file or folder, or permission denied
                 print(f'Skipping {os.path.basename(local_file)} (not found on server)')
+                return
+
+            elif code == 10060:
+                # timeout
+                hostname = urllib.parse.urlparse(url).hostname
+                print(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
                 return
 
             else:
@@ -222,6 +231,20 @@ def safe_download(url, local_file, **kwargs):
                 # could not reach server
                 hostname = urllib.parse.urlparse(url).hostname
                 print(f'Skipping {os.path.basename(local_file)} (cannot connect to {hostname})')
+                return
+
+            else:
+                print(f'Encountered a problem: {e}')
+                return
+
+        elif isinstance(e.reason, TimeoutError):
+
+            code = e.reason.errno
+
+            if code == 10060:
+                # timeout
+                hostname = urllib.parse.urlparse(url).hostname
+                print(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
                 return
 
             else:
