@@ -1,0 +1,64 @@
+################################################################################
+# plots: list the channels in the order they should be plotted
+#   - required parameters:
+#       channel     string specifying name of the channel to be plotted
+#                   note: channel names in AxoGraph files are assumed unique
+#   - optional parameters:
+#       units       string specifying units to convert signal to
+#                   default: uV for voltages, mN for forces
+#       ylabel      the label for the y-axis
+#                   default: channel name stored in AxoGraph file
+#       ylim        the plot range for the y-axis
+#                   default: [-120,120] for voltages, [-10,300] for forces
+################################################################################
+
+
+example dataset:
+    description: This is an example data set
+
+    # these data are a subset of 2018-06-21_IN-VIVO_JG-08 002
+    data_dir:           example-data
+    remote_data_dir:    https://github.com/jpgill86/analysis/raw/master/example/example-data
+    data_file:          data.axgx
+    video_file:         video.mp4
+    annotations_file:   annotations.csv
+    epoch_encoder_file: epoch-encoder.csv
+
+    video_offset: 640.3
+    epoch_encoder_possible_labels: [force, large hump, small hump, B38]
+    amplitude_discriminators:
+        - name: I2
+          channel: I2
+          amplitude: [2, 75]
+        - name: B8a/b
+          channel: RN
+          amplitude: [5, 50]
+        - name: B3 (50-100 uV)
+          channel: BN2
+          amplitude: [50, 100]
+        - name: B6/B9 ? (26-45 uV)
+          channel: BN2
+          amplitude: [26, 45]
+        - name: B38 ? (17-26 uV)
+          channel: BN2
+          amplitude: [17, 26]
+          epoch: B38
+        - name: B4/B5
+          channel: BN3
+          amplitude: [75, 150]
+    filters:
+        - channel: I2
+          lowpass: 100
+        - channel: Force
+          lowpass: 50
+    plots:
+        - channel: I2
+          ylim: [-30, 30]
+        - channel: RN
+          ylim: [-60, 60]
+        - channel: BN2
+          ylim: [-120, 120]
+        - channel: BN3
+          ylim: [-150, 150]
+        - channel: Force
+          ylim: [-10, 300]
