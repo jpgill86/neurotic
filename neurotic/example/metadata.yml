@@ -26,7 +26,24 @@ example dataset:
 
     video_offset: 640.3
     epoch_encoder_possible_labels: [force, large hump, small hump, B38]
-    amplitude_discriminators:
+    plots:
+        - channel: I2
+          ylim: [-30, 30]
+        - channel: RN
+          ylim: [-60, 60]
+        - channel: BN2
+          ylim: [-120, 120]
+        - channel: BN3
+          ylim: [-150, 150]
+        - channel: Force
+          ylim: [-10, 300]
+
+    filters:  # used only if fast loading is off (lazy=False)
+        - channel: I2
+          lowpass: 100
+        - channel: Force
+          lowpass: 50
+    amplitude_discriminators:  # used only if fast loading is off (lazy=False)
         - name: I2
           channel: I2
           amplitude: [2, 75]
@@ -46,19 +63,3 @@ example dataset:
         - name: B4/B5
           channel: BN3
           amplitude: [75, 150]
-    filters:
-        - channel: I2
-          lowpass: 100
-        - channel: Force
-          lowpass: 50
-    plots:
-        - channel: I2
-          ylim: [-30, 30]
-        - channel: RN
-          ylim: [-60, 60]
-        - channel: BN2
-          ylim: [-120, 120]
-        - channel: BN3
-          ylim: [-150, 150]
-        - channel: Force
-          ylim: [-10, 300]
