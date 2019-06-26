@@ -318,6 +318,8 @@ class EphyviewerConfigurator(ipywidgets.HBox):
             if self.lazy:
                 import neo
                 neorawioclass = neo.rawio.get_rawio_class(abs_path(self.metadata, 'data_file'))
+                if neorawioclass is None:
+                    raise ValueError('This file type cannot be read with fast loading (lazy=True): {}'.format(abs_path(self.metadata, 'data_file')))
                 neorawio = neorawioclass(abs_path(self.metadata, 'data_file'))
                 neorawio.parse_header()
 
