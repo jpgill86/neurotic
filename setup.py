@@ -62,14 +62,19 @@ with open('neurotic/version.py', 'w') as f:
 with open('README.rst', 'r') as f:
     README = f.read()
 
+# Unreleased versions of ephyviewer and neo are needed by this package, and the
+# dev version of neo conflicts with the overly restrictive requirements of
+# elephant. The only way around the latter complication is for the user to
+# manually install dependencies using `pip install -r requirements.txt`, which
+# warns about the incompatibility of neo and elephant but doesn't halt.
+# Someday this package may be able to use the specification below, but not
+# before neo releases AxographRawIO in a form compatible with elephant.
 install_requires = [
-    # unreleased versions are needed so install from requirements.txt instead
-    # TODO permanent fix?
     # 'av',
     # 'elephant>=0.6.2',
-    # 'ephyviewer',  # TODO require latest
+    # 'ephyviewer @ https://github.com/jpgill86/ephyviewer/archive/experimental.tar.gz', # latest version
     # 'ipywidgets',
-    # 'neo',         # TODO require >0.7.1 for AxographRawIO
+    # 'neo @ https://github.com/jpgill86/python-neo/archive/axographrawio.tar.gz', # TODO require >0.7.1 for AxographRawIO
     # 'numpy',
     # 'pandas',
     # 'pylttb',
@@ -78,6 +83,19 @@ install_requires = [
     # 'quantities',
     # 'tqdm',
 ]
+
+# Can't use this method of reading requirements.txt into install_requires until
+# this package depends only on released packages and not development versions.
+# This is because git commands ("git+https://github...") in requirements.txt
+# cannot be understood by setuptools. The "@" notation for specifying urls used
+# above could be placed in an external file like requirements.txt in lieu of
+# git commands, but then `pip install -r requirements.txt` cannot read it. So,
+# to get `pip install neurotic` to install the development version of
+# ephyviewer, it will be necessary to use the "@" notation, and it probably
+# shouldn't be put in an external file with the name requirements.txt because
+# it won't be usable in the normal way with `pip install -r requirements.txt`.
+# with open('requirements.txt', 'r') as f:
+#     install_requires = f.read()
 
 setup(
     name = 'neurotic',
