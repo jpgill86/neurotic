@@ -34,3 +34,7 @@ install:
 script:
     # run tests
     nosetests --with-coverage --cover-package=neurotic
+
+after_success:
+    # report coverage to Coveralls
+    coveralls || echo "coveralls failed"
