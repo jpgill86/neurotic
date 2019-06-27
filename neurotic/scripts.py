@@ -32,11 +32,23 @@ def launch_standalone():
 
     parser.add_argument('-V', '--version', action='version',
                         version='neurotic {}'.format(__version__))
+    parser.add_argument('--no-lazy', action='store_false', dest='lazy',
+                        help='do not use fast loading (default: use fast ' \
+                             'loading)')
+    parser.add_argument('--thick-traces', action='store_true', dest='thick',
+                        help='enable support for traces with thick lines, ' \
+                             'which has a performance cost (default: ' \
+                             'disable thick line support)')
+    parser.add_argument('--theme', choices=['light', 'dark', 'original'],
+                        default='light', help='a color theme for the GUI ' \
+                                              '(default: light)')
 
     args = parser.parse_args(sys.argv[1:])
 
     app = mkQApp()
-    win = DataExplorer(file=args.file, initial_selection=args.dataset)
+    win = DataExplorer(file=args.file, initial_selection=args.dataset,
+                       lazy=args.lazy, theme=args.theme,
+                       support_increased_line_width=args.thick)
     win.show()
     print('Ready')
     app.exec_()
