@@ -1,0 +1,36 @@
+dist: xenial   # required for Python >= 3.7
+
+language: python
+python:
+    # We don't actually use the Travis Python, but this keeps it organized.
+    # - "3.4" # conda UnsatisfiableError: pandas -> numpy[version='>=1.14.6,<2.0a0'] -> python[version='>=2.7,<2.8.0a0']
+    # - "3.5" # conda never finishes solving environment
+    - "3.6"
+    - "3.7"
+
+install:
+    - sudo apt-get update
+
+    # install conda
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda update -q conda
+    - conda info -a
+
+    # create python environment
+    - conda create -q -n test-environment -c conda-forge python=$TRAVIS_PYTHON_VERSION coveralls nose
+    - conda env update -q -n test-environment -f environment.yml
+    - source activate test-environment
+
+    # check version
+    - python -V
+
+    # install package
+    - python setup.py install
+
+script:
+    # run tests
+    nosetests --with-coverage --cover-package=neurotic

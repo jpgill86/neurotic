@@ -97,6 +97,10 @@ install_requires = [
 # with open('requirements.txt', 'r') as f:
 #     install_requires = f.read()
 
+extras_require = {}
+with open('requirements-tests.txt', 'r') as f:
+    extras_require['tests'] = f.read()
+
 setup(
     name = 'neurotic',
     version = VERSION,
@@ -104,6 +108,7 @@ setup(
     packages = find_packages(),
     package_data = {'neurotic': ['example/metadata.yml']},
     install_requires = install_requires,
+    extras_require = extras_require,
     entry_points = {'console_scripts': ['neurotic=neurotic.scripts:launch_standalone']},
     long_description = README,
     author = 'Jeffrey Gill',
