@@ -21,15 +21,20 @@ install:
     - conda info -a
 
     # create python environment
-    - conda create -q -n test-environment -c conda-forge python=$TRAVIS_PYTHON_VERSION coveralls nose
+    - conda config --add channels conda-forge
+    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
     - conda env update -q -n test-environment -f environment.yml
+    - conda install -q -n test-environment --file requirements-tests.txt
     - source activate test-environment
-
-    # check version
-    - python -V
 
     # install package
     - python setup.py install
+
+    # list versions
+    - python --version
+    - pip -V
+    - pip list
+    - conda list
 
 script:
     # run tests
