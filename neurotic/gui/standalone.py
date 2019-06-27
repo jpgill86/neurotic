@@ -103,7 +103,7 @@ class DataExplorer(QT.QMainWindow):
 
     request_download = QT.pyqtSignal()
 
-    def __init__(self, lazy=True, theme='light', support_increased_line_width=False):
+    def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', support_increased_line_width=False):
         """
 
         """
@@ -145,9 +145,23 @@ class DataExplorer(QT.QMainWindow):
         # construct the menus
         self.create_menus()
 
-        # open example metadata file
-        self.metadata_selector.file = pkg_resources.resource_filename('neurotic', 'example/metadata.yml')
-        self.metadata_selector.load()
+        # open metadata file
+        if file is not None:
+            # try the user-specified file
+            self.metadata_selector.file = file
+            self.metadata_selector.load()
+        if self.metadata_selector.all_metadata is None:
+            # use an example metadata file if the user-specified file failed to
+            # load or one was not provided
+            self.metadata_selector.file = pkg_resources.resource_filename('neurotic', 'example/metadata.yml')
+            self.metadata_selector.load()
+
+        # select a dataset if the user provided one
+        if initial_selection is not None:
+            try:
+                self.metadata_selector.setCurrentRow(list(self.metadata_selector.all_metadata).index(initial_selection))
+            except (TypeError, ValueError):
+                print('Bad dataset key! Will ignore')
 
     def create_menus(self):
         """
