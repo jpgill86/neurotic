@@ -1,0 +1,18 @@
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - av
+  - ipywidgets
+  - numpy
+  - pandas
+  - pip
+  - pyqt
+  - pyyaml
+  - quantities
+  - tqdm
+  - pip:
+    - elephant>=0.6.2
+    - pylttb
+    - git+https://github.com/jpgill86/python-neo.git@axographrawio
+    - git+https://github.com/jpgill86/ephyviewer.git@experimental

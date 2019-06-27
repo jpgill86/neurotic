@@ -11,6 +11,14 @@ neurotic
     :target: https://github.com/jpgill86/neurotic
     :alt: GitHub source code
 
+.. image:: https://travis-ci.com/jpgill86/neurotic.svg
+    :target: https://travis-ci.com/jpgill86/neurotic
+    :alt: Build status
+
+.. image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg
+    :target: https://coveralls.io/github/jpgill86/neurotic
+    :alt: Coverage status
+
 Installation
 ------------
 
