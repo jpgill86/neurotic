@@ -8,6 +8,9 @@ python:
     - "3.6"
     - "3.7"
 
+services:
+    - xvfb  # create a virtual display on the headless server for gui tests
+
 install:
     - sudo apt-get update
 
