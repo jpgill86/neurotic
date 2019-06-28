@@ -170,9 +170,14 @@ def _download(url, local_file, bytes_per_chunk=1024*8, show_progress=True):
 
         with urllib.request.urlopen(urllib.parse.quote(url, safe='/:')) as dist:
             with open(local_file, 'wb') as f:
-                file_size_in_bytes = int(dist.headers['Content-Length'])
-                num_chunks = int(np.ceil(file_size_in_bytes/bytes_per_chunk))
                 if show_progress:
+                    if 'Content-Length' in dist.headers:
+                        # knowing the file size allows progress to be displayed
+                        file_size_in_bytes = int(dist.headers['Content-Length'])
+                        num_chunks = int(np.ceil(file_size_in_bytes/bytes_per_chunk))
+                    else:
+                        # progress can't be displayed, but other stats can be
+                        num_chunks = np.inf
                     pbar = tqdm(total=num_chunks*bytes_per_chunk, unit='B', unit_scale=True)
                 while True:
                     chunk = dist.read(bytes_per_chunk)
