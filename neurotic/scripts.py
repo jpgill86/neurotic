@@ -11,7 +11,7 @@ from ephyviewer import mkQApp
 from . import __version__
 from .gui.standalone import DataExplorer
 
-def launch_standalone():
+def parse_args(argv):
     """
 
     """
@@ -43,12 +43,28 @@ def launch_standalone():
                         default='light', help='a color theme for the GUI ' \
                                               '(default: light)')
 
-    args = parser.parse_args(sys.argv[1:])
+    args = parser.parse_args(argv[1:])
 
-    app = mkQApp()
+    return args
+
+def win_from_args(args):
+    """
+
+    """
+
     win = DataExplorer(file=args.file, initial_selection=args.dataset,
                        lazy=args.lazy, theme=args.theme,
                        support_increased_line_width=args.thick)
+    return win
+
+def main():
+    """
+
+    """
+
+    args = parse_args(sys.argv)
+    app = mkQApp()
+    win = win_from_args(args)
     win.show()
     print('Ready')
     app.exec_()
