@@ -33,6 +33,7 @@ install:
     # install package
     - python setup.py install
 
+before_script:
     # list versions
     - python --version
     - pip -V
