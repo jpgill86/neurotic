@@ -109,7 +109,7 @@ setup(
     package_data = {'neurotic': ['example/metadata.yml']},
     install_requires = install_requires,
     extras_require = extras_require,
-    entry_points = {'console_scripts': ['neurotic=neurotic.scripts:launch_standalone']},
+    entry_points = {'console_scripts': ['neurotic=neurotic.scripts:main']},
     long_description = README,
     author = 'Jeffrey Gill',
     author_email = 'jeffrey.p.gill@gmail.com',

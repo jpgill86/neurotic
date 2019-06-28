@@ -3,6 +3,6 @@
 
 """
 
-from .scripts import launch_standalone
+from .scripts import main
 
-launch_standalone()
+main()
