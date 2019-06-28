@@ -18,7 +18,7 @@ example dataset:
 
     # these data are a subset of 2018-06-21_IN-VIVO_JG-08 002
     data_dir:           example-data
-    remote_data_dir:    https://github.com/jpgill86/analysis/raw/master/example/example-data
+    remote_data_dir:    https://web.gin.g-node.org/jpgill86/neurotic-data/raw/master/examples/example-data
     data_file:          data.axgx
     video_file:         video.mp4
     annotations_file:   annotations.csv
