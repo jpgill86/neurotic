@@ -88,6 +88,10 @@ Launch the standalone app from the command line::
 A simple example is provided. Select the "example dataset", download the
 associated data, and then click launch.
 
+Command line arguments can be listed using ::
+
+    neurotic --help
+
 Questions and support
 ---------------------
 
@@ -97,13 +101,40 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
-0.1.1
-~~~~~
+0.2.0 (2019-06-28)
+~~~~~~~~~~~~~~~~~~
+
+Improvements
+............
+
+* Add basic command line arguments
+  (`#14 <https://github.com/jpgill86/neurotic/pull/14>`__)
+* Add continuous integration with Travis CI for automated testing
+  (`#13 <https://github.com/jpgill86/neurotic/pull/13>`__)
+* Add some tests
+  (`#15 <https://github.com/jpgill86/neurotic/pull/15>`__,
+  `#16 <https://github.com/jpgill86/neurotic/pull/16>`__)
+* Migrate example data to GIN
+  (`#18 <https://github.com/jpgill86/neurotic/pull/18>`__)
+
+Bug fixes
+.........
+
+* Fix crash when downloading from a server that does not report file size
+  (`#17 <https://github.com/jpgill86/neurotic/pull/17>`__)
+* Raise an exception if a Neo RawIO cannot be found for the data file
+  (`#12 <https://github.com/jpgill86/neurotic/pull/12>`__)
+
+0.1.1 (2019-06-22)
+~~~~~~~~~~~~~~~~~~
+
+Bug fixes
+.........
 
 * Fix various downloader errors
   (`#7 <https://github.com/jpgill86/neurotic/pull/7>`__)
 
-0.1.0
-~~~~~
+0.1.0 (2019-06-22)
+~~~~~~~~~~~~~~~~~~
 
 * First release
