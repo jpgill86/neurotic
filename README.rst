@@ -3,24 +3,71 @@ neurotic
 
 *Curate, visualize, and annotate your behavioral ephys data using Python*
 
-.. image:: https://img.shields.io/pypi/v/neurotic.svg
-    :target: PyPI_
-    :alt: PyPI project
+|PyPI badge| |GitHub badge| |Build badge| |Coverage badge|
 
-.. image:: https://img.shields.io/badge/github-source_code-blue.svg
-    :target: GitHub_
-    :alt: GitHub source code
+**neurotic** is an app that allows you to easily review and annotate your
+electrophysiology data and simultaneously captured video. It is an easy way to
+load your Neo_-compatible data into ephyviewer_ without doing any programming.
 
-.. image:: https://travis-ci.com/jpgill86/neurotic.svg?branch=master
-    :target: https://travis-ci.com/jpgill86/neurotic
-    :alt: Build status
+You organize your data sets in a YAML file like this:
 
-.. image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
-    :target: https://coveralls.io/github/jpgill86/neurotic?branch=master
-    :alt: Coverage status
+.. code-block:: yaml
 
-.. _PyPI:   https://pypi.org/project/neurotic/
-.. _GitHub: https://github.com/jpgill86/neurotic/
+    my favorite dataset:
+        description: This time it actually worked!
+
+        data_dir:           C:/local_dir_containing_files
+        remote_data_dir:    http://myserver/remote_dir_containing_downloadable_files  # optional
+        data_file:          data.axgx
+        video_file:         video.mp4
+        # etc
+
+        video_offset: -3.4  # seconds between start of video and data acq
+        epoch_encoder_possible_labels:
+            - label01
+            - label02
+        plots:
+            - channel: I2
+              ylim: [-30, 30]
+            - channel: RN
+              ylim: [-60, 60]
+            # etc
+
+        filters:  # used only if fast loading is off (lazy=False)
+            - channel: Force
+              lowpass: 50
+            # etc
+        amplitude_discriminators:  # used only if fast loading is off (lazy=False)
+            - name: B3 neuron
+              channel: BN2
+              amplitude: [50, 100]
+            # etc
+
+Open your file in the app and choose a data set. If the data and video files
+aren't already on your local computer, the app can download them for you.
+Finally, click launch and the app will use a standard viewer layout to display
+your data to you using ephyviewer_.
+
+|Example screenshot|
+
+*(Pictured above is a voracious Aplysia californica making the researcher very
+happy.)*
+
+The viewers are easy and intuitive to navigate:
+
+- Pressing the play button will scroll through the data and video in real time,
+  or at a higher or lower rate if the speed parameter is changed.
+- The arrow/WASD keys allow you to step through time.
+- Right-clicking and dragging right or left will contract or expand time to show
+  more or less at once.
+- Scrolling the mouse wheel in the trace viewer or the video viewer will zoom.
+- The "epoch encoder" can be used to block out periods of time during which
+  something interesting is happening for later review or further analysis
+  (saved to a CSV file).
+- All panels can be hidden, undocked, or repositioned on the fly.
+
+Electrophysiologists should still find this tool useful even if they don't need
+video synchronization.
 
 Installing dependencies
 -----------------------
@@ -138,3 +185,28 @@ Bug fixes
 ~~~~~~~~~~~~~~~~~~
 
 * First release
+
+
+.. |PyPI badge| image:: https://img.shields.io/pypi/v/neurotic.svg?logo=python&logoColor=white
+    :target: PyPI_
+    :alt: PyPI project
+
+.. |GitHub badge| image:: https://img.shields.io/badge/github-source_code-blue.svg?logo=github&logoColor=white
+    :target: GitHub_
+    :alt: GitHub source code
+
+.. |Build badge| image:: https://travis-ci.com/jpgill86/neurotic.svg?branch=master
+    :target: https://travis-ci.com/jpgill86/neurotic
+    :alt: Build status
+
+.. |Coverage badge| image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
+    :target: https://coveralls.io/github/jpgill86/neurotic?branch=master
+    :alt: Coverage status
+
+.. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/images/example-screenshot.png
+    :alt: Screenshot
+
+.. _PyPI:       https://pypi.org/project/neurotic
+.. _GitHub:     https://github.com/jpgill86/neurotic
+.. _ephyviewer: https://github.com/NeuralEnsemble/ephyviewer
+.. _Neo:        https://github.com/NeuralEnsemble/python-neo
