@@ -281,7 +281,7 @@ class DataExplorer(QT.QMainWindow):
                     rauc_sigs.append(rauc)
 
             ephyviewer_config = EphyviewerConfigurator(metadata, blk, rauc_sigs, self.lazy)
-            ephyviewer_config.enable_all()
+            ephyviewer_config.show_all()
 
             win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width)
             self.windows.append(win)

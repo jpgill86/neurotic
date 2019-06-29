@@ -11,6 +11,7 @@ except ImportError:
     HAVE_IPYWIDGETS = False
 
 from ..datasets import MetadataSelector, selector_labels
+from ..gui.config import EphyviewerConfigurator
 
 
 class MetadataSelectorWidget(MetadataSelector):
@@ -132,3 +133,107 @@ class MetadataSelectorWidget(MetadataSelector):
         Run each time the download button is clicked.
         """
         self.download_all_data_files()
+
+
+class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
+    """
+
+    """
+
+    def __init__(self, metadata, blk, rauc_sigs = None, lazy = False):
+        """
+
+        """
+
+        assert HAVE_IPYWIDGETS, 'ipywidgets is a requirement for EphyviewerConfiguratorWidget'
+
+        # initial the configurator
+        EphyviewerConfigurator.__init__(
+            self,
+            metadata=metadata,
+            blk=blk,
+            rauc_sigs=rauc_sigs,
+            lazy=lazy)
+
+        self.viewer_settings['traces'].update({       'icon': 'line-chart',   'description': 'Traces'})
+        self.viewer_settings['traces_rauc'].update({  'icon': 'area-chart',   'description': 'RAUC'})
+        self.viewer_settings['freqs'].update({        'icon': 'wifi',         'description': 'Frequencies'})
+        self.viewer_settings['spike_trains'].update({ 'icon': 'barcode',      'description': 'Spike Trains'})
+        self.viewer_settings['epochs'].update({       'icon': 'align-left',   'description': 'Read-Only Epochs'})
+        self.viewer_settings['epoch_encoder'].update({'icon': 'align-left',   'description': 'Epoch Encoder'})
+        self.viewer_settings['video'].update({        'icon': 'youtube-play', 'description': 'Video'})
+        self.viewer_settings['event_list'].update({   'icon': 'list',         'description': 'Events'})
+        self.viewer_settings['data_frame'].update({   'icon': 'table',        'description': 'Annotation Table'})
+
+        # create a widget container which will be displayed whenever the
+        # EphyviewerConfiguratorWidget is displayed
+        self.main_widget = ipywidgets.HBox()
+        self._ipython_display_ = self.main_widget._ipython_display_
+
+        # create buttons for controlling which elements to show
+        self.controls = {}
+        for name, d in self.viewer_settings.items():
+            self.controls[name] = ipywidgets.ToggleButton(
+                value=d['show'], disabled=d['disabled'], icon=d['icon'],
+                description=d['description'], tooltip=d['reason'])
+            self.controls[name].key = name  # save control name for _on_toggle
+            self.controls[name].observe(self._on_toggle, names='value')
+        controls_vbox = ipywidgets.VBox(list(self.controls.values()))
+
+        # create the launch button
+        self.launch_button = ipywidgets.Button(icon='rocket', description='Launch', layout=ipywidgets.Layout(height='auto'))
+        self.launch_button.on_click(self._on_launch_clicked)
+
+        # populate the box
+        self.main_widget.children = [controls_vbox, self.launch_button]
+
+    def _on_toggle(self, change):
+        """
+
+        """
+        name = change['owner'].key
+        show = change['new']
+        if show:
+            EphyviewerConfigurator.show(self, name)
+        else:
+            EphyviewerConfigurator.hide(self, name)
+
+    def _on_launch_clicked(self, button):
+        """
+
+        """
+        self.launch_ephyviewer()
+
+    def enable(self, name):
+        """
+
+        """
+        EphyviewerConfigurator.enable(self, name)
+        if name in self.controls:
+            self.controls[name].disabled = False
+            self.controls[name].tooltip = ''
+
+    def disable(self, name):
+        """
+
+        """
+        EphyviewerConfigurator.disable(self, name)
+        if name in self.controls:
+            self.controls[name].disabled = True
+
+    def show(self, name):
+        """
+
+        """
+        EphyviewerConfigurator.show(self, name)
+        if name in self.controls:
+            if not self.controls[name].disabled:
+                self.controls[name].value = True
+
+    def hide(self, name):
+        """
+
+        """
+        EphyviewerConfigurator.hide(self, name)
+        if name in self.controls:
+            self.controls[name].value = False
