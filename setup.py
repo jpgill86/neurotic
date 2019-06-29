@@ -98,6 +98,8 @@ install_requires = [
 #     install_requires = f.read()
 
 extras_require = {}
+with open('requirements-notebook.txt', 'r') as f:
+    extras_require['notebook'] = f.read()
 with open('requirements-tests.txt', 'r') as f:
     extras_require['tests'] = f.read()
 
