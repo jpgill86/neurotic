@@ -324,20 +324,20 @@ def selector_labels(all_metadata):
     return labels
 
 
-class MetadataManager():
+class MetadataSelector():
     """
     A class for managing metadata.
 
     A metadata file can be specified at initialization, in which case it is
     read immediately. The file contents are stored in `all_metadata`.
 
-    >>> metadata = MetadataManager(file='metadata.yml')
+    >>> metadata = MetadataSelector(file='metadata.yml')
     >>> print(metadata.all_metadata)
 
     File contents can be reloaded after they have been changed, or after
     changing `file`, using the `load` method.
 
-    >>> metadata = MetadataManager()
+    >>> metadata = MetadataSelector()
     >>> metadata.file = 'metadata.yml'
     >>> metadata.load()
 
@@ -346,7 +346,7 @@ class MetadataManager():
     After making a selection, the selected metadata set is accessible at
     `metadata.selected_metadata`, e.g.
 
-    >>> metadata = MetadataManager(file='metadata.yml')
+    >>> metadata = MetadataSelector(file='metadata.yml')
     >>> metadata.select('Data Set 5')
     >>> print(metadata.selected_metadata['data_file'])
 
@@ -355,7 +355,7 @@ class MetadataManager():
 
     >>> print(metadata['data_file'])
 
-    This allows the MetadataManager to be passed to functions expecting a
+    This allows the MetadataSelector to be passed to functions expecting a
     simple dictionary corresponding to a single metadata set, and the selected
     metadata set will be used automatically.
 
@@ -378,7 +378,7 @@ class MetadataManager():
 
     def __init__(self, file=None, local_data_root=None, remote_data_root=None, initial_selection=None):
         """
-        Initialize a new MetadataManager.
+        Initialize a new MetadataSelector.
         """
 
         self.file = file

@@ -10,15 +10,15 @@ try:
 except ImportError:
     HAVE_IPYWIDGETS = False
 
-from ..datasets import MetadataManager, selector_labels
+from ..datasets import MetadataSelector, selector_labels
 
 
-class MetadataSelector(MetadataManager):
+class MetadataSelectorWidget(MetadataSelector):
     """
     Interactive list box for Jupyter notebooks that allows the user to select
     which metadata set they would like to work with.
 
-    >>> metadata = MetadataSelector(file='metadata.yml')
+    >>> metadata = MetadataSelectorWidget(file='metadata.yml')
     >>> display(metadata)
 
     After clicking on an item in the list, the selected metadata set is
@@ -31,20 +31,20 @@ class MetadataSelector(MetadataManager):
 
     >>> metadata['data_file']
 
-    This allows the MetadataSelector to be passed to functions expecting a
+    This allows the MetadataSelectorWidget to be passed to functions expecting a
     simple dictionary corresponding to a single metadata set, and the selected
     metadata set will be used automatically.
     """
 
     def __init__(self, file=None, local_data_root=None, remote_data_root=None, initial_selection=None):
         """
-        Initialize a new MetadataSelector.
+        Initialize a new MetadataSelectorWidget.
         """
 
-        assert HAVE_IPYWIDGETS, 'ipywidgets is a requirement for MetadataSelector'
+        assert HAVE_IPYWIDGETS, 'ipywidgets is a requirement for MetadataSelectorWidget'
 
         # load the metadata and set the initial selection
-        MetadataManager.__init__(
+        MetadataSelector.__init__(
             self,
             file=file,
             local_data_root=local_data_root,
@@ -52,7 +52,7 @@ class MetadataSelector(MetadataManager):
             initial_selection=initial_selection)
 
         # create a widget container which will be displayed whenever the
-        # MetadataSelector is displayed
+        # MetadataSelectorWidget is displayed
         self.main_widget = ipywidgets.VBox()
         self._ipython_display_ = self.main_widget._ipython_display_
 
