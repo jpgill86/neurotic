@@ -148,6 +148,19 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.3.0 (2019-06-29)
+~~~~~~~~~~~~~~~~~~
+
+Improvements
+............
+
+* Remove dependency on ipywidgets by making notebook widgets optional
+  (`#25 <https://github.com/jpgill86/neurotic/pull/25>`__)
+* Add app description and screenshot to README
+  (`#22 <https://github.com/jpgill86/neurotic/pull/22>`__)
+* Promote to beta status
+  (`#23 <https://github.com/jpgill86/neurotic/pull/23>`__)
+
 0.2.0 (2019-06-28)
 ~~~~~~~~~~~~~~~~~~
 
