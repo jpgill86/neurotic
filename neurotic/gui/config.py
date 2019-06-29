@@ -3,14 +3,11 @@
 
 """
 
-import os
-from collections import OrderedDict
 from functools import wraps
 
 import numpy as np
 import quantities as pq
 import ephyviewer
-import ipywidgets
 
 from ..datasets import abs_path
 from ..utils import EstimateVideoJumpTimes, NeoEpochToDataFrame
@@ -89,37 +86,10 @@ def setDefaultsForPlots(metadata, blk):
 
     return metadata['plots']
 
-class EphyviewerConfigurator(ipywidgets.HBox):
+class EphyviewerConfigurator():
     """
 
     """
-
-    _toggle_button_defaults = OrderedDict([
-        ('traces',        {'value': True,  'icon': 'line-chart',   'description': 'Traces'}),
-        ('traces_rauc',   {'value': False, 'icon': 'area-chart',   'description': 'RAUC'}),
-        # ('freqs',         {'value': False, 'icon': 'wifi',         'description': 'Frequencies'}),
-        ('spike_trains',  {'value': True,  'icon': 'barcode',      'description': 'Spike Trains'}),
-        ('epochs',        {'value': True,  'icon': 'align-left',   'description': 'Read-Only Epochs'}),
-        ('epoch_encoder', {'value': True,  'icon': 'align-left',   'description': 'Epoch Encoder'}),
-        ('video',         {'value': True,  'icon': 'youtube-play', 'description': 'Video'}),
-        ('event_list',    {'value': True,  'icon': 'list',         'description': 'Events'}),
-        ('data_frame',    {'value': False, 'icon': 'table',        'description': 'Annotation Table'}),
-    ])
-
-    themes = {}
-    themes['original'] = None # special keyword to use ephyviewer's defaults
-    themes['light'] = {
-        'cmap': 'Dark2', # dark traces
-        'background_color': '#F0F0F0', # light gray
-        'vline_color': '#000000AA', # transparent black
-        'label_fill_color': '#DDDDDDDD', # transparent light gray
-    }
-    themes['dark'] = {
-        'cmap': 'Accent', # light traces
-        'background_color': 'k', # black
-        'vline_color': '#FFFFFFAA', # transparent white
-        'label_fill_color': '#222222DD', # transparent dark gray
-    }
 
     def __init__(self, metadata, blk, rauc_sigs = None, lazy = False):
         """
@@ -131,50 +101,61 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         self.rauc_sigs = rauc_sigs
         self.lazy = lazy
 
-        # initialize the box
-        ipywidgets.HBox.__init__(self)
+        self.viewer_settings = {
+            'traces':        {'show': True, 'disabled': False, 'reason': ''},
+            'traces_rauc':   {'show': False, 'disabled': False, 'reason': ''},
+            'freqs':         {'show': False, 'disabled': True, 'reason': 'Experimental and computationally expensive'},
+            'spike_trains':  {'show': True, 'disabled': False, 'reason': ''},
+            'epochs':        {'show': True, 'disabled': False, 'reason': ''},
+            'epoch_encoder': {'show': True, 'disabled': False, 'reason': ''},
+            'video':         {'show': True, 'disabled': False, 'reason': ''},
+            'event_list':    {'show': True, 'disabled': False, 'reason': ''},
+            'data_frame':    {'show': False, 'disabled': False, 'reason': ''},
+        }
 
-        # create buttons for controlling which elements to show
-        self.controls = OrderedDict()
-        for name, kwargs in self._toggle_button_defaults.items():
-            self.controls[name] = ipywidgets.ToggleButton(**kwargs)
-        controls_vbox = ipywidgets.VBox(list(self.controls.values()))
+        self.themes = {}
+        self.themes['original'] = None # special keyword to use ephyviewer's defaults
+        self.themes['light'] = {
+            'cmap': 'Dark2', # dark traces
+            'background_color': '#F0F0F0', # light gray
+            'vline_color': '#000000AA', # transparent black
+            'label_fill_color': '#DDDDDDDD', # transparent light gray
+        }
+        self.themes['dark'] = {
+            'cmap': 'Accent', # light traces
+            'background_color': 'k', # black
+            'vline_color': '#FFFFFFAA', # transparent white
+            'label_fill_color': '#222222DD', # transparent dark gray
+        }
 
-        # permanently disable controls for which inputs are missing
+        # hide and disable viewers for which inputs are missing
         if not self.rauc_sigs:
-            self.controls['traces_rauc'].value = False
-            self.controls['traces_rauc'].disabled = True
-            self.controls['traces_rauc'].tooltip = 'Cannot enable because rauc_sigs is empty'
+            self.viewer_settings['traces_rauc']['show'] = False
+            self.viewer_settings['traces_rauc']['disabled'] = True
+            self.viewer_settings['traces_rauc']['reason'] = 'Cannot enable because rauc_sigs is empty'
         if not self.blk.segments[0].spiketrains:
-            self.controls['spike_trains'].value = False
-            self.controls['spike_trains'].disabled = True
-            self.controls['spike_trains'].tooltip = 'Cannot enable because there are no spike trains'
+            self.viewer_settings['spike_trains']['show'] = False
+            self.viewer_settings['spike_trains']['disabled'] = True
+            self.viewer_settings['spike_trains']['reason'] = 'Cannot enable because there are no spike trains'
         if not [ep for ep in self.blk.segments[0].epochs if ep.size > 0 and '(from epoch encoder file)' not in ep.labels]:
-            self.controls['epochs'].value = False
-            self.controls['epochs'].disabled = True
-            self.controls['epochs'].tooltip = 'Cannot enable because there are no read-only epochs'
-            self.controls['data_frame'].value = False
-            self.controls['data_frame'].disabled = True
-            self.controls['data_frame'].tooltip = 'Cannot enable because there are no read-only epochs'
+            self.viewer_settings['epochs']['show'] = False
+            self.viewer_settings['epochs']['disabled'] = True
+            self.viewer_settings['epochs']['reason'] = 'Cannot enable because there are no read-only epochs'
+            self.viewer_settings['data_frame']['show'] = False
+            self.viewer_settings['data_frame']['disabled'] = True
+            self.viewer_settings['data_frame']['reason'] = 'Cannot enable because there are no read-only epochs'
             if not [ev for ev in self.blk.segments[0].events if ev.size > 0]:
-                self.controls['event_list'].value = False
-                self.controls['event_list'].disabled = True
-                self.controls['event_list'].tooltip = 'Cannot enable because there are no read-only epochs or events'
+                self.viewer_settings['event_list']['show'] = False
+                self.viewer_settings['event_list']['disabled'] = True
+                self.viewer_settings['event_list']['reason'] = 'Cannot enable because there are no read-only epochs or events'
         if not self.metadata['epoch_encoder_file']:
-            self.controls['epoch_encoder'].value = False
-            self.controls['epoch_encoder'].disabled = True
-            self.controls['epoch_encoder'].tooltip = 'Cannot enable because epoch_encoder_file is not set'
+            self.viewer_settings['epoch_encoder']['show'] = False
+            self.viewer_settings['epoch_encoder']['disabled'] = True
+            self.viewer_settings['epoch_encoder']['reason'] = 'Cannot enable because epoch_encoder_file is not set'
         if not self.metadata['video_file']:
-            self.controls['video'].value = False
-            self.controls['video'].disabled = True
-            self.controls['video'].tooltip = 'Cannot enable because video_file is not set'
-
-        # create the launch button
-        self.launch_button = ipywidgets.Button(icon='rocket', description='Launch', layout=ipywidgets.Layout(height='auto'))
-        self.launch_button.on_click(self._on_launch_clicked)
-
-        # populate the box
-        self.children = [controls_vbox, self.launch_button]
+            self.viewer_settings['video']['show'] = False
+            self.viewer_settings['video']['disabled'] = True
+            self.viewer_settings['video']['reason'] = 'Cannot enable because video_file is not set'
 
         # warn about potential video sync problems
         if metadata['video_file'] is not None and metadata['video_offset'] is None:
@@ -201,8 +182,8 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         """
 
         """
-        if name in self.controls:
-            return self.controls[name].value
+        if name in self.viewer_settings:
+            return not self.viewer_settings[name]['disabled']
         else:
             return False
 
@@ -210,34 +191,60 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         """
 
         """
-        self.controls[name].value = True
+        if name in self.viewer_settings:
+            self.viewer_settings[name]['disabled'] = False
 
     def disable(self, name):
         """
 
         """
-        self.controls[name].value = False
+        if name in self.viewer_settings:
+            self.viewer_settings[name]['disabled'] = True
 
-    def enable_all(self):
+    def is_shown(self, name):
         """
 
         """
-        for name in self.controls:
-            if not self.controls[name].disabled:
-                self.enable(name)
+        if name in self.viewer_settings:
+            return self.viewer_settings[name]['show']
+        else:
+            return False
 
-    def disable_all(self):
+    def show(self, name):
         """
 
         """
-        for name in self.controls:
-            self.disable(name)
+        if name in self.viewer_settings:
+            if not self.viewer_settings[name]['disabled']:
+                self.viewer_settings[name]['show'] = True
+            else:
+                print(self.viewer_settings[name]['reason'])
+        else:
+            print(f'"{name}" is not a viewer in viewer_settings')
 
-    def _on_launch_clicked(self, button):
+    def hide(self, name):
         """
 
         """
-        self.launch_ephyviewer()
+        if name in self.viewer_settings:
+            self.viewer_settings[name]['show'] = False
+        else:
+            print(f'"{name}" is not a viewer in viewer_settings')
+
+    def show_all(self):
+        """
+
+        """
+        for name in self.viewer_settings:
+            if not self.viewer_settings[name]['disabled']:
+                self.show(name)
+
+    def hide_all(self):
+        """
+
+        """
+        for name in self.viewer_settings:
+            self.hide(name)
 
     def launch_ephyviewer(self, theme='light', support_increased_line_width=False):
         """
@@ -313,7 +320,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # TRACES WITH SCATTER PLOTS
 
-        if self.is_enabled('traces'):
+        if self.is_shown('traces'):
 
             if self.lazy:
                 import neo
@@ -401,7 +408,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # TRACES OF RAUC
 
-        if self.is_enabled('traces_rauc') and self.rauc_sigs is not None:
+        if self.is_shown('traces_rauc') and self.rauc_sigs is not None:
 
             sig_rauc_source = ephyviewer.InMemoryAnalogSignalSource(
                 signals = np.concatenate([self.rauc_sigs[p['index']].as_array() for p in self.metadata['plots']], axis = 1),
@@ -444,7 +451,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # FREQUENCY (EXPERIMENTAL AND COMPUTATIONALLY EXPENSIVE!)
 
-        if self.is_enabled('freqs'):
+        if self.is_shown('freqs'):
 
             freq_view = ephyviewer.TimeFreqViewer(source = trace_view.source, name = 'timefreqs')
 
@@ -476,7 +483,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # SPIKE TRAINS
 
-        if self.is_enabled('spike_trains') and sources['spike'][0].nb_channel > 0:
+        if self.is_shown('spike_trains') and sources['spike'][0].nb_channel > 0:
 
             spike_train_view = ephyviewer.SpikeTrainViewer(source = sources['spike'][0], name = 'spiketrains')
             win.add_view(spike_train_view)
@@ -492,7 +499,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # EPOCHS
 
-        if self.is_enabled('epochs') and sources['epoch'][0].nb_channel > 0:
+        if self.is_shown('epochs') and sources['epoch'][0].nb_channel > 0:
 
             epoch_view = ephyviewer.EpochViewer(source = sources['epoch'][0], name = 'epochs')
             win.add_view(epoch_view)
@@ -508,7 +515,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # EPOCH ENCODER
 
-        if self.is_enabled('epoch_encoder') and self.metadata['epoch_encoder_file'] is not None:
+        if self.is_shown('epoch_encoder') and self.metadata['epoch_encoder_file'] is not None:
 
             writable_epoch_source = MyWritableEpochSource(
                 filename = abs_path(self.metadata, 'epoch_encoder_file'),
@@ -529,7 +536,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # VIDEO
 
-        if self.is_enabled('video') and self.metadata['video_file'] is not None:
+        if self.is_shown('video') and self.metadata['video_file'] is not None:
 
             video_source = ephyviewer.MultiVideoFileSource(video_filenames = [abs_path(self.metadata, 'video_file')])
             if self.metadata['video_offset'] is not None:
@@ -571,7 +578,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         ########################################################################
         # EVENTS
 
-        if self.is_enabled('event_list') and sources['event'][0].nb_channel > 0:
+        if self.is_shown('event_list') and sources['event'][0].nb_channel > 0:
 
             event_list = ephyviewer.EventList(source = sources['event'][0], name = 'events')
             if 'video' in win.viewers:
@@ -583,7 +590,7 @@ class EphyviewerConfigurator(ipywidgets.HBox):
         # DATAFRAME
 
         annotations_dataframe = NeoEpochToDataFrame(seg.epochs, exclude_epoch_encoder_epochs=True)
-        if self.is_enabled('data_frame') and len(annotations_dataframe) > 0:
+        if self.is_shown('data_frame') and len(annotations_dataframe) > 0:
 
             data_frame_view = ephyviewer.DataFrameView(source = annotations_dataframe, name = 'table')
             if 'events' in win.viewers:

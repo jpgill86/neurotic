@@ -10,11 +10,11 @@ import quantities as pq
 import elephant
 from ephyviewer import QT
 
-from ..datasets import MetadataManager, LoadAndPrepareData, selector_labels
+from ..datasets import MetadataSelector, LoadAndPrepareData, selector_labels
 from ..gui.config import EphyviewerConfigurator
 
 
-class MetadataSelectorQt(MetadataManager, QT.QListWidget):
+class MetadataSelectorQt(MetadataSelector, QT.QListWidget):
     """
 
     """
@@ -24,7 +24,7 @@ class MetadataSelectorQt(MetadataManager, QT.QListWidget):
 
         """
 
-        MetadataManager.__init__(self)
+        MetadataSelector.__init__(self)
         QT.QListWidget.__init__(self)
 
         self.setSelectionMode(QT.QListWidget.SingleSelection)
@@ -51,7 +51,7 @@ class MetadataSelectorQt(MetadataManager, QT.QListWidget):
         old_selection = self._selection
 
         try:
-            MetadataManager.load(self)
+            MetadataSelector.load(self)
         except AssertionError as e:
             print('Bad metadata file!', e)
 
@@ -281,7 +281,7 @@ class DataExplorer(QT.QMainWindow):
                     rauc_sigs.append(rauc)
 
             ephyviewer_config = EphyviewerConfigurator(metadata, blk, rauc_sigs, self.lazy)
-            ephyviewer_config.enable_all()
+            ephyviewer_config.show_all()
 
             win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width)
             self.windows.append(win)
