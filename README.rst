@@ -148,6 +148,21 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.4.0 (2019-07-01)
+~~~~~~~~~~~~~~~~~~
+
+Improvements
+............
+
+* Show epochs imported from CSV files with zero duration in epoch viewer
+  (`#27 <https://github.com/jpgill86/neurotic/pull/27>`__)
+
+* Show epochs/events imported from data file in events list/epoch viewer
+  (`#28 <https://github.com/jpgill86/neurotic/pull/28>`__)
+
+* Alphabetize epoch and event channels by name
+  (`#29 <https://github.com/jpgill86/neurotic/pull/29>`__)
+
 0.3.0 (2019-06-29)
 ~~~~~~~~~~~~~~~~~~
 
