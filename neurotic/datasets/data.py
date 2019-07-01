@@ -25,6 +25,13 @@ def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', filt
     if not lazy:
         blk = ApplyFilters(metadata, blk)
 
+    # copy events into epochs and vice versa
+    epochs_from_events = [neo.Epoch(name=ev.name, times=ev.times, labels=ev.labels, durations=np.zeros_like(ev.times)) for ev in blk.segments[0].events]
+    events_from_epochs = [neo.Event(name=ep.name, times=ep.times, labels=ep.labels) for ep in blk.segments[0].epochs]
+    if not filter_events_from_epochs:
+        blk.segments[0].epochs += epochs_from_events
+    blk.segments[0].events += events_from_epochs
+
     # read in annotations
     annotations_dataframe = ReadAnnotationsFile(metadata)
     blk.segments[0].epochs += CreateNeoEpochsFromDataframe(annotations_dataframe, metadata, abs_path(metadata, 'annotations_file'), filter_events_from_epochs)
