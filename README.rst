@@ -156,8 +156,14 @@ Improvements
 
 * Remove dependency on ipywidgets by making notebook widgets optional
   (`#25 <https://github.com/jpgill86/neurotic/pull/25>`__)
+
+  * Notebook widget classes renamed:
+    ``MetadataSelector`` → ``MetadataSelectorWidget``,
+    ``EphyviewerConfigurator`` → ``EphyviewerConfiguratorWidget``
+
 * Add app description and screenshot to README
   (`#22 <https://github.com/jpgill86/neurotic/pull/22>`__)
+
 * Promote to beta status
   (`#23 <https://github.com/jpgill86/neurotic/pull/23>`__)
 
@@ -169,11 +175,14 @@ Improvements
 
 * Add basic command line arguments
   (`#14 <https://github.com/jpgill86/neurotic/pull/14>`__)
+
 * Add continuous integration with Travis CI for automated testing
   (`#13 <https://github.com/jpgill86/neurotic/pull/13>`__)
+
 * Add some tests
   (`#15 <https://github.com/jpgill86/neurotic/pull/15>`__,
   `#16 <https://github.com/jpgill86/neurotic/pull/16>`__)
+
 * Migrate example data to GIN
   (`#18 <https://github.com/jpgill86/neurotic/pull/18>`__)
 
@@ -182,6 +191,7 @@ Bug fixes
 
 * Fix crash when downloading from a server that does not report file size
   (`#17 <https://github.com/jpgill86/neurotic/pull/17>`__)
+
 * Raise an exception if a Neo RawIO cannot be found for the data file
   (`#12 <https://github.com/jpgill86/neurotic/pull/12>`__)
 
