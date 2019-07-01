@@ -59,6 +59,10 @@ def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', filt
         blk.segments[0].events += [fake_neo('Event') for _ in range(5)]
         blk.segments[0].spiketrains += [fake_neo('SpikeTrain') for _ in range(5)]
 
+    # alphabetize epoch and event channels by name
+    blk.segments[0].epochs.sort(key=lambda ep: ep.name)
+    blk.segments[0].events.sort(key=lambda ev: ev.name)
+
     return blk
 
 def ReadDataFile(metadata, lazy=False, signal_group_mode='split-all'):
