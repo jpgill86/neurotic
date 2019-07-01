@@ -12,7 +12,7 @@ import neo
 from ..datasets.metadata import abs_path
 from neo.test.generate_datasets import fake_neo
 
-def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', fake_data_for_testing = False):
+def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False, fake_data_for_testing=False):
     """
 
     """
@@ -27,12 +27,12 @@ def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', fake
 
     # read in annotations
     annotations_dataframe = ReadAnnotationsFile(metadata)
-    blk.segments[0].epochs += CreateNeoEpochsFromDataframe(annotations_dataframe, metadata, abs_path(metadata, 'annotations_file'))
+    blk.segments[0].epochs += CreateNeoEpochsFromDataframe(annotations_dataframe, metadata, abs_path(metadata, 'annotations_file'), filter_events_from_epochs)
     blk.segments[0].events += CreateNeoEventsFromDataframe(annotations_dataframe, metadata, abs_path(metadata, 'annotations_file'))
 
     # read in epoch encoder file
     epoch_encoder_dataframe = ReadEpochEncoderFile(metadata)
-    blk.segments[0].epochs += CreateNeoEpochsFromDataframe(epoch_encoder_dataframe, metadata, abs_path(metadata, 'epoch_encoder_file'))
+    blk.segments[0].epochs += CreateNeoEpochsFromDataframe(epoch_encoder_dataframe, metadata, abs_path(metadata, 'epoch_encoder_file'), filter_events_from_epochs)
     blk.segments[0].events += CreateNeoEventsFromDataframe(epoch_encoder_dataframe, metadata, abs_path(metadata, 'epoch_encoder_file'))
 
     # classify spikes by amplitude if not using lazy loading of signals
@@ -251,7 +251,7 @@ def ReadSpikesFile(metadata, blk):
         # return the dataframe
         return df
 
-def CreateNeoEpochsFromDataframe(dataframe, metadata, file_origin):
+def CreateNeoEpochsFromDataframe(dataframe, metadata, file_origin, filter_events_from_epochs=False):
     """
 
     """
@@ -260,8 +260,9 @@ def CreateNeoEpochsFromDataframe(dataframe, metadata, file_origin):
 
     if dataframe is not None:
 
-        # keep only rows with a positive duration
-        dataframe = dataframe[dataframe['Duration (s)'] > 0]
+        if filter_events_from_epochs:
+            # keep only rows with a positive duration
+            dataframe = dataframe[dataframe['Duration (s)'] > 0]
 
         # group epochs by type
         for type_name, df in dataframe.groupby('Type'):
