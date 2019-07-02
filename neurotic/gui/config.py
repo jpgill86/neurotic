@@ -402,8 +402,13 @@ class EphyviewerConfigurator():
                 assert units_ratio.dimensionality.string == 'dimensionless', f"Channel \"{p['channel']}\" has units {sig_units} and cannot be converted to {p['units']}"
                 ylim_span = np.ptp(p['ylim'] * units_ratio.magnitude)
                 ylim_center = np.mean(p['ylim'] * units_ratio.magnitude)
-                trace_view.by_channel_params['ch{}'.format(i), 'gain'] = 1/ylim_span # rescale [ymin,ymax] across a unit
-                trace_view.by_channel_params['ch{}'.format(i), 'offset'] = -i - ylim_center/ylim_span # center [ymin,ymax] within the unit
+                if self.lazy:
+                    # first rescale to real units
+                    trace_view.by_channel_params['ch{}'.format(i), 'gain'] = trace_view.source.get_gains()[i]
+                    trace_view.by_channel_params['ch{}'.format(i), 'offset'] = trace_view.source.get_offsets()[i]
+                trace_view.by_channel_params['ch{}'.format(i), 'gain'] *= 1/ylim_span # rescale [ymin,ymax] across a unit
+                trace_view.by_channel_params['ch{}'.format(i), 'offset'] *= 1/ylim_span # important if offset is not zero
+                trace_view.by_channel_params['ch{}'.format(i), 'offset'] += -i - ylim_center/ylim_span # center [ymin,ymax] within the unit
 
         ########################################################################
         # TRACES OF RAUC
