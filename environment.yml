@@ -13,5 +13,5 @@ dependencies:
   - pip:
     - elephant>=0.6.2
     - pylttb
-    - git+https://github.com/jpgill86/python-neo.git@axographrawio
-    - git+https://github.com/jpgill86/ephyviewer.git@experimental
+    - git+https://github.com/NeuralEnsemble/python-neo.git
+    - git+https://github.com/NeuralEnsemble/ephyviewer.git
