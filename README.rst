@@ -148,6 +148,18 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.4.1 (2019-07-02)
+~~~~~~~~~~~~~~~~~~
+
+Compatibility updates
+.....................
+
+* Change sources of development versions of dependencies
+  (`#32 <https://github.com/jpgill86/neurotic/pull/32>`__)
+
+* Compatibility update for scaling of raw signals
+  (`#31 <https://github.com/jpgill86/neurotic/pull/31>`__)
+
 0.4.0 (2019-07-01)
 ~~~~~~~~~~~~~~~~~~
 
