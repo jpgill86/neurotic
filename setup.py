@@ -72,9 +72,9 @@ with open('README.rst', 'r') as f:
 install_requires = [
     # 'av',
     # 'elephant>=0.6.2',
-    # 'ephyviewer @ https://github.com/jpgill86/ephyviewer/archive/experimental.tar.gz', # latest version
+    # 'ephyviewer @ https://github.com/NeuralEnsemble/ephyviewer/archive/master.tar.gz', # latest version
     # 'ipywidgets',
-    # 'neo @ https://github.com/jpgill86/python-neo/archive/axographrawio.tar.gz', # TODO require >0.7.1 for AxographRawIO
+    # 'neo @ https://github.com/NeuralEnsemble/python-neo/archive/master.tar.gz', # TODO require >0.7.1 for AxographRawIO
     # 'numpy',
     # 'pandas',
     # 'pylttb',
