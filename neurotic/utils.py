@@ -158,10 +158,11 @@ def EstimateVideoJumpTimes(blk):
 
         # obtain exact stop times (AxoGraph time, not video time)
         event_stop_times = np.array([], dtype=np.float)
-        ev = blk.segments[0].events[0]
-        for time, label in zip(ev.times, ev.labels):
-            if label == 'Stop':
-                event_stop_times = np.append(event_stop_times, time.magnitude)
+        ev = next((ev for ev in blk.segments[0].events if ev.name == 'AxoGraph Tags'), None)
+        if ev is not None:
+            for time, label in zip(ev.times, ev.labels):
+                if label == 'Stop':
+                    event_stop_times = np.append(event_stop_times, time.magnitude)
 
         # pair stop times with pause durations
         video_jumps = []
