@@ -12,10 +12,13 @@ import pkg_resources
 import copy
 import yaml
 import unittest
+import logging
 
 from ephyviewer import mkQApp
 
-from ..scripts import parse_args, win_from_args
+import neurotic
+
+logger = logging.getLogger(__name__)
 
 class CLITestCase(unittest.TestCase):
 
@@ -61,9 +64,9 @@ class CLITestCase(unittest.TestCase):
     def test_cli_defaults(self):
         """Test CLI default values"""
         argv = ['neurotic']
-        args = parse_args(argv)
+        args = neurotic.parse_args(argv)
         app = mkQApp()
-        win = win_from_args(args)
+        win = neurotic.win_from_args(args)
         self.assertTrue(win.lazy, 'lazy loading disabled without --no-lazy')
         self.assertFalse(win.support_increased_line_width,
                          'thick traces enabled without --thick-traces')
@@ -77,17 +80,17 @@ class CLITestCase(unittest.TestCase):
     def test_no_lazy(self):
         """Test that --no-lazy disables lazy loading"""
         argv = ['neurotic', '--no-lazy']
-        args = parse_args(argv)
+        args = neurotic.parse_args(argv)
         app = mkQApp()
-        win = win_from_args(args)
+        win = neurotic.win_from_args(args)
         self.assertFalse(win.lazy, 'lazy loading enabled with --no-lazy')
 
     def test_thick_traces(self):
         """Test that --thick-traces enables support for thick traces"""
         argv = ['neurotic', '--thick-traces']
-        args = parse_args(argv)
+        args = neurotic.parse_args(argv)
         app = mkQApp()
-        win = win_from_args(args)
+        win = neurotic.win_from_args(args)
         self.assertTrue(win.support_increased_line_width,
                         'thick traces disabled with --thick-traces')
 
@@ -96,33 +99,33 @@ class CLITestCase(unittest.TestCase):
         app = mkQApp()
 
         argv = ['neurotic', '--theme', 'light']
-        args = parse_args(argv)
-        win = win_from_args(args)
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
         self.assertEquals(win.theme, 'light', 'unexpected theme')
 
         argv = ['neurotic', '--theme', 'dark']
-        args = parse_args(argv)
-        win = win_from_args(args)
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
         self.assertEquals(win.theme, 'dark', 'unexpected theme')
 
         argv = ['neurotic', '--theme', 'original']
-        args = parse_args(argv)
-        win = win_from_args(args)
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
         self.assertEquals(win.theme, 'original', 'unexpected theme')
 
     def test_file(self):
         """Test that metadata file can be set"""
         argv = ['neurotic', self.temp_file]
-        args = parse_args(argv)
-        win = win_from_args(args)
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
         self.assertEquals(win.metadata_selector.file, self.temp_file,
                           'file was not changed correctly')
 
     def test_dataset(self):
         """Test that dataset can be set"""
         argv = ['neurotic', self.temp_file, 'zzz_alphabetically_last']
-        args = parse_args(argv)
-        win = win_from_args(args)
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
         self.assertEquals(win.metadata_selector._selection,
                           'zzz_alphabetically_last',
                           'dataset was not changed correctly')
