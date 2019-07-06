@@ -3,6 +3,7 @@ elephant>=0.6.2
 git+https://github.com/NeuralEnsemble/ephyviewer.git
 git+https://github.com/NeuralEnsemble/python-neo.git
 numpy
+packaging
 pandas
 pylttb
 pyqt5

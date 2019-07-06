@@ -4,6 +4,7 @@ channels:
 dependencies:
   - av
   - numpy
+  - packaging
   - pandas
   - pip
   - pyqt

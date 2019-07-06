@@ -3,6 +3,7 @@
 Import raw data, annotations, and spike sorting results as Neo objects
 """
 
+from packaging import version
 import numpy as np
 import pandas as pd
 import quantities as pq
@@ -76,22 +77,60 @@ def ReadDataFile(metadata, lazy=False, signal_group_mode='split-all'):
     io = neo.io.get_io(abs_path(metadata, 'data_file'))
     blk = io.read_block(lazy=lazy, signal_group_mode=signal_group_mode)
 
-    # load all proxy objects except analog signals
+    # load all objects except analog signals
     if lazy:
-        for i in range(len(blk.segments[0].epochs)):
-            epoch = blk.segments[0].epochs[i]
-            if hasattr(epoch, 'load'):
-                blk.segments[0].epochs[i] = epoch.load()
 
-        for i in range(len(blk.segments[0].events)):
-            event = blk.segments[0].events[i]
-            if hasattr(event, 'load'):
-                blk.segments[0].events[i] = event.load()
+        if version.parse(neo.__version__) >= version.parse('0.8.0.dev'):  # Neo >= 0.8.0 has proxy objects with load method
 
-        for i in range(len(blk.segments[0].spiketrains)):
-            spiketrain = blk.segments[0].spiketrains[i]
-            if hasattr(spiketrain, 'load'):
-                blk.segments[0].spiketrains[i] = spiketrain.load()
+            for i in range(len(blk.segments[0].epochs)):
+                epoch = blk.segments[0].epochs[i]
+                if hasattr(epoch, 'load'):
+                    blk.segments[0].epochs[i] = epoch.load()
+
+            for i in range(len(blk.segments[0].events)):
+                event = blk.segments[0].events[i]
+                if hasattr(event, 'load'):
+                    blk.segments[0].events[i] = event.load()
+
+            for i in range(len(blk.segments[0].spiketrains)):
+                spiketrain = blk.segments[0].spiketrains[i]
+                if hasattr(spiketrain, 'load'):
+                    blk.segments[0].spiketrains[i] = spiketrain.load()
+
+        else:  # Neo < 0.8.0 does not have proxy objects
+
+            neorawioclass = neo.rawio.get_rawio_class(abs_path(metadata, 'data_file'))
+            if neorawioclass is not None:
+                neorawio = neorawioclass(abs_path(metadata, 'data_file'))
+                neorawio.parse_header()
+
+                for i in range(len(blk.segments[0].epochs)):
+                    epoch = blk.segments[0].epochs[i]
+                    channel_index = next((i for i, chan in enumerate(neorawio.header['event_channels']) if chan['name'] == epoch.name and chan['type'] == b'epoch'), None)
+                    if channel_index is not None:
+                        ep_raw_times, ep_raw_durations, ep_labels = neorawio.get_event_timestamps(event_channel_index=channel_index)
+                        ep_times = neorawio.rescale_event_timestamp(ep_raw_times, dtype='float64')
+                        ep_durations = neorawio.rescale_epoch_duration(ep_raw_durations, dtype='float64')
+                        ep = neo.Epoch(times=ep_times*pq.s, durations=ep_durations*pq.s, labels=ep_labels, name=epoch.name)
+                        blk.segments[0].epochs[i] = ep
+
+                for i in range(len(blk.segments[0].events)):
+                    event = blk.segments[0].events[i]
+                    channel_index = next((i for i, chan in enumerate(neorawio.header['event_channels']) if chan['name'] == event.name and chan['type'] == b'event'), None)
+                    if channel_index is not None:
+                        ev_raw_times, _, ev_labels = neorawio.get_event_timestamps(event_channel_index=channel_index)
+                        ev_times = neorawio.rescale_event_timestamp(ev_raw_times, dtype='float64')
+                        ev = neo.Event(times=ev_times*pq.s, labels=ev_labels, name=event.name)
+                        blk.segments[0].events[i] = ev
+
+                for i in range(len(blk.segments[0].spiketrains)):
+                    spiketrain = blk.segments[0].spiketrains[i]
+                    channel_index = next((i for i, chan in enumerate(neorawio.header['unit_channels']) if chan['name'] == spiketrain.name), None)
+                    if channel_index is not None:
+                        st_raw_times = neorawio.get_spike_timestamps(unit_index=channel_index)
+                        st_times = neorawio.rescale_spike_timestamp(st_raw_times, dtype='float64')
+                        st = neo.SpikeTrain(times=st_times*pq.s, name=st.name)
+                        blk.segments[0].spiketrains[i] = st
 
     # convert byte labels to Unicode strings
     for epoch in blk.segments[0].epochs:
