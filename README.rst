@@ -148,6 +148,18 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.5.0 (2019-07-06)
+~~~~~~~~~~~~~~~~~~
+
+Improvements
+............
+
+* Support fast (lazy) loading in Neo < 0.8.0
+  (`#35 <https://github.com/jpgill86/neurotic/pull/35>`__)
+
+* Add "git." and conditionally ".dirty" to dev local version identifier
+  (`#34 <https://github.com/jpgill86/neurotic/pull/34>`__)
+
 0.4.2 (2019-07-06)
 ~~~~~~~~~~~~~~~~~~
 
