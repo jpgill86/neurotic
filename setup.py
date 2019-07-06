@@ -108,7 +108,7 @@ setup(
     version = VERSION,
     description = 'Curate, visualize, and annotate your behavioral ephys data using Python',
     packages = find_packages(),
-    package_data = {'neurotic': ['example/metadata.yml']},
+    package_data = {'neurotic': ['example/metadata.yml'], 'neurotic.tests': ['metadata-for-tests.yml']},
     install_requires = install_requires,
     extras_require = extras_require,
     entry_points = {'console_scripts': ['neurotic=neurotic.scripts:main']},

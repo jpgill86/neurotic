@@ -1,0 +1,15 @@
+remote_data_root: https://web.gin.g-node.org/jpgill86/neurotic-data/raw/master/tests
+
+events-and-epochs:
+    data_dir: events-and-epochs
+    remote_data_dir: events-and-epochs
+    data_file: events_and_epochs.axgx
+    video_file: test.avi
+
+    plots:
+        - channel: "Analog Input #5"
+          units: mV
+          ylim: [-5, 0]
+        - channel: Clock
+          units: V
+          ylim: [-0.1, 5.1]
