@@ -148,6 +148,15 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.4.2 (2019-07-06)
+~~~~~~~~~~~~~~~~~~
+
+Bug fixes
+.........
+
+* Fix for EstimateVideoJumpTimes regression introduced in 0.4.0
+  (`#33 <https://github.com/jpgill86/neurotic/pull/33>`__)
+
 0.4.1 (2019-07-02)
 ~~~~~~~~~~~~~~~~~~
 
