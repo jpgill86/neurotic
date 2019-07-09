@@ -148,6 +148,15 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.5.1 (2019-07-09)
+~~~~~~~~~~~~~~~~~~
+
+Compatibility updates
+.....................
+
+* Compatibility update for RawIOs with non-zero offset
+  (`#37 <https://github.com/jpgill86/neurotic/pull/37>`__)
+
 0.5.0 (2019-07-06)
 ~~~~~~~~~~~~~~~~~~
 
