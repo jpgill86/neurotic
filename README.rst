@@ -148,6 +148,21 @@ issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
 Changes
 -------
 
+0.6.0 (2019-07-10)
+~~~~~~~~~~~~~~~~~~
+
+Improvements
+............
+
+* Add a basic "About neurotic" window with version and website information
+  (`#38 <https://github.com/jpgill86/neurotic/pull/38>`__)
+
+* Update logo
+  (`#39 <https://github.com/jpgill86/neurotic/pull/39>`__)
+
+* Add keywords and project URLs to package metadata
+  (`#40 <https://github.com/jpgill86/neurotic/pull/40>`__)
+
 0.5.1 (2019-07-09)
 ~~~~~~~~~~~~~~~~~~
 
