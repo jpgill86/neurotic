@@ -10,6 +10,7 @@ import quantities as pq
 import elephant
 from ephyviewer import QT
 
+from .. import __version__
 from ..datasets import MetadataSelector, LoadAndPrepareData, selector_labels
 from ..gui.config import EphyviewerConfigurator
 
@@ -112,7 +113,7 @@ class DataExplorer(QT.QMainWindow):
 
         self.setWindowIcon(QT.QIcon(':/soundwave.png'))
 
-        self.setWindowTitle('Data Explorer')
+        self.setWindowTitle('neurotic')
         self.resize(600, 300)
 
         # lazy loading using Neo RawIO
@@ -227,6 +228,12 @@ class DataExplorer(QT.QMainWindow):
         else:
             raise ValueError('theme "{}" is unrecognized'.format(self.theme))
 
+        self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
+
+        do_show_about = QT.QAction('&About neurotic', self)
+        do_show_about.triggered.connect(self.show_about)
+        self.help_menu.addAction(do_show_about)
+
     def open_metadata(self):
         """
 
@@ -292,6 +299,37 @@ class DataExplorer(QT.QMainWindow):
             print('Some files were not found locally and may need to be downloaded')
             print(e)
             return
+
+    def show_about(self):
+        """
+        Display the "About neurotic" message box
+        """
+
+        title = 'About neurotic'
+
+        urls = {}
+        urls['GitHub'] = 'https://github.com/jpgill86/neurotic'
+        urls['GitHub issues'] = 'https://github.com/jpgill86/neurotic/issues'
+        urls['GitHub user'] = 'https://github.com/jpgill86'
+        urls['PyPI'] = 'https://pypi.org/project/neurotic'
+
+        text = f"""
+        <h2>neurotic {__version__}</h2>
+
+        <p><i>Curate, visualize, and annotate <br/>
+        your behavioral ephys data using Python</i></p>
+
+        <p>Author: Jeffrey Gill (<a href='{urls['GitHub user']}'>@jpgill86</a>)</p>
+
+        <p>Websites: <a href='{urls['GitHub']}'>GitHub</a>
+                   | <a href='{urls['PyPI']}'>PyPI</a></p>
+
+        <p>Please post any questions, problems, comments, <br/>
+        or suggestions in the <a href='{urls['GitHub issues']}'>GitHub issue
+        tracker</a>.</p>
+        """
+
+        QT.QMessageBox.about(self, title, text)
 
     def toggle_lazy(self, checked):
         """
