@@ -111,7 +111,7 @@ class DataExplorer(QT.QMainWindow):
 
         QT.QMainWindow.__init__(self)
 
-        self.setWindowIcon(QT.QIcon(':/soundwave.png'))
+        self.setWindowIcon(QT.QIcon(':/neurotic-logo-150.png'))
 
         self.setWindowTitle('neurotic')
         self.resize(600, 300)

@@ -288,7 +288,7 @@ class EphyviewerConfigurator():
             play_interval = 0.1, # refresh period in seconds
         )
         win.setWindowTitle(self.metadata['key'])
-        win.setWindowIcon(ephyviewer.QT.QIcon(':/soundwave.png'))
+        win.setWindowIcon(ephyviewer.QT.QIcon(':/neurotic-logo-150.png'))
 
         ########################################################################
         # PREPARE TRACE PARAMETERS

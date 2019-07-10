@@ -1,5 +1,5 @@
-neurotic
-========
+|neurotic logo| neurotic
+========================
 
 *Curate, visualize, and annotate your behavioral ephys data using Python*
 
@@ -266,6 +266,9 @@ Bug fixes
 
 * First release
 
+
+.. |neurotic logo| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/neurotic/gui/icons/img/neurotic-logo-30.png
+    :alt: Project logo
 
 .. |PyPI badge| image:: https://img.shields.io/pypi/v/neurotic.svg?logo=python&logoColor=white
     :target: PyPI_
