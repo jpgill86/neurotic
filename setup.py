@@ -128,10 +128,18 @@ setup(
     extras_require = extras_require,
     entry_points = {'console_scripts': ['neurotic=neurotic.scripts:main']},
     long_description = README,
+    keywords = ['neuroscience', 'electrophysiology', 'visualization',
+        'video-sync', 'data-management', 'data-sharing', 'download-manager',
+        'annotation-tool', 'open-science', 'python-neo'],
     author = 'Jeffrey Gill',
     author_email = 'jeffrey.p.gill@gmail.com',
     license = 'MIT',
     url = 'https://github.com/jpgill86/neurotic',
+    project_urls={
+        # 'Documentation': 'https://github.com/jpgill86/neurotic',
+        'Source code': 'https://github.com/jpgill86/neurotic',
+        'Bug tracker': 'https://github.com/jpgill86/neurotic/issues',
+    },
     classifiers = [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
