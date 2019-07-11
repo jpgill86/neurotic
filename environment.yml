@@ -12,7 +12,7 @@ dependencies:
   - quantities
   - tqdm
   - pip:
+    - neo>=0.7.2
     - elephant>=0.6.2
     - pylttb
-    - git+https://github.com/NeuralEnsemble/python-neo.git
     - git+https://github.com/NeuralEnsemble/ephyviewer.git
