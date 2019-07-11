@@ -54,7 +54,7 @@ else:
 # If this is not a release version, mark it as a development build/distro and
 # tag it with the git revision number and dirty state.
 if not IS_RELEASED:
-    VERSION += '.dev+git.' + GIT_REVISION[:7]
+    VERSION += '.dev0+git.' + GIT_REVISION[:7]
     if GIT_DIRTY:
         VERSION += '.dirty'
 
