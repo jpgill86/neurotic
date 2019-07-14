@@ -310,6 +310,10 @@ class DataExplorer(QT.QMainWindow):
         import neo
         import numpy
         import pyqtgraph
+        try:
+            pyqt_version = QT.PYQT_VERSION_STR
+        except AttributeError:
+            pyqt_version = 'unknown'
 
         title = 'About neurotic'
 
@@ -340,7 +344,7 @@ class DataExplorer(QT.QMainWindow):
         <tr><td>ephyviewer</td>         <td>{ephyviewer.__version__}</td></tr>
         <tr><td>neo</td>                <td>{neo.__version__}</td></tr>
         <tr><td>numpy</td>              <td>{numpy.__version__}</td></tr>
-        <tr><td>{QT_MODE.lower()}</td>  <td>{QT.PYQT_VERSION_STR}</td></tr>
+        <tr><td>{QT_MODE.lower()}</td>  <td>{pyqt_version}</td></tr>
         <tr><td>pyqtgraph</td>          <td>{pyqtgraph.__version__}</td></tr>
         </table>
         """
