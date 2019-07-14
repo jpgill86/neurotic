@@ -8,7 +8,7 @@ import pkg_resources
 
 import quantities as pq
 import elephant
-from ephyviewer import QT
+from ephyviewer import QT, QT_MODE
 
 from .. import __version__
 from ..datasets import MetadataSelector, LoadAndPrepareData, selector_labels
@@ -305,6 +305,12 @@ class DataExplorer(QT.QMainWindow):
         Display the "About neurotic" message box
         """
 
+        import elephant
+        import ephyviewer
+        import neo
+        import numpy
+        import pyqtgraph
+
         title = 'About neurotic'
 
         urls = {}
@@ -327,6 +333,16 @@ class DataExplorer(QT.QMainWindow):
         <p>Please post any questions, problems, comments, <br/>
         or suggestions in the <a href='{urls['GitHub issues']}'>GitHub issue
         tracker</a>.</p>
+
+        <p>Installed dependencies:</p>
+        <table width='80%' align='center'>
+        <tr><td>elephant</td>           <td>{elephant.__version__}</td></tr>
+        <tr><td>ephyviewer</td>         <td>{ephyviewer.__version__}</td></tr>
+        <tr><td>neo</td>                <td>{neo.__version__}</td></tr>
+        <tr><td>numpy</td>              <td>{numpy.__version__}</td></tr>
+        <tr><td>{QT_MODE.lower()}</td>  <td>{QT.PYQT_VERSION_STR}</td></tr>
+        <tr><td>pyqtgraph</td>          <td>{pyqtgraph.__version__}</td></tr>
+        </table>
         """
 
         QT.QMessageBox.about(self, title, text)
