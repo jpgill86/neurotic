@@ -77,42 +77,20 @@ with open('neurotic/version.py', 'w') as f:
 with open('README.rst', 'r') as f:
     README = f.read()
 
-# An unreleased version of ephyviewer is needed by this package. Furthermore,
-# the latest release of neo (0.7.2, needed by this package for AxographRawIO)
+# The latest release of neo (0.7.2, needed by this package for AxographRawIO)
 # conflicts with the requirements of the latest release of elephant (0.6.2,
 # needed for rauc and neo API fix) thanks to a bug that has been patched but
 # not released yet (see https://github.com/NeuralEnsemble/elephant/issues/236).
-# The only way around this complication is for the user to manually install
-# dependencies using `pip install -r requirements.txt`, which warns about the
-# incompatibility of neo and elephant but doesn't halt. Someday this package
-# may be able to use the specification below, but not before elephant releases
-# the fixed requirements list and ephyviewer has a release.
-install_requires = [
-    # 'av',
-    # 'elephant>=0.6.2',
-    # 'ephyviewer @ https://github.com/NeuralEnsemble/ephyviewer/archive/master.tar.gz', # TODO PyPI disallows "@"
-    # 'neo>=0.7.2',
-    # 'numpy',
-    # 'packaging',
-    # 'pandas',
-    # 'pylttb',
-    # 'pyqt5',
-    # 'pyyaml',
-    # 'quantities',
-    # 'tqdm',
-]
-
-# Can't use this method of reading requirements.txt into install_requires until
-# this package depends only on released packages and not development versions.
-# This is because git commands ("git+https://github...") in requirements.txt
-# cannot be understood by setuptools. The "@" notation for specifying urls used
-# above is understood by setuptools but disallowed by PyPI. For these reasons,
-# it may not be possible to get `pip install neurotic` to install the
-# development version of ephyviewer via the normal requirements mechanisms. A
-# hack that opens a subprocess to run `pip install git+https...` might work but
-# is really nefarious.
-# with open('requirements.txt', 'r') as f:
-#     install_requires = f.read()
+# The only way around this complication is for these to be left out of
+# install_requires, since otherwise pip will error when it detects the
+# conflict. The user must manually install dependencies using `pip install -r
+# requirements.txt`, which warns about the incompatibility of neo and elephant
+# but doesn't halt. Someday this package will be able to explicitly list its
+# dependencies so pip installs them automatically, but not before elephant
+# releases the fixed requirements list.
+with open('requirements.txt', 'r') as f:
+    # install_requires = f.read()
+    install_requires = []
 
 extras_require = {}
 with open('requirements-notebook.txt', 'r') as f:
