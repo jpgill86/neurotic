@@ -9,7 +9,7 @@
 electrophysiology data and simultaneously captured video. It is an easy way to
 load your Neo_-compatible data into ephyviewer_ without doing any programming.
 
-You organize your data sets in a YAML file like this:
+To use the app, first organize your datasets in a YAML file like this:
 
 .. code-block:: yaml
 
@@ -43,36 +43,41 @@ You organize your data sets in a YAML file like this:
               amplitude: [50, 100]
             # etc
 
-Open your file in the app and choose a data set. If the data and video files
-aren't already on your local computer, the app can download them for you.
-Finally, click launch and the app will use a standard viewer layout to display
-your data to you using ephyviewer_.
+    another dataset:
+        # etc
+
+Open your YAML metadata file in **neurotic** and choose a dataset. If the data
+and video files aren't already on your local computer, the app can download
+them for you. Finally, click launch and the app will use a standard viewer
+layout to display your data to you using ephyviewer_.
 
 |Example screenshot|
 
-*(Pictured above is a voracious Aplysia californica making the researcher very
-happy.)*
+*(Pictured above is a voracious Aplysia californica in the act of making the
+researcher very happy.)*
 
-The viewers are easy and intuitive to navigate:
+The viewers are easy and intuitive to navigate (see `User Interface`_):
 
-- Pressing the play button will scroll through the data and video in real time,
-  or at a higher or lower rate if the speed parameter is changed.
-- The arrow/WASD keys allow you to step through time.
-- Right-clicking and dragging right or left will contract or expand time to show
-  more or less at once.
-- Scrolling the mouse wheel in the trace viewer or the video viewer will zoom.
-- The "epoch encoder" can be used to block out periods of time during which
+- Pressing the play button will scroll through your data and video in real
+  time, or at a higher or lower rate if the speed parameter is changed.
+- The arrow/WASD keys allow you to step through time in variable increments.
+- Jump to a time by clicking on an event in the event list or a table entry in
+  the epoch encoder.
+- To show more or less time at once, right-click and drag right or left to
+  contract or expand time.
+- Scroll the mouse wheel to zoom in the trace viewer or video viewer.
+- The epoch encoder can be used to block out periods of time during which
   something interesting is happening for later review or further analysis
   (saved to a CSV file).
-- All panels can be hidden, undocked, or repositioned on the fly.
+- All panels can be hidden, undocked, stacked, or repositioned on the fly.
 
-Electrophysiologists should still find this tool useful even if they don't need
-video synchronization.
+Electrophysiologists will find this tool useful even if they don't need the
+video synchronization feature!
 
 Installing dependencies
 -----------------------
 
-Because **neurotic** depends on some pre-release changes in a couple libraries,
+Because **neurotic** depends on some pre-release changes in other libraries,
 ``pip`` cannot automatically fetch all dependencies during normal installation.
 Therefore, **dependencies must be installed manually**.
 
@@ -143,7 +148,7 @@ Questions and support
 ---------------------
 
 Please post any questions, problems, comments, or suggestions in the `GitHub
-issue tracker <https://github.com/jpgill86/neurotic/issues>`_.
+issue tracker`_.
 
 Changes
 -------
@@ -294,17 +299,21 @@ Bug fixes
     :alt: GitHub source code
 
 .. |Build badge| image:: https://travis-ci.com/jpgill86/neurotic.svg?branch=master
-    :target: https://travis-ci.com/jpgill86/neurotic
+    :target: Travis_
     :alt: Build status
 
 .. |Coverage badge| image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
-    :target: https://coveralls.io/github/jpgill86/neurotic?branch=master
+    :target: Coveralls_
     :alt: Coverage status
 
 .. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/images/example-screenshot.png
     :alt: Screenshot
 
-.. _PyPI:       https://pypi.org/project/neurotic
-.. _GitHub:     https://github.com/jpgill86/neurotic
-.. _ephyviewer: https://github.com/NeuralEnsemble/ephyviewer
-.. _Neo:        https://github.com/NeuralEnsemble/python-neo
+.. _Coveralls:            https://coveralls.io/github/jpgill86/neurotic?branch=master
+.. _ephyviewer:           https://github.com/NeuralEnsemble/ephyviewer
+.. _GitHub:               https://github.com/jpgill86/neurotic
+.. _GitHub issue tracker: https://github.com/jpgill86/neurotic/issues
+.. _Neo:                  https://github.com/NeuralEnsemble/python-neo
+.. _PyPI:                 https://pypi.org/project/neurotic
+.. _Travis:               https://travis-ci.com/jpgill86/neurotic
+.. _User Interface:       https://ephyviewer.readthedocs.io/en/latest/interface.html
