@@ -74,61 +74,20 @@ The viewers are easy and intuitive to navigate (see `User Interface`_):
 Electrophysiologists will find this tool useful even if they don't need the
 video synchronization feature!
 
-Installing dependencies
------------------------
+Installation
+------------
 
-Because **neurotic** depends on some pre-release changes in other libraries,
-``pip`` cannot automatically fetch all dependencies during normal installation.
-Therefore, **dependencies must be installed manually**.
+**neurotic** requires PyAV_, which is most easily installed from conda-forge_.
+It also does not explicitly list its dependencies within the package metadata
+(see Notes_), so they must be installed manually.
 
-With conda
-~~~~~~~~~~
-
-A recipe for installing **neurotic** via ``conda`` directly is not yet
-available. However, the file ``environment.yml`` is provided for installing its
-dependencies into a conda environment. To install into a new conda environment
-named ``neurotic``, use these commands::
-
-    git clone https://github.com/jpgill86/neurotic.git
-    conda env create -f neurotic/environment.yml -n neurotic
-
-To update an existing environment, replace ``conda env create`` with ``conda
-env update``.
-
-Remember to switch environments if necessary before proceeding with
-installation (``conda activate neurotic`` or ``source activate neurotic``).
-
-Without conda
-~~~~~~~~~~~~~
-
-The file ``requirements.txt`` is provided for installing dependencies with
-``pip``. Dependencies can be installed using these commands::
-
-    git clone https://github.com/jpgill86/neurotic.git
-    pip install -U -r neurotic/requirements.txt
-
-If you get an error while installing PyAV, especially on Windows, you may need
-to build it from scratch or get it from another source, such as conda-forge::
+Install **neurotic**, PyAV, and all other dependencies with these commands
+(``pip`` may raise a non-fatal error that can be ignored during installation of
+dependencies, see Notes_)::
 
     conda install -c conda-forge av
-
-Installing neurotic
--------------------
-
-To reiterate, you must install dependencies manually. They will not be
-installed with **neurotic**.
-
-To install the latest release version from PyPI_, use ::
-
+    pip install elephant>=0.6.2 ephyviewer>=1.1.0 neo>=0.7.2 numpy packaging pandas pylttb pyqt5 pyyaml quantities tqdm
     pip install neurotic
-
-To install the latest development version from GitHub_, use ::
-
-    pip install git+https://github.com/jpgill86/neurotic.git
-
-To install from a local copy of the source code, use ::
-
-    python setup.py install
 
 Getting started
 ---------------
@@ -149,6 +108,17 @@ Questions and support
 
 Please post any questions, problems, comments, or suggestions in the `GitHub
 issue tracker`_.
+
+Notes
+-----
+
+Before **neurotic** can be configured to automatically install dependencies, an
+`upstream library conflicts
+<https://github.com/NeuralEnsemble/elephant/issues/236>`__ must be fixed. This
+should be resolved soon; until then, dependencies can be installed manually.
+This warning may appear but can be ignored because the incompatibility between
+these versions is trivial: ``ERROR: elephant 0.6.2 has requirement
+neo<0.8.0,<=0.7.1, but you'll have neo 0.7.2 which is incompatible``.
 
 Changes
 -------
@@ -309,11 +279,14 @@ Bug fixes
 .. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/images/example-screenshot.png
     :alt: Screenshot
 
+.. _conda-forge:          https://anaconda.org/conda-forge/av
 .. _Coveralls:            https://coveralls.io/github/jpgill86/neurotic?branch=master
+.. _elephant:             https://github.com/NeuralEnsemble/elephant
 .. _ephyviewer:           https://github.com/NeuralEnsemble/ephyviewer
 .. _GitHub:               https://github.com/jpgill86/neurotic
 .. _GitHub issue tracker: https://github.com/jpgill86/neurotic/issues
 .. _Neo:                  https://github.com/NeuralEnsemble/python-neo
+.. _PyAV:                 https://docs.mikeboers.com/pyav/develop/installation.html
 .. _PyPI:                 https://pypi.org/project/neurotic
 .. _Travis:               https://travis-ci.com/jpgill86/neurotic
 .. _User Interface:       https://ephyviewer.readthedocs.io/en/latest/interface.html
