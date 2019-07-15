@@ -1,6 +1,6 @@
 av
 elephant>=0.6.2
-git+https://github.com/NeuralEnsemble/ephyviewer.git
+ephyviewer>=1.1.0
 neo>=0.7.2
 numpy
 packaging
