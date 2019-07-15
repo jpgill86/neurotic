@@ -4,6 +4,7 @@ channels:
 dependencies:
   - av
   - pip
+  - pyqt  # conda-forge's pyqt works better on Travis than pip's PyQt5
   - python=3
   - pip:
     - elephant>=0.6.2
@@ -13,7 +14,6 @@ dependencies:
     - packaging
     - pandas
     - pylttb
-    - pyqt5
     - pyyaml
     - quantities
     - tqdm
