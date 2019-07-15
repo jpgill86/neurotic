@@ -3,16 +3,17 @@ channels:
   - defaults
 dependencies:
   - av
-  - numpy
-  - packaging
-  - pandas
   - pip
-  - pyqt
-  - pyyaml
-  - quantities
-  - tqdm
+  - pyqt  # conda-forge's pyqt works better on Travis than pip's PyQt5
+  - python=3
   - pip:
-    - neo>=0.7.2
     - elephant>=0.6.2
     - ephyviewer>=1.1.0
+    - neo>=0.7.2
+    - numpy
+    - packaging
+    - pandas
     - pylttb
+    - pyyaml
+    - quantities
+    - tqdm
