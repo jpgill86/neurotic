@@ -65,7 +65,7 @@ The viewers are easy and intuitive to navigate (see `User Interface`_):
   the epoch encoder.
 - To show more or less time at once, right-click and drag right or left to
   contract or expand time.
-- Scroll the mouse wheel to zoom in the trace viewer or video viewer.
+- Scroll the mouse wheel in the trace viewer or video viewer to zoom.
 - The epoch encoder can be used to block out periods of time during which
   something interesting is happening for later review or further analysis
   (saved to a CSV file).
@@ -83,7 +83,7 @@ It also does not explicitly list its dependencies within the package metadata
 
 Install **neurotic**, PyAV, and all other dependencies with these commands
 (``pip`` may raise a non-fatal error that can be ignored during installation of
-dependencies, see Notes_)::
+dependencies; see Notes_)::
 
     conda install -c conda-forge av
     pip install elephant>=0.6.2 ephyviewer>=1.1.0 neo>=0.7.2 numpy packaging pandas pylttb pyqt5 pyyaml quantities tqdm
@@ -97,11 +97,36 @@ Launch the standalone app from the command line::
     neurotic
 
 A simple example is provided. Select the "example dataset", download the
-associated data, and then click launch.
+associated data, and then click "Launch". See `User Interface`_ for help with
+navigation.
 
-Command line arguments can be listed using ::
+Disabling "Fast loading" before launch will enable additional features
+including amplitude-threshold spike detection and signal filtering.
 
-    neurotic --help
+The command line interface accepts arguments as well::
+
+    usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces]
+                    [--theme {light,dark,original}]
+                    [file] [dataset]
+
+    neurotic lets you curate, visualize, and annotate your behavioral ephys data.
+
+    positional arguments:
+      file                  the path to a metadata YAML file (default: an example
+                            file)
+      dataset               the name of a dataset in the metadata file to select
+                            initially (default: the first entry in the metadata
+                            file)
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -V, --version         show program's version number and exit
+      --no-lazy             do not use fast loading (default: use fast loading)
+      --thick-traces        enable support for traces with thick lines, which has
+                            a performance cost (default: disable thick line
+                            support)
+      --theme {light,dark,original}
+                            a color theme for the GUI (default: light)
 
 Questions and support
 ---------------------
@@ -113,7 +138,7 @@ Notes
 -----
 
 Before **neurotic** can be configured to automatically install dependencies, an
-`upstream library conflicts
+`upstream library conflict
 <https://github.com/NeuralEnsemble/elephant/issues/236>`__ must be fixed. This
 should be resolved soon; until then, dependencies can be installed manually.
 This warning may appear but can be ignored because the incompatibility between
@@ -281,7 +306,6 @@ Bug fixes
 
 .. _conda-forge:          https://anaconda.org/conda-forge/av
 .. _Coveralls:            https://coveralls.io/github/jpgill86/neurotic?branch=master
-.. _elephant:             https://github.com/NeuralEnsemble/elephant
 .. _ephyviewer:           https://github.com/NeuralEnsemble/ephyviewer
 .. _GitHub:               https://github.com/jpgill86/neurotic
 .. _GitHub issue tracker: https://github.com/jpgill86/neurotic/issues
