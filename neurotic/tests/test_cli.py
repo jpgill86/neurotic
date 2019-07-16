@@ -70,12 +70,12 @@ class CLITestCase(unittest.TestCase):
         self.assertTrue(win.lazy, 'lazy loading disabled without --no-lazy')
         self.assertFalse(win.support_increased_line_width,
                          'thick traces enabled without --thick-traces')
-        self.assertEquals(win.theme, 'light', 'theme changed without --theme')
-        self.assertEquals(win.metadata_selector.file, self.default_file,
-                          'file was not set to default')
-        self.assertEquals(win.metadata_selector._selection,
-                          self.default_dataset,
-                          'dataset was not set to default dataset')
+        self.assertEqual(win.theme, 'light', 'theme changed without --theme')
+        self.assertEqual(win.metadata_selector.file, self.default_file,
+                         'file was not set to default')
+        self.assertEqual(win.metadata_selector._selection,
+                         self.default_dataset,
+                         'dataset was not set to default dataset')
 
     def test_no_lazy(self):
         """Test that --no-lazy disables lazy loading"""
@@ -101,34 +101,34 @@ class CLITestCase(unittest.TestCase):
         argv = ['neurotic', '--theme', 'light']
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
-        self.assertEquals(win.theme, 'light', 'unexpected theme')
+        self.assertEqual(win.theme, 'light', 'unexpected theme')
 
         argv = ['neurotic', '--theme', 'dark']
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
-        self.assertEquals(win.theme, 'dark', 'unexpected theme')
+        self.assertEqual(win.theme, 'dark', 'unexpected theme')
 
         argv = ['neurotic', '--theme', 'original']
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
-        self.assertEquals(win.theme, 'original', 'unexpected theme')
+        self.assertEqual(win.theme, 'original', 'unexpected theme')
 
     def test_file(self):
         """Test that metadata file can be set"""
         argv = ['neurotic', self.temp_file]
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
-        self.assertEquals(win.metadata_selector.file, self.temp_file,
-                          'file was not changed correctly')
+        self.assertEqual(win.metadata_selector.file, self.temp_file,
+                         'file was not changed correctly')
 
     def test_dataset(self):
         """Test that dataset can be set"""
         argv = ['neurotic', self.temp_file, 'zzz_alphabetically_last']
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
-        self.assertEquals(win.metadata_selector._selection,
-                          'zzz_alphabetically_last',
-                          'dataset was not changed correctly')
+        self.assertEqual(win.metadata_selector._selection,
+                         'zzz_alphabetically_last',
+                         'dataset was not changed correctly')
 
 if __name__ == '__main__':
     unittest.main()
