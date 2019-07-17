@@ -86,7 +86,7 @@ Install **neurotic**, PyAV, and all other dependencies with these commands
 dependencies; see Notes_)::
 
     conda install -c conda-forge av
-    pip install elephant>=0.6.2 ephyviewer>=1.1.0 neo>=0.7.2 numpy packaging pandas pylttb pyqt5 pyyaml quantities tqdm
+    pip install "elephant>=0.6.2" "ephyviewer>=1.1.0" "neo>=0.7.2" numpy packaging pandas pylttb pyqt5 pyyaml quantities tqdm
     pip install neurotic
 
 Getting started
@@ -97,8 +97,8 @@ Launch the standalone app from the command line::
     neurotic
 
 A simple example is provided. Select the "example dataset", download the
-associated data, and then click "Launch". See `User Interface`_ for help with
-navigation.
+associated data (~7 MB), and then click "Launch". See `User Interface`_ for
+help with navigation.
 
 Disabling "Fast loading" before launch will enable additional features
 including amplitude-threshold spike detection and signal filtering.
@@ -141,9 +141,10 @@ Before **neurotic** can be configured to automatically install dependencies, an
 `upstream library conflict
 <https://github.com/NeuralEnsemble/elephant/issues/236>`__ must be fixed. This
 should be resolved soon; until then, dependencies can be installed manually.
-This warning may appear but can be ignored because the incompatibility between
-these versions is trivial: ``ERROR: elephant 0.6.2 has requirement
-neo<0.8.0,<=0.7.1, but you'll have neo 0.7.2 which is incompatible``.
+The following warning may appear during dependency installation but can be
+ignored because the incompatibility between these versions is trivial: ``ERROR:
+elephant 0.6.2 has requirement neo<0.8.0,<=0.7.1, but you'll have neo 0.7.2
+which is incompatible``.
 
 Changes
 -------
