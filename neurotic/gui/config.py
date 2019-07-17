@@ -15,21 +15,6 @@ from ..gui.epochencoder import MyWritableEpochSource
 
 pq.mN = pq.UnitQuantity('millinewton', pq.N/1e3, symbol = 'mN');  # define millinewton
 
-def _fix_FrameGrabber_set_file(set_file_func):
-    """
-    For some video files, ephyviewer sets the incorrect start_time for its
-    FrameGrabber when the set_file method is called. This monkey patch works
-    around the problem by resetting start_time to 0 after set_file is called.
-    """
-    @wraps(set_file_func)
-    def wrapper(*args, **kwargs):
-        result = set_file_func(*args, **kwargs)
-        frame_grabber = args[0]
-        frame_grabber.start_time = 0
-        return result
-    return wrapper
-ephyviewer.FrameGrabber.set_file = _fix_FrameGrabber_set_file(ephyviewer.FrameGrabber.set_file)
-
 def defaultKeepSignal(sig):
     """
 
@@ -539,11 +524,16 @@ class EphyviewerConfigurator():
         if self.is_shown('video') and self.metadata['video_file'] is not None:
 
             video_source = ephyviewer.MultiVideoFileSource(video_filenames = [abs_path(self.metadata, 'video_file')])
+
+            # some video files are loaded with an incorrect start time, so
+            # reset video start to zero
+            video_source.t_stops[0] -= video_source.t_starts[0]
+            video_source.t_starts[0] = 0
+
+            # apply the video_offset
             if self.metadata['video_offset'] is not None:
                 video_source.t_starts[0] += self.metadata['video_offset']
                 video_source.t_stops[0]  += self.metadata['video_offset']
-                video_source._t_start = max(min(video_source.t_starts), 0)
-                video_source._t_stop  = max(video_source.t_stops)
 
             # correct for videos that report frame rates that are too fast or
             # too slow compared to the clock on the data acquisition system
@@ -567,8 +557,10 @@ class EphyviewerConfigurator():
                 video_source.video_times = [video_times]
                 video_source.t_starts[0] = min(video_times)
                 video_source.t_stops[0]  = max(video_times)
-                video_source._t_start = max(min(video_source.t_starts), 0)
-                video_source._t_stop  = max(video_source.t_stops)
+
+            # update the source-level times from the modified file-level times
+            video_source._t_start = max(min(video_source.t_starts), 0)
+            video_source._t_stop  = max(video_source.t_stops)
 
             video_view = ephyviewer.VideoViewer(source = video_source, name = 'video')
             if theme != 'original':
