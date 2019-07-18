@@ -11,7 +11,8 @@ Documentation_ | `Release Notes`_ | `Issue Tracker`_
 electrophysiology data and simultaneously captured video. It is an easy way to
 load your Neo_-compatible data into ephyviewer_ without doing any programming.
 
-To use the app, first organize your datasets in a YAML file like this:
+To use the app, first organize your datasets in a YAML file like this (see
+`Configuring Metadata`_):
 
 .. code-block:: yaml
 
@@ -181,6 +182,7 @@ Notes
     :alt: Screenshot
 
 .. _conda-forge:    https://anaconda.org/conda-forge/av
+.. _Configuring Metadata: https://neurotic.readthedocs.io/en/latest/metadata.html
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _Documentation:  https://neurotic.readthedocs.io/en/latest
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer

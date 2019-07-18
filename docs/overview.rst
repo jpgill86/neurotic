@@ -3,7 +3,8 @@
 Overview
 ========
 
-To use **neurotic**, first organize your datasets in a YAML file like this:
+To use **neurotic**, first organize your datasets in a YAML file like this (see
+:ref:`config-metadata`):
 
 .. code-block:: yaml
 
