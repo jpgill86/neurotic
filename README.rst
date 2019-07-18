@@ -5,6 +5,8 @@
 
 |PyPI badge| |GitHub badge| |Docs badge| |Build badge| |Coverage badge|
 
+Documentation_ | `Release Notes`_ | `Issue Tracker`_
+
 **neurotic** is an app that allows you to easily review and annotate your
 electrophysiology data and simultaneously captured video. It is an easy way to
 load your Neo_-compatible data into ephyviewer_ without doing any programming.
@@ -128,12 +130,6 @@ The command line interface accepts arguments as well::
       --theme {light,dark,original}
                             a color theme for the GUI (default: light)
 
-Questions and support
----------------------
-
-Please post any questions, problems, comments, or suggestions in the `GitHub
-issue tracker`_.
-
 Notes
 -----
 
@@ -159,7 +155,7 @@ which is incompatible``.
     :alt: GitHub source code
 
 .. |Docs badge| image:: https://readthedocs.org/projects/neurotic/badge/?version=latest
-    :target: Docs_
+    :target: ReadTheDocs_
     :alt: Documentation Status
 
 .. |Build badge| image:: https://travis-ci.com/jpgill86/neurotic.svg?branch=master
@@ -173,14 +169,16 @@ which is incompatible``.
 .. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/images/example-screenshot.png
     :alt: Screenshot
 
-.. _conda-forge:          https://anaconda.org/conda-forge/av
-.. _Coveralls:            https://coveralls.io/github/jpgill86/neurotic?branch=master
-.. _Docs:                 https://neurotic.readthedocs.io/en/latest/?badge=latest
-.. _ephyviewer:           https://github.com/NeuralEnsemble/ephyviewer
-.. _GitHub:               https://github.com/jpgill86/neurotic
-.. _GitHub issue tracker: https://github.com/jpgill86/neurotic/issues
-.. _Neo:                  https://github.com/NeuralEnsemble/python-neo
-.. _PyAV:                 https://docs.mikeboers.com/pyav/develop/installation.html
-.. _PyPI:                 https://pypi.org/project/neurotic
-.. _Travis:               https://travis-ci.com/jpgill86/neurotic
-.. _User Interface:       https://ephyviewer.readthedocs.io/en/latest/interface.html
+.. _conda-forge:    https://anaconda.org/conda-forge/av
+.. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
+.. _Documentation:  https://neurotic.readthedocs.io/en/latest
+.. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _GitHub:         https://github.com/jpgill86/neurotic
+.. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
+.. _Neo:            https://github.com/NeuralEnsemble/python-neo
+.. _PyAV:           https://docs.mikeboers.com/pyav/develop/installation.html
+.. _PyPI:           https://pypi.org/project/neurotic
+.. _ReadTheDocs:    https://readthedocs.org/projects/neurotic
+.. _Release Notes:  https://neurotic.readthedocs.io/en/latest/releasenotes.html
+.. _Travis:         https://travis-ci.com/jpgill86/neurotic
+.. _User Interface: https://ephyviewer.readthedocs.io/en/latest/interface.html
