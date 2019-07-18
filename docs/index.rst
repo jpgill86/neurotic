@@ -1,10 +1,5 @@
-.. neurotic documentation master file, created by
-   sphinx-quickstart on Thu Jul 18 15:19:59 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to neurotic's documentation!
-====================================
+neurotic |version|
+==================
 
 .. toctree::
    :maxdepth: 2

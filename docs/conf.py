@@ -24,7 +24,7 @@ copyright = '2019, Jeffrey Gill'
 author = 'Jeffrey Gill'
 
 # The short X.Y version
-version = ''
+version = '0.7.0.dev0'
 # The full version, including alpha/beta/rc tags
 release = '0.7.0.dev0'
 
@@ -138,7 +138,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'neurotic.tex', 'neurotic Documentation',
-     'Jeffrey Gill', 'manual'),
+     author, 'manual'),
 ]
 
 
