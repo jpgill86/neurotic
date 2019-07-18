@@ -13,6 +13,7 @@ load your Neo_-compatible data into ephyviewer_ without doing any programming.
    :maxdepth: 2
    :caption: Table of Contents
 
+   overview
    install
    gettingstarted
    releasenotes
