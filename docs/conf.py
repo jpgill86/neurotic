@@ -103,6 +103,9 @@ html_static_path = ['_static']
 #
 # html_sidebars = {}
 
+html_logo = '_static/neurotic-logo.svg'
+html_favicon = '_static/neurotic-logo.svg'
+
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
