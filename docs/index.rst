@@ -14,6 +14,7 @@ load your Neo_-compatible data into ephyviewer_ without doing any programming.
    :caption: Table of Contents
 
    install
+   gettingstarted
    releasenotes
 
 

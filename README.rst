@@ -98,7 +98,7 @@ or install the latest development version from GitHub_ using ::
 
     pip install -U git+https://github.com/jpgill86/neurotic.git
 
-Getting started
+Getting Started
 ---------------
 
 Launch the standalone app from the command line::
@@ -112,7 +112,9 @@ help with navigation.
 Disabling "Fast loading" before launch will enable additional features
 including amplitude-threshold spike detection and signal filtering.
 
-The command line interface accepts arguments as well::
+The command line interface accepts arguments as well:
+
+.. code-block:: none
 
     usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces]
                     [--theme {light,dark,original}]
