@@ -3,7 +3,7 @@
 
 *Curate, visualize, and annotate your behavioral ephys data using Python*
 
-|PyPI badge| |GitHub badge| |Build badge| |Coverage badge|
+|PyPI badge| |GitHub badge| |Docs badge| |Build badge| |Coverage badge|
 
 **neurotic** is an app that allows you to easily review and annotate your
 electrophysiology data and simultaneously captured video. It is an easy way to
@@ -294,6 +294,10 @@ Bug fixes
     :target: GitHub_
     :alt: GitHub source code
 
+.. |Docs badge| image:: https://readthedocs.org/projects/neurotic/badge/?version=latest
+    :target: Docs_
+    :alt: Documentation Status
+
 .. |Build badge| image:: https://travis-ci.com/jpgill86/neurotic.svg?branch=master
     :target: Travis_
     :alt: Build status
@@ -307,6 +311,7 @@ Bug fixes
 
 .. _conda-forge:          https://anaconda.org/conda-forge/av
 .. _Coveralls:            https://coveralls.io/github/jpgill86/neurotic?branch=master
+.. _Docs:                 https://neurotic.readthedocs.io/en/latest/?badge=latest
 .. _ephyviewer:           https://github.com/NeuralEnsemble/ephyviewer
 .. _GitHub:               https://github.com/jpgill86/neurotic
 .. _GitHub issue tracker: https://github.com/jpgill86/neurotic/issues

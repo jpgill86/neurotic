@@ -93,6 +93,8 @@ with open('requirements.txt', 'r') as f:
     install_requires = []
 
 extras_require = {}
+with open('requirements-docs.txt', 'r') as f:
+    extras_require['docs'] = f.read()
 with open('requirements-notebook.txt', 'r') as f:
     extras_require['notebook'] = f.read()
 with open('requirements-tests.txt', 'r') as f:
@@ -116,7 +118,7 @@ setup(
     license = 'MIT',
     url = 'https://github.com/jpgill86/neurotic',
     project_urls={
-        # 'Documentation': 'https://github.com/jpgill86/neurotic',
+        'Documentation': 'https://neurotic.readthedocs.io',
         'Source code': 'https://github.com/jpgill86/neurotic',
         'Bug tracker': 'https://github.com/jpgill86/neurotic/issues',
     },
