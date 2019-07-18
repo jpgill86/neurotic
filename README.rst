@@ -166,7 +166,8 @@ which is incompatible``.
     :target: Coveralls_
     :alt: Coverage status
 
-.. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/images/example-screenshot.png
+.. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
+    :target: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
     :alt: Screenshot
 
 .. _conda-forge:    https://anaconda.org/conda-forge/av
