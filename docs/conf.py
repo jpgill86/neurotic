@@ -23,10 +23,11 @@ project = 'neurotic'
 copyright = '2019, Jeffrey Gill'
 author = 'Jeffrey Gill'
 
+import neurotic
 # The short X.Y version
-version = '0.7.0.dev0'
+version = neurotic.__version__
 # The full version, including alpha/beta/rc tags
-release = '0.7.0.dev0'
+release = version
 
 
 # -- General configuration ---------------------------------------------------
