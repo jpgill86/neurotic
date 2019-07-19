@@ -318,10 +318,12 @@ class DataExplorer(QT.QMainWindow):
         title = 'About neurotic'
 
         urls = {}
+        urls['Docs'] = 'https://neurotic.readthedocs.io/en/latest'
         urls['GitHub'] = 'https://github.com/jpgill86/neurotic'
         urls['GitHub issues'] = 'https://github.com/jpgill86/neurotic/issues'
         urls['GitHub user'] = 'https://github.com/jpgill86'
         urls['PyPI'] = 'https://pypi.org/project/neurotic'
+        urls['Release notes'] = 'https://neurotic.readthedocs.io/en/latest/releasenotes.html'
 
         text = f"""
         <h2>neurotic {__version__}</h2>
@@ -332,7 +334,9 @@ class DataExplorer(QT.QMainWindow):
         <p>Author: Jeffrey Gill (<a href='{urls['GitHub user']}'>@jpgill86</a>)</p>
 
         <p>Websites: <a href='{urls['GitHub']}'>GitHub</a>
-                   | <a href='{urls['PyPI']}'>PyPI</a></p>
+                   | <a href='{urls['PyPI']}'>PyPI</a>
+                   | <a href='{urls['Docs']}'>Documentation</a>
+                   | <a href='{urls['Release notes']}'>Release Notes</a></p>
 
         <p>Please post any questions, problems, comments, <br/>
         or suggestions in the <a href='{urls['GitHub issues']}'>GitHub issue
