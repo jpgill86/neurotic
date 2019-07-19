@@ -183,33 +183,33 @@ def LoadMetadata(file = 'metadata.yml', local_data_root = None, remote_data_root
     assign defaults to missing parameters, and resolve absolute paths for local
     data stores and full URLs for remote data stores.
 
-    `local_data_root` must be an absolute or relative path on the local system,
-    or None. If it is a relative path, it is relative to the current working
-    directory. If it is None, its value defaults to the directory containing
-    `file`.
+    ``local_data_root`` must be an absolute or relative path on the local
+    system, or None. If it is a relative path, it is relative to the current
+    working directory. If it is None, its value defaults to the directory
+    containing ``file``.
 
-    `remote_data_root` must be a full URL or None. If it is None, `file` will
-    be checked for a fallback value. "remote_data_root" may be provided in the
-    YAML file as a special entry with no child properties. Any non-None value
-    passed to this function will override the value provided in the file. If
-    both are unspecified, it is assumed that no remote data store exists.
+    ``remote_data_root`` must be a full URL or None. If it is None, ``file``
+    will be checked for a fallback value. "remote_data_root" may be provided in
+    the YAML file as a special entry with no child properties. Any non-None
+    value passed to this function will override the value provided in the file.
+    If both are unspecified, it is assumed that no remote data store exists.
 
-    The "data_dir" property must be provided for every data set in `file` and
+    The "data_dir" property must be provided for every data set in ``file`` and
     specifies the directory on the local system containing the data files.
     "data_dir" may be an absolute path or a relative path with respect to
-    `local_data_root`. If it is a relative path, it will be converted to an
+    ``local_data_root``. If it is a relative path, it will be converted to an
     absolute path.
 
-    The "remote_data_dir" property is optional for every data set in `file` and
-    specifies the directory on a remote server containing the data files.
+    The "remote_data_dir" property is optional for every data set in ``file``
+    and specifies the directory on a remote server containing the data files.
     "remote_data_dir" may be a full URL or a relative path with respect to
-    `remote_data_root`. If it is a relative path, it will be converted to a
+    ``remote_data_root``. If it is a relative path, it will be converted to a
     full URL.
 
     File paths (e.g., "data_file", "video_file") are assumed to be relative to
     both "data_dir" and "remote_data_dir" (i.e., the local and remote data
-    stores mirror one another) and can be resolved with `abs_path` or
-    `abs_url`.
+    stores mirror one another) and can be resolved with ``abs_path`` or
+    ``abs_url``.
     """
 
     assert file is not None, 'metadata file must be specified'
@@ -329,22 +329,22 @@ class MetadataSelector():
     A class for managing metadata.
 
     A metadata file can be specified at initialization, in which case it is
-    read immediately. The file contents are stored in `all_metadata`.
+    read immediately. The file contents are stored in ``all_metadata``.
 
     >>> metadata = MetadataSelector(file='metadata.yml')
     >>> print(metadata.all_metadata)
 
     File contents can be reloaded after they have been changed, or after
-    changing `file`, using the `load` method.
+    changing ``file``, using the ``load`` method.
 
     >>> metadata = MetadataSelector()
     >>> metadata.file = 'metadata.yml'
     >>> metadata.load()
 
     A particular metadata set contained within the file can be selected at
-    initialization with `initial_selection` or later using the `select` method.
-    After making a selection, the selected metadata set is accessible at
-    `metadata.selected_metadata`, e.g.
+    initialization with ``initial_selection`` or later using the ``select``
+    method. After making a selection, the selected metadata set is accessible
+    at ``metadata.selected_metadata``, e.g.
 
     >>> metadata = MetadataSelector(file='metadata.yml')
     >>> metadata.select('Data Set 5')
@@ -370,7 +370,7 @@ class MetadataSelector():
 
     The absolute path to a local file or the full URL to a remote file
     associated with the selected metadata set can be resolved with the
-    `abs_path` and `abs_url` methods, e.g.
+    ``abs_path`` and ``abs_url`` methods, e.g.
 
     >>> print(metadata.abs_path('data_file'))
     >>> print(metadata.abs_url('data_file'))

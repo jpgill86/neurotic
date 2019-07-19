@@ -83,8 +83,8 @@ with open('README.rst', 'r') as f:
 # not released yet (see https://github.com/NeuralEnsemble/elephant/issues/236).
 # The only way around this complication is for these to be left out of
 # install_requires, since otherwise pip will error when it detects the
-# conflict. The user must manually install dependencies using `pip install -r
-# requirements.txt`, which warns about the incompatibility of neo and elephant
+# conflict. The user must manually install dependencies using ``pip install -r
+# requirements.txt``, which warns about the incompatibility of neo and elephant
 # but doesn't halt. Someday this package will be able to explicitly list its
 # dependencies so pip installs them automatically, but not before elephant
 # releases the fixed requirements list.
