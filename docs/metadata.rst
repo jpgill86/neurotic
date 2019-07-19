@@ -3,4 +3,4 @@
 Configuring Metadata
 ====================
 
-*Coming soon...*
+.. todo:: *Coming soon...*
