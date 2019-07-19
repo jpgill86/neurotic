@@ -3,4 +3,8 @@
 Configuring Metadata
 ====================
 
-.. todo:: *Coming soon...*
+*Better docs coming soon... for now check these out.*
+
+.. autofunction:: neurotic.datasets.metadata._defaults_for_key
+
+.. autofunction:: neurotic.LoadMetadata
