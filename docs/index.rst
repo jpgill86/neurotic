@@ -11,6 +11,7 @@ load your Neo_-compatible data into ephyviewer_ without doing any programming.
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
    :caption: Table of Contents
 
    overview
