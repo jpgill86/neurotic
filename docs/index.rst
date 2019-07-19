@@ -1,5 +1,5 @@
-neurotic |version|
-==================
+neurotic
+========
 
 *Curate, visualize, and annotate your behavioral ephys data using Python*
 
