@@ -23,7 +23,7 @@ class MetadataSelectorWidget(MetadataSelector):
     >>> display(metadata)
 
     After clicking on an item in the list, the selected metadata set is
-    accessible at `metadata.selected_metadata`, e.g.
+    accessible at ``metadata.selected_metadata``, e.g.
 
     >>> metadata.selected_metadata['data_file']
 

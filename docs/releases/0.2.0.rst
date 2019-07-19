@@ -1,0 +1,31 @@
+.. _v0.2.0:
+
+neurotic 0.2.0
+==============
+
+2019-06-28
+
+Improvements
+------------
+
+* Add basic command line arguments
+  (`#14 <https://github.com/jpgill86/neurotic/pull/14>`__)
+
+* Add continuous integration with Travis CI for automated testing
+  (`#13 <https://github.com/jpgill86/neurotic/pull/13>`__)
+
+* Add some tests
+  (`#15 <https://github.com/jpgill86/neurotic/pull/15>`__,
+  `#16 <https://github.com/jpgill86/neurotic/pull/16>`__)
+
+* Migrate example data to GIN
+  (`#18 <https://github.com/jpgill86/neurotic/pull/18>`__)
+
+Bug fixes
+---------
+
+* Fix crash when downloading from a server that does not report file size
+  (`#17 <https://github.com/jpgill86/neurotic/pull/17>`__)
+
+* Raise an exception if a Neo RawIO cannot be found for the data file
+  (`#12 <https://github.com/jpgill86/neurotic/pull/12>`__)

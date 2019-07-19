@@ -1,0 +1,12 @@
+.. _v0.1.1:
+
+neurotic 0.1.1
+==============
+
+2019-06-22
+
+Bug fixes
+---------
+
+* Fix various downloader errors
+  (`#7 <https://github.com/jpgill86/neurotic/pull/7>`__)

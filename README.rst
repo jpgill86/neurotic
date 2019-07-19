@@ -3,13 +3,16 @@
 
 *Curate, visualize, and annotate your behavioral ephys data using Python*
 
-|PyPI badge| |GitHub badge| |Build badge| |Coverage badge|
+|PyPI badge| |GitHub badge| |Docs badge| |Build badge| |Coverage badge|
+
+Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
 **neurotic** is an app that allows you to easily review and annotate your
 electrophysiology data and simultaneously captured video. It is an easy way to
 load your Neo_-compatible data into ephyviewer_ without doing any programming.
 
-To use the app, first organize your datasets in a YAML file like this:
+To use the app, first organize your datasets in a YAML file like this (see
+`Configuring Metadata`_):
 
 .. code-block:: yaml
 
@@ -79,17 +82,24 @@ Installation
 
 **neurotic** requires PyAV_, which is most easily installed from conda-forge_.
 It also does not explicitly list its dependencies within the package metadata
-(see Notes_), so they must be installed manually.
+[1]_, so they must be installed manually.
 
-Install **neurotic**, PyAV, and all other dependencies with these commands
-(``pip`` may raise a non-fatal error that can be ignored during installation of
-dependencies; see Notes_)::
+To install PyAV and all other dependencies, use these commands (``pip`` may
+raise a non-fatal error that can be ignored; see [2]_)::
 
     conda install -c conda-forge av
     pip install "elephant>=0.6.2" "ephyviewer>=1.1.0" "neo>=0.7.2" numpy packaging pandas pylttb pyqt5 pyyaml quantities tqdm
-    pip install neurotic
 
-Getting started
+Finally, install the latest release version of **neurotic** from PyPI_, using
+::
+
+    pip install -U neurotic
+
+or install the latest development version from GitHub_ using ::
+
+    pip install -U git+https://github.com/jpgill86/neurotic.git
+
+Getting Started
 ---------------
 
 Launch the standalone app from the command line::
@@ -103,7 +113,9 @@ help with navigation.
 Disabling "Fast loading" before launch will enable additional features
 including amplitude-threshold spike detection and signal filtering.
 
-The command line interface accepts arguments as well::
+The command line interface accepts arguments as well:
+
+.. code-block:: none
 
     usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces]
                     [--theme {light,dark,original}]
@@ -128,159 +140,18 @@ The command line interface accepts arguments as well::
       --theme {light,dark,original}
                             a color theme for the GUI (default: light)
 
-Questions and support
----------------------
-
-Please post any questions, problems, comments, or suggestions in the `GitHub
-issue tracker`_.
-
 Notes
 -----
 
-Before **neurotic** can be configured to automatically install dependencies, an
-`upstream library conflict
-<https://github.com/NeuralEnsemble/elephant/issues/236>`__ must be fixed. This
-should be resolved soon; until then, dependencies can be installed manually.
-The following warning may appear during dependency installation but can be
-ignored because the incompatibility between these versions is trivial: ``ERROR:
-elephant 0.6.2 has requirement neo<0.8.0,<=0.7.1, but you'll have neo 0.7.2
-which is incompatible``.
+.. [1] Before **neurotic** can be configured to automatically install
+       dependencies, an `upstream library conflict`_ must be fixed. This should
+       be resolved soon; until then, dependencies can be installed manually.
 
-Changes
--------
-
-0.6.0 (2019-07-10)
-~~~~~~~~~~~~~~~~~~
-
-Improvements
-............
-
-* Add a basic "About neurotic" window with version and website information
-  (`#38 <https://github.com/jpgill86/neurotic/pull/38>`__)
-
-* Update logo
-  (`#39 <https://github.com/jpgill86/neurotic/pull/39>`__)
-
-* Add keywords and project URLs to package metadata
-  (`#40 <https://github.com/jpgill86/neurotic/pull/40>`__)
-
-0.5.1 (2019-07-09)
-~~~~~~~~~~~~~~~~~~
-
-Compatibility updates
-.....................
-
-* Compatibility update for RawIOs with non-zero offset
-  (`#37 <https://github.com/jpgill86/neurotic/pull/37>`__)
-
-0.5.0 (2019-07-06)
-~~~~~~~~~~~~~~~~~~
-
-Improvements
-............
-
-* Support fast (lazy) loading in Neo < 0.8.0
-  (`#35 <https://github.com/jpgill86/neurotic/pull/35>`__)
-
-* Add "git." and conditionally ".dirty" to dev local version identifier
-  (`#34 <https://github.com/jpgill86/neurotic/pull/34>`__)
-
-0.4.2 (2019-07-06)
-~~~~~~~~~~~~~~~~~~
-
-Bug fixes
-.........
-
-* Fix for EstimateVideoJumpTimes regression introduced in 0.4.0
-  (`#33 <https://github.com/jpgill86/neurotic/pull/33>`__)
-
-0.4.1 (2019-07-02)
-~~~~~~~~~~~~~~~~~~
-
-Compatibility updates
-.....................
-
-* Change sources of development versions of dependencies
-  (`#32 <https://github.com/jpgill86/neurotic/pull/32>`__)
-
-* Compatibility update for scaling of raw signals
-  (`#31 <https://github.com/jpgill86/neurotic/pull/31>`__)
-
-0.4.0 (2019-07-01)
-~~~~~~~~~~~~~~~~~~
-
-Improvements
-............
-
-* Show epochs imported from CSV files with zero duration in epoch viewer
-  (`#27 <https://github.com/jpgill86/neurotic/pull/27>`__)
-
-* Show epochs/events imported from data file in events list/epoch viewer
-  (`#28 <https://github.com/jpgill86/neurotic/pull/28>`__)
-
-* Alphabetize epoch and event channels by name
-  (`#29 <https://github.com/jpgill86/neurotic/pull/29>`__)
-
-0.3.0 (2019-06-29)
-~~~~~~~~~~~~~~~~~~
-
-Improvements
-............
-
-* Remove dependency on ipywidgets by making notebook widgets optional
-  (`#25 <https://github.com/jpgill86/neurotic/pull/25>`__)
-
-  * Notebook widget classes renamed:
-    ``MetadataSelector`` → ``MetadataSelectorWidget``,
-    ``EphyviewerConfigurator`` → ``EphyviewerConfiguratorWidget``
-
-* Add app description and screenshot to README
-  (`#22 <https://github.com/jpgill86/neurotic/pull/22>`__)
-
-* Promote to beta status
-  (`#23 <https://github.com/jpgill86/neurotic/pull/23>`__)
-
-0.2.0 (2019-06-28)
-~~~~~~~~~~~~~~~~~~
-
-Improvements
-............
-
-* Add basic command line arguments
-  (`#14 <https://github.com/jpgill86/neurotic/pull/14>`__)
-
-* Add continuous integration with Travis CI for automated testing
-  (`#13 <https://github.com/jpgill86/neurotic/pull/13>`__)
-
-* Add some tests
-  (`#15 <https://github.com/jpgill86/neurotic/pull/15>`__,
-  `#16 <https://github.com/jpgill86/neurotic/pull/16>`__)
-
-* Migrate example data to GIN
-  (`#18 <https://github.com/jpgill86/neurotic/pull/18>`__)
-
-Bug fixes
-.........
-
-* Fix crash when downloading from a server that does not report file size
-  (`#17 <https://github.com/jpgill86/neurotic/pull/17>`__)
-
-* Raise an exception if a Neo RawIO cannot be found for the data file
-  (`#12 <https://github.com/jpgill86/neurotic/pull/12>`__)
-
-0.1.1 (2019-06-22)
-~~~~~~~~~~~~~~~~~~
-
-Bug fixes
-.........
-
-* Fix various downloader errors
-  (`#7 <https://github.com/jpgill86/neurotic/pull/7>`__)
-
-0.1.0 (2019-06-22)
-~~~~~~~~~~~~~~~~~~
-
-* First release
+.. [2] The following warning may appear during dependency installation but can
+       be ignored because the incompatibility between these versions is
+       trivial: ``ERROR: elephant 0.6.2 has requirement neo<0.8.0,<=0.7.1, but
+       you'll have neo 0.7.2 which is incompatible``. This is related to the
+       `upstream library conflict`_ previously mentioned.
 
 
 .. |neurotic logo| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/neurotic/gui/icons/img/neurotic-logo-30.png
@@ -294,6 +165,10 @@ Bug fixes
     :target: GitHub_
     :alt: GitHub source code
 
+.. |Docs badge| image:: https://readthedocs.org/projects/neurotic/badge/?version=latest
+    :target: ReadTheDocs_
+    :alt: Documentation Status
+
 .. |Build badge| image:: https://travis-ci.com/jpgill86/neurotic.svg?branch=master
     :target: Travis_
     :alt: Build status
@@ -302,16 +177,22 @@ Bug fixes
     :target: Coveralls_
     :alt: Coverage status
 
-.. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/images/example-screenshot.png
+.. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
+    :target: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
     :alt: Screenshot
 
-.. _conda-forge:          https://anaconda.org/conda-forge/av
-.. _Coveralls:            https://coveralls.io/github/jpgill86/neurotic?branch=master
-.. _ephyviewer:           https://github.com/NeuralEnsemble/ephyviewer
-.. _GitHub:               https://github.com/jpgill86/neurotic
-.. _GitHub issue tracker: https://github.com/jpgill86/neurotic/issues
-.. _Neo:                  https://github.com/NeuralEnsemble/python-neo
-.. _PyAV:                 https://docs.mikeboers.com/pyav/develop/installation.html
-.. _PyPI:                 https://pypi.org/project/neurotic
-.. _Travis:               https://travis-ci.com/jpgill86/neurotic
-.. _User Interface:       https://ephyviewer.readthedocs.io/en/latest/interface.html
+.. _conda-forge:    https://anaconda.org/conda-forge/av
+.. _Configuring Metadata: https://neurotic.readthedocs.io/en/latest/metadata.html
+.. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
+.. _Documentation:  https://neurotic.readthedocs.io/en/latest
+.. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _GitHub:         https://github.com/jpgill86/neurotic
+.. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
+.. _Neo:            https://github.com/NeuralEnsemble/python-neo
+.. _PyAV:           https://docs.mikeboers.com/pyav/develop/installation.html
+.. _PyPI:           https://pypi.org/project/neurotic
+.. _ReadTheDocs:    https://readthedocs.org/projects/neurotic
+.. _Release Notes:  https://neurotic.readthedocs.io/en/latest/releasenotes.html
+.. _Travis:         https://travis-ci.com/jpgill86/neurotic
+.. _upstream library conflict: https://github.com/NeuralEnsemble/elephant/issues/236
+.. _User Interface: https://ephyviewer.readthedocs.io/en/latest/interface.html

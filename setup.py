@@ -83,8 +83,8 @@ with open('README.rst', 'r') as f:
 # not released yet (see https://github.com/NeuralEnsemble/elephant/issues/236).
 # The only way around this complication is for these to be left out of
 # install_requires, since otherwise pip will error when it detects the
-# conflict. The user must manually install dependencies using `pip install -r
-# requirements.txt`, which warns about the incompatibility of neo and elephant
+# conflict. The user must manually install dependencies using ``pip install -r
+# requirements.txt``, which warns about the incompatibility of neo and elephant
 # but doesn't halt. Someday this package will be able to explicitly list its
 # dependencies so pip installs them automatically, but not before elephant
 # releases the fixed requirements list.
@@ -93,6 +93,8 @@ with open('requirements.txt', 'r') as f:
     install_requires = []
 
 extras_require = {}
+with open('requirements-docs.txt', 'r') as f:
+    extras_require['docs'] = f.read()
 with open('requirements-notebook.txt', 'r') as f:
     extras_require['notebook'] = f.read()
 with open('requirements-tests.txt', 'r') as f:
@@ -116,7 +118,7 @@ setup(
     license = 'MIT',
     url = 'https://github.com/jpgill86/neurotic',
     project_urls={
-        # 'Documentation': 'https://github.com/jpgill86/neurotic',
+        'Documentation': 'https://neurotic.readthedocs.io',
         'Source code': 'https://github.com/jpgill86/neurotic',
         'Bug tracker': 'https://github.com/jpgill86/neurotic/issues',
     },
