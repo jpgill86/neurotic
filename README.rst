@@ -80,9 +80,10 @@ video synchronization feature!
 Installation
 ------------
 
-**neurotic** requires PyAV_, which is most easily installed from conda-forge_.
-It also does not explicitly list its dependencies within the package metadata
-[1]_, so they must be installed manually.
+**neurotic** requires Python 3.6 or later. It needs PyAV_, which is most easily
+installed from conda-forge_. It also does not explicitly list any of its
+dependencies within the package metadata [1]_, so they must be installed
+manually.
 
 To install PyAV and all other dependencies, use these commands (``pip`` may
 raise a non-fatal error that can be ignored; see [2]_)::
