@@ -51,6 +51,7 @@ install:
 before_script:
     # list versions
     - python --version
+    - python -c "import os, sys; assert sys.version_info[:2] == tuple(map(int, os.environ['TRAVIS_PYTHON_VERSION'].split('.')))[:2]"
     - pip -V
     - pip list
     - conda list
