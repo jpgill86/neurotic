@@ -8,6 +8,18 @@ python:
     - "3.6"
     - "3.7"
 
+matrix:
+  include:
+    - name: Sphinx docs
+      python: "3.7"
+      env: JOB_REQS="requirements-docs.txt"
+      script:
+        - cd docs
+        - make html
+      after_success:
+
+env: JOB_REQS="requirements-tests.txt"
+
 services:
     - xvfb  # create a virtual display on the headless server for gui tests
 
@@ -26,11 +38,14 @@ install:
     # create python environment
     - conda config --add channels conda-forge
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+    - echo "INSTALLING REQS FOR NEUROTIC"
     - conda env update -q -n test-environment -f environment.yml
-    - conda install -q -n test-environment --file requirements-tests.txt
     - source activate test-environment
+    - echo "INSTALLING REQS FOR THIS JOB"
+    - pip install -r ${JOB_REQS};
 
     # install package
+    - echo "INSTALLING NEUROTIC"
     - python setup.py install
 
 before_script:
@@ -45,5 +60,5 @@ script:
     nosetests --with-coverage --cover-package=neurotic
 
 after_success:
-    # report coverage to Coveralls
+    # report test coverage to Coveralls
     coveralls || echo "coveralls failed"
