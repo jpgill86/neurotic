@@ -33,11 +33,11 @@ load your Neo_-compatible data into ephyviewer_ without doing any programming.
    :target: GitHub_
    :alt: GitHub source code
 
-.. |Docs badge| image:: https://readthedocs.org/projects/neurotic/badge/?version=latest
+.. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
    :target: ReadTheDocs_
    :alt: Documentation Status
 
-.. |Build badge| image:: https://travis-ci.com/jpgill86/neurotic.svg?branch=master
+.. |Build badge| image:: https://img.shields.io/travis/com/jpgill86/neurotic/master.svg?logo=travis-ci&logoColor=white
    :target: Travis_
    :alt: Build status
 
