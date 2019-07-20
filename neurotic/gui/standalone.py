@@ -4,6 +4,7 @@
 """
 
 import os
+import gc
 import pkg_resources
 
 import quantities as pq
@@ -292,6 +293,8 @@ class DataExplorer(QT.QMainWindow):
 
             win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width)
             self.windows.append(win)
+            win.setAttribute(QT.WA_DeleteOnClose, True)
+            win.destroyed.connect(lambda qobject, i=len(self.windows)-1: self.free_resources(i))
             win.show()
 
         except FileNotFoundError as e:
@@ -384,3 +387,25 @@ class DataExplorer(QT.QMainWindow):
 
         """
         self.theme = 'original'
+
+    def free_resources(self, i):
+        """
+        Run garbage collection to unlock files and free memory for the closed
+        window with index ``i``.
+
+        Data files opened by Neo in lazy mode remain locked for as long as the
+        RawIO objects pointing to them exist in memory. Normally such objects
+        would be automatically garbage collected when they go out of scope,
+        i.e., when the window that created them is closed. However, due to an
+        issue in Neo, circular references to these objects are always created,
+        so they persist even after the window is closed. This function performs
+        a manual garbage collection after a window has been closed to clean up
+        any lingering Neo objects that keep files locked. For more info about
+        the issue, see https://github.com/NeuralEnsemble/python-neo/issues/684.
+        """
+
+        # first remove the last remaining reference to the closed window
+        self.windows[i] = None
+
+        # run garbage collection
+        gc.collect()
