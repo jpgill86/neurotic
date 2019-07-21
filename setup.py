@@ -13,7 +13,7 @@ from setuptools import setup, find_packages
 MAJOR       = 0     # increment for backwards-incompatible changes
 MINOR       = 7     # increment for backwards-compatible feature additions
 MICRO       = 0     # increment for backwards-compatible bug fixes
-IS_RELEASED = False # determines whether version will be marked as development
+IS_RELEASED = True  # determines whether version will be marked as development
 VERSION     = f'{MAJOR}.{MINOR}.{MICRO}'
 
 # Try to fetch the git revision number from the .git directory if it exists,
