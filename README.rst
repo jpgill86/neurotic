@@ -127,7 +127,7 @@ including amplitude-threshold spike detection and signal filtering.
 
 The command line interface accepts arguments as well:
 
-.. code-block:: none
+.. code-block::
 
     usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces]
                     [--theme {light,dark,original}]
