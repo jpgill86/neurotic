@@ -5,6 +5,8 @@
 
 import os
 import gc
+import platform
+import subprocess
 import pkg_resources
 
 import quantities as pq
@@ -55,7 +57,7 @@ class MetadataSelectorQt(MetadataSelector, QT.QListWidget):
         try:
             MetadataSelector.load(self)
         except Exception as e:
-            print('Bad metadata file!', e)
+            print('Bad metadata file:', e)
 
         if self.all_metadata is not None:
 
@@ -162,8 +164,8 @@ class DataExplorer(QT.QMainWindow):
         if initial_selection is not None:
             try:
                 self.metadata_selector.setCurrentRow(list(self.metadata_selector.all_metadata).index(initial_selection))
-            except (TypeError, ValueError):
-                print('Bad dataset key! Will ignore')
+            except (TypeError, ValueError) as e:
+                print('Bad dataset key, will ignore:', e)
 
     def create_menus(self):
         """
@@ -175,6 +177,10 @@ class DataExplorer(QT.QMainWindow):
         do_open_metadata = QT.QAction('&Open metadata', self, shortcut = 'Ctrl+O')
         do_open_metadata.triggered.connect(self.open_metadata)
         self.file_menu.addAction(do_open_metadata)
+
+        do_edit_metadata = QT.QAction('&Edit metadata', self, shortcut = 'Ctrl+E')
+        do_edit_metadata.triggered.connect(self.edit_metadata)
+        self.file_menu.addAction(do_edit_metadata)
 
         do_reload_metadata = QT.QAction('&Reload metadata', self, shortcut = 'Ctrl+R')
         do_reload_metadata.triggered.connect(self.metadata_selector.load)
@@ -250,6 +256,27 @@ class DataExplorer(QT.QMainWindow):
             self.metadata_selector.file = file
             self.metadata_selector.load()
 
+    def edit_metadata(self):
+        """
+        Open the metadata file in an editor
+        """
+
+        path = self.metadata_selector.file
+
+        try:
+
+            if platform.system() == "Windows":
+                os.startfile(path)
+            elif platform.system() == "Darwin":
+                subprocess.Popen(["open", path])
+            else:
+                subprocess.Popen(["xdg-open", path])
+
+        except FileNotFoundError as e:
+
+            print('The metadata file was not found:', e)
+            return
+
     def download_files(self):
         """
 
@@ -299,9 +326,8 @@ class DataExplorer(QT.QMainWindow):
 
         except FileNotFoundError as e:
 
-            print('Some files were not found locally and may need to be downloaded')
-            print(e)
-            return
+            print('Some files were not found locally and may need to be ' \
+                  'downloaded:', e)
 
     def show_about(self):
         """
