@@ -190,6 +190,10 @@ class DataExplorer(QT.QMainWindow):
         self.do_download_data.triggered.connect(self.download_files)
         self.file_menu.addAction(self.do_download_data)
 
+        self.do_open_directory = QT.QAction('Open data &folder', self, shortcut = 'Ctrl+F')
+        self.do_open_directory.triggered.connect(self.open_directory)
+        self.file_menu.addAction(self.do_open_directory)
+
         do_launch = QT.QAction('&Launch', self, shortcut = 'Return')
         do_launch.triggered.connect(self.launch)
         self.file_menu.addAction(do_launch)
@@ -296,6 +300,28 @@ class DataExplorer(QT.QMainWindow):
         self.metadata_selector.load()
         self.do_download_data.setText('&Download data')
         self.do_download_data.setEnabled(True)
+
+    def open_directory(self):
+        """
+        Open the directory of the selected dataset in Win Explorer / Mac Finder
+        """
+
+        metadata = self.metadata_selector.selected_metadata
+        path = metadata['data_dir']
+
+        try:
+
+            if platform.system() == "Windows":
+                os.startfile(path)
+            elif platform.system() == "Darwin":
+                subprocess.Popen(["open", path])
+            else:
+                subprocess.Popen(["xdg-open", path])
+
+        except FileNotFoundError as e:
+
+            print('The directory for the selected dataset was not found ' \
+                  'locally, perhaps because it does not exist yet:', e)
 
     def launch(self):
         """
