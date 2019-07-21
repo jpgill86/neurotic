@@ -1,7 +1,7 @@
 neurotic
 ========
 
-*Curate, visualize, and annotate your behavioral ephys data using Python*
+*Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
 |PyPI badge| |GitHub badge| |Docs badge| |Build badge| |Coverage badge|
 

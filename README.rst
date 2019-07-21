@@ -1,7 +1,7 @@
 |neurotic logo| neurotic
 ========================
 
-*Curate, visualize, and annotate your behavioral ephys data using Python*
+*Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
 |PyPI badge| |GitHub badge| |Docs badge| |Build badge| |Coverage badge|
 
@@ -133,7 +133,8 @@ The command line interface accepts arguments as well:
                     [--theme {light,dark,original}]
                     [file] [dataset]
 
-    neurotic lets you curate, visualize, and annotate your behavioral ephys data.
+    neurotic lets you curate, visualize, annotate, and share your behavioral ephys
+    data.
 
     positional arguments:
       file                  the path to a metadata YAML file (default: an example
