@@ -84,4 +84,5 @@ with your colleagues! 🤪
    :alt: Screenshot
 
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _GIN:            https://gin.g-node.org
 .. _User Interface: https://ephyviewer.readthedocs.io/en/latest/interface.html
