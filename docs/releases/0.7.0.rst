@@ -1,0 +1,30 @@
+.. _v0.7.0:
+
+neurotic 0.7.0
+==============
+
+2019-07-21
+
+Improvements
+------------
+
+* New documentation hosted at Read the Docs: https://neurotic.readthedocs.io
+
+* Add menu action for opening metadata in editor
+  (`#83 <https://github.com/jpgill86/neurotic/pull/83>`__)
+
+* Add menu action for opening the selected data directory
+  (`#84 <https://github.com/jpgill86/neurotic/pull/84>`__)
+
+* Add list of installed versions of dependencies and doc links to About window
+  (`#44 <https://github.com/jpgill86/neurotic/pull/44>`__,
+  `#65 <https://github.com/jpgill86/neurotic/pull/65>`__)
+
+Bug fixes
+---------
+
+* Fix files remaining locked after closing a fast-loaded window
+  (`#69 <https://github.com/jpgill86/neurotic/pull/69>`__)
+
+* Fix launching from command line with bad metadata argument
+  (`#82 <https://github.com/jpgill86/neurotic/pull/82>`__)
