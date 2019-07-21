@@ -103,7 +103,7 @@ with open('requirements-tests.txt', 'r') as f:
 setup(
     name = 'neurotic',
     version = VERSION,
-    description = 'Curate, visualize, and annotate your behavioral ephys data using Python',
+    description = 'Curate, visualize, annotate, and share your behavioral ephys data using Python',
     packages = find_packages(),
     include_package_data = True,
     install_requires = install_requires,

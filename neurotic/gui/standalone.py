@@ -383,7 +383,7 @@ class DataExplorer(QT.QMainWindow):
         text = f"""
         <h2>neurotic {__version__}</h2>
 
-        <p><i>Curate, visualize, and annotate <br/>
+        <p><i>Curate, visualize, annotate, and share <br/>
         your behavioral ephys data using Python</i></p>
 
         <p>Author: Jeffrey Gill (<a href='{urls['GitHub user']}'>@jpgill86</a>)</p>

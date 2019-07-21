@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Curate, visualize, and annotate your behavioral ephys data using Python
+Curate, visualize, annotate, and share your behavioral ephys data using Python
 """
 
 from .version import version as __version__

@@ -17,8 +17,8 @@ def parse_args(argv):
     """
 
     description = """
-    neurotic lets you curate, visualize, and annotate your behavioral ephys
-    data.
+    neurotic lets you curate, visualize, annotate, and share your behavioral
+    ephys data.
     """
     parser = argparse.ArgumentParser(description=description)
 
