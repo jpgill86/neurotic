@@ -54,7 +54,7 @@ class MetadataSelectorQt(MetadataSelector, QT.QListWidget):
 
         try:
             MetadataSelector.load(self)
-        except AssertionError as e:
+        except Exception as e:
             print('Bad metadata file!', e)
 
         if self.all_metadata is not None:
