@@ -10,6 +10,8 @@ neurotic
 **neurotic** is an app that allows you to easily review and annotate your
 electrophysiology data and simultaneously captured video. It is an easy way to
 load your Neo_-compatible data into ephyviewer_ without doing any programming.
+Share a single metadata file with your colleagues and they too will quickly be
+looking at the same datasets!
 
 |Example screenshot|
 

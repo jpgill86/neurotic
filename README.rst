@@ -10,6 +10,8 @@ Documentation_ | `Release Notes`_ | `Issue Tracker`_
 **neurotic** is an app that allows you to easily review and annotate your
 electrophysiology data and simultaneously captured video. It is an easy way to
 load your Neo_-compatible data into ephyviewer_ without doing any programming.
+Share a single metadata file with your colleagues and they too will quickly be
+looking at the same datasets!
 
 To use the app, first organize your datasets in a YAML file like this (see
 `Configuring Metadata`_):
@@ -51,8 +53,9 @@ To use the app, first organize your datasets in a YAML file like this (see
 
 Open your YAML metadata file in **neurotic** and choose a dataset. If the data
 and video files aren't already on your local computer, the app can download
-them for you. Finally, click launch and the app will use a standard viewer
-layout to display your data to you using ephyviewer_.
+them for you, even from a password-protected server. Finally, click launch and
+the app will use a standard viewer layout to display your data to you using
+ephyviewer_.
 
 |Example screenshot|
 
@@ -76,6 +79,14 @@ The viewers are easy and intuitive to navigate (see `User Interface`_):
 
 Electrophysiologists will find this tool useful even if they don't need the
 video synchronization feature!
+
+**Portability is easy with neurotic!** Use relative paths in your metadata file
+along with a remotely accessible data store such as GIN_ to make your metadata
+file fully portable. The same metadata file could be copied to a different
+computer, and downloaded files will automatically be saved to the right place.
+Data stores can be password protected and **neurotic** will prompt you for a
+user name and password. This makes it easy to share the **neurotic** experience
+with your colleagues! 🤪
 
 Installation
 ------------
@@ -187,6 +198,7 @@ Notes
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _Documentation:  https://neurotic.readthedocs.io/en/latest
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _GIN:            https://gin.g-node.org
 .. _GitHub:         https://github.com/jpgill86/neurotic
 .. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
