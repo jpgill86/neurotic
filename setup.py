@@ -11,9 +11,9 @@ from setuptools import setup, find_packages
 # Change version number here, not in neurotic/version.py, which is generated
 # by this script. Try to follow recommended versioning guidelines at semver.org.
 MAJOR       = 0     # increment for backwards-incompatible changes
-MINOR       = 7     # increment for backwards-compatible feature additions
+MINOR       = 8     # increment for backwards-compatible feature additions
 MICRO       = 0     # increment for backwards-compatible bug fixes
-IS_RELEASED = True  # determines whether version will be marked as development
+IS_RELEASED = False # determines whether version will be marked as development
 VERSION     = f'{MAJOR}.{MINOR}.{MICRO}'
 
 # Try to fetch the git revision number from the .git directory if it exists,
