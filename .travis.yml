@@ -36,10 +36,9 @@ install:
     # create python environment
     - conda config --add channels conda-forge
     - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
-    - echo "INSTALLING REQS FOR NEUROTIC"
-    - sed "/- python[>]*=/d" environment.yml > environment-without-python-spec.yml
-    - conda env update -q -n test-environment -f environment-without-python-spec.yml
     - source activate test-environment
+    - echo "INSTALLING REQS FOR NEUROTIC"
+    - conda install -c conda-forge av pyqt  # conda-forge's pyqt works better on Travis than pip's PyQt5
     - echo "INSTALLING REQS FOR THIS JOB"
     - pip install -r ${JOB_REQS};
 
