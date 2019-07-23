@@ -13,8 +13,8 @@ load your Neo_-compatible data into ephyviewer_ without doing any programming.
 Share a single metadata file with your colleagues and they too will quickly be
 looking at the same datasets!
 
-To use the app, first organize your datasets in a YAML file like this (see
-`Configuring Metadata`_):
+To use the app, first organize your datasets in a *metadata file* like this
+(see `Configuring Metadata`_):
 
 .. code-block:: yaml
 
@@ -51,10 +51,10 @@ To use the app, first organize your datasets in a YAML file like this (see
     another dataset:
         # etc
 
-Open your YAML metadata file in **neurotic** and choose a dataset. If the data
-and video files aren't already on your local computer, the app can download
-them for you, even from a password-protected server. Finally, click launch and
-the app will use a standard viewer layout to display your data to you using
+Open your metadata file in **neurotic** and choose a dataset. If the data and
+video files aren't already on your local computer, the app can download them
+for you, even from a password-protected server. Finally, click launch and the
+app will use a standard viewer layout to display your data to you using
 ephyviewer_.
 
 |Example screenshot|
@@ -110,7 +110,11 @@ or install the latest development version from GitHub_ using ::
 Getting Started
 ---------------
 
-Launch the standalone app from the command line::
+If you installed **neurotic** into a conda environment, first activate it::
+
+    conda activate <environment name>
+
+Launch the app from the command line::
 
     neurotic
 
@@ -120,6 +124,10 @@ help with navigation.
 
 Disabling "Fast loading" before launch will enable additional features
 including amplitude-threshold spike detection and signal filtering.
+
+To inspect the metadata file associated with the example or to make changes to
+it, click "Edit metadata". See `Configuring Metadata`_ for details about the
+format.
 
 The command line interface accepts arguments as well:
 

@@ -7,7 +7,7 @@ If you installed **neurotic** into a conda environment, first activate it::
 
     conda activate <environment name>
 
-Launch the standalone app from the command line::
+Launch the app from the command line::
 
     neurotic
 
@@ -17,6 +17,10 @@ help with navigation.
 
 Disabling "Fast loading" before launch will enable additional features
 including amplitude-threshold spike detection and signal filtering.
+
+To inspect the metadata file associated with the example or to make changes to
+it, click "Edit metadata". See :ref:`config-metadata` for details about the
+format.
 
 The command line interface accepts arguments as well:
 
