@@ -3,8 +3,8 @@
 Overview
 ========
 
-To use **neurotic**, first organize your datasets in a YAML file like this (see
-:ref:`config-metadata`):
+To use **neurotic**, first organize your datasets in a *metadata file* like
+this (see :ref:`config-metadata`):
 
 .. code-block:: yaml
 
@@ -41,10 +41,10 @@ To use **neurotic**, first organize your datasets in a YAML file like this (see
     another dataset:
         # etc
 
-Open your YAML metadata file in **neurotic** and choose a dataset. If the data
-and video files aren't already on your local computer, the app can download
-them for you, even from a password-protected server. Finally, click launch and
-the app will use a standard viewer layout to display your data to you using
+Open your metadata file in **neurotic** and choose a dataset. If the data and
+video files aren't already on your local computer, the app can download them
+for you, even from a password-protected server. Finally, click launch and the
+app will use a standard viewer layout to display your data to you using
 ephyviewer_.
 
 |Example screenshot|

@@ -47,7 +47,7 @@ provided.
 All files associated with a dataset should be collected into a single
 directory. A path to the local copy of this directory must be provided using
 the ``data_dir`` key. You may specify ``data_dir`` as an absolute path (e.g.,
-``C:\Users\me\folder``) or as a path relative to the YAML file (e.g.,
+``C:\Users\me\folder``) or as a path relative to the metadata file (e.g.,
 ``folder``).
 
 Paths to individual files within the dataset are provided using keys listed
@@ -102,8 +102,8 @@ For an example, consider the following:
         data_file:          data.axgx
         video_file:         video.mp4
 
-With a YAML file like this, the file paths ``data_file`` and ``video_file`` are
-appended to ``remote_data_dir`` to obtain the complete URLs for downloading
+With a metadata file like this, the file paths ``data_file`` and ``video_file``
+are appended to ``remote_data_dir`` to obtain the complete URLs for downloading
 these files, and they will be saved to the local ``data_dir``.
 
 If you have many datasets hosted by the same server, you can specify the server
@@ -132,7 +132,7 @@ Here, URLs to video files are composed by joining ``remote_data_root`` +
 ``remote_data_dir`` + ``video_file``.
 
 Recall that if ``data_dir`` is a relative path, it is assumed to be relative
-to the YAML file. In the example above, if the YAML file is located in
+to the metadata file. In the example above, if the metadata file is located in
 ``C:\Users\me``, the paths could be abbreviated:
 
 .. code-block:: yaml
