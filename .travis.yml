@@ -7,14 +7,35 @@ python:
     - "3.7"
 
 matrix:
-  include:
-    - name: Sphinx docs
-      python: "3.7"
-      env: JOB_REQS="requirements-docs.txt"
-      script:
-        - cd docs
-        - make html
-      after_success:
+    include:
+        - name: Sphinx docs
+          python: "3.7"
+          env: JOB_REQS="requirements-docs.txt"
+          script:
+              - cd docs
+              - make html
+          after_success: skip
+
+        - name: Future
+          python: "3.7"
+          before_script:
+              # install dev versions of important packages
+              - pip install -U \
+                  git+https://github.com/NeuralEnsemble/python-neo.git \
+                  git+https://github.com/NeuralEnsemble/elephant.git \
+                  git+https://github.com/NeuralEnsemble/ephyviewer.git
+
+              # list versions
+              - python --version
+              - python -c "import os, sys; assert sys.version_info[:2] == tuple(map(int, os.environ['TRAVIS_PYTHON_VERSION'].split('.')))[:2]"
+              - pip -V
+              - pip list
+              - conda list
+
+    allow_failures:
+          - name: Future
+
+    fast_finish: true
 
 env: JOB_REQS="requirements-tests.txt"
 
