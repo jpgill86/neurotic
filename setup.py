@@ -77,20 +77,8 @@ with open('neurotic/version.py', 'w') as f:
 with open('README.rst', 'r') as f:
     README = f.read()
 
-# The latest release of neo (0.7.2, needed by this package for AxographRawIO)
-# conflicts with the requirements of the latest release of elephant (0.6.2,
-# needed for rauc and neo API fix) thanks to a bug that has been patched but
-# not released yet (see https://github.com/NeuralEnsemble/elephant/issues/236).
-# The only way around this complication is for these to be left out of
-# install_requires, since otherwise pip will error when it detects the
-# conflict. The user must manually install dependencies using ``pip install -r
-# requirements.txt``, which warns about the incompatibility of neo and elephant
-# but doesn't halt. Someday this package will be able to explicitly list its
-# dependencies so pip installs them automatically, but not before elephant
-# releases the fixed requirements list.
 with open('requirements.txt', 'r') as f:
-    # install_requires = f.read()
-    install_requires = []
+    install_requires = f.read()
 
 extras_require = {}
 with open('requirements-docs.txt', 'r') as f:

@@ -91,19 +91,15 @@ with your colleagues! 🤪
 Installation
 ------------
 
-**neurotic** requires Python 3.6 or later. It needs PyAV_, which is most easily
-installed from conda-forge_. It also does not explicitly list any of its
-dependencies within the package metadata [1]_, so they must be installed
-manually.
-
-To install PyAV and all other dependencies, use these commands (``pip`` may
-raise a non-fatal error that can be ignored; see [2]_)::
+**neurotic** requires Python 3.6 or later. It also needs PyAV_, which is most
+easily installed using conda_::
 
     conda install -c conda-forge av
-    pip install "elephant>=0.6.2" "ephyviewer>=1.1.0" "neo>=0.7.2" numpy packaging pandas pylttb pyqt5 pyyaml quantities tqdm
 
-Finally, install the latest release version of **neurotic** from PyPI_, using
-::
+PyAV must be installed manually, but all other dependencies will be installed
+with **neurotic**.
+
+Install the latest release version of **neurotic** from PyPI_ using ::
 
     pip install -U neurotic
 
@@ -153,19 +149,6 @@ The command line interface accepts arguments as well:
       --theme {light,dark,original}
                             a color theme for the GUI (default: light)
 
-Notes
------
-
-.. [1] Before **neurotic** can be configured to automatically install
-       dependencies, an `upstream library conflict`_ must be fixed. This should
-       be resolved soon; until then, dependencies can be installed manually.
-
-.. [2] The following warning may appear during dependency installation but can
-       be ignored because the incompatibility between these versions is
-       trivial: ``ERROR: elephant 0.6.2 has requirement neo<0.8.0,<=0.7.1, but
-       you'll have neo 0.7.2 which is incompatible``. This is related to the
-       `upstream library conflict`_ previously mentioned.
-
 
 .. |neurotic logo| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/neurotic/gui/icons/img/neurotic-logo-30.png
     :alt: Project logo
@@ -194,7 +177,7 @@ Notes
     :target: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
     :alt: Screenshot
 
-.. _conda-forge:    https://anaconda.org/conda-forge/av
+.. _conda:          https://docs.conda.io/projects/conda/en/latest/user-guide/install/
 .. _Configuring Metadata: https://neurotic.readthedocs.io/en/latest/metadata.html
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _Documentation:  https://neurotic.readthedocs.io/en/latest
@@ -208,5 +191,4 @@ Notes
 .. _ReadTheDocs:    https://readthedocs.org/projects/neurotic
 .. _Release Notes:  https://neurotic.readthedocs.io/en/latest/releasenotes.html
 .. _Travis:         https://travis-ci.com/jpgill86/neurotic
-.. _upstream library conflict: https://github.com/NeuralEnsemble/elephant/issues/236
 .. _User Interface: https://ephyviewer.readthedocs.io/en/latest/interface.html
