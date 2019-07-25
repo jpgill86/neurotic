@@ -11,7 +11,7 @@ this (see :ref:`config-metadata`):
     my favorite dataset:
         description: This time it actually worked!
 
-        data_dir:           C:/local_dir_containing_files
+        data_dir:           C:\local_dir_containing_files
         remote_data_dir:    http://myserver/remote_dir_containing_downloadable_files  # optional
         data_file:          data.axgx
         video_file:         video.mp4
@@ -72,7 +72,7 @@ video synchronization feature!
 
 **Portability is easy with neurotic!** Use relative paths in your metadata file
 along with a remotely accessible data store such as GIN_ to make your metadata
-file fully portable. The same metadata file could be copied to a different
+file fully portable. The same metadata file can be copied to a different
 computer, and downloaded files will automatically be saved to the right place.
 Data stores can be password protected and **neurotic** will prompt you for a
 user name and password. This makes it easy to share the **neurotic** experience
