@@ -1,4 +1,5 @@
-remote_data_root: https://web.gin.g-node.org/jpgill86/neurotic-data/raw/master/tests
+neurotic_config:
+    remote_data_root: https://web.gin.g-node.org/jpgill86/neurotic-data/raw/master/tests
 
 events-and-epochs:
     data_dir: events-and-epochs
