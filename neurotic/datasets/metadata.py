@@ -190,7 +190,7 @@ def LoadMetadata(file = 'metadata.yml', local_data_root = None, remote_data_root
 
     ``remote_data_root`` must be a full URL or None. If it is None, ``file``
     will be checked for a fallback value. "remote_data_root" may be provided in
-    the YAML file as a special entry with no child properties. Any non-None
+    the YAML file under the reserved keyword "neurotic_config". Any non-None
     value passed to this function will override the value provided in the file.
     If both are unspecified, it is assumed that no remote data store exists.
 
@@ -223,8 +223,14 @@ def LoadMetadata(file = 'metadata.yml', local_data_root = None, remote_data_root
     with open(file) as f:
         md = yaml.safe_load(f)
 
-    # remove special entry "remote_data_root" from the dict if it exists
-    remote_data_root_from_file = md.pop('remote_data_root', None)
+    # remove special entry "neurotic_config" from the dict if it exists
+    config = md.pop('neurotic_config', None)
+    if isinstance(config, dict):
+        # process global settings
+        remote_data_root_from_file = config.get('remote_data_root', None)
+    else:
+        # use defaults for all global settings
+        remote_data_root_from_file = None
 
     # use remote_data_root passed to function preferentially
     if remote_data_root is not None:
