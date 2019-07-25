@@ -11,3 +11,11 @@
       overflow: visible !important;
    }
 }
+
+/* override navigation background color */
+.wy-nav-top {
+    background-color: #C23B92 !important;
+}
+.wy-side-nav-search {
+    background-color: #C23B92 !important;
+}
