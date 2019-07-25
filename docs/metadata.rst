@@ -19,12 +19,16 @@ You may include comments in your metadata file, which should begin with ``#``.
 Top-Level Organization
 ----------------------
 
-Datasets listed within the same metadata file must be given unique names.
-Optionally, longer descriptions can be provided too. Details pertaining to each
-dataset, including the description, are nested beneath the dataset name using
-indentation. You may need to use double quotes around names, descriptions, or
-other text if they contains special characters (such as ``:`` or ``#``) or are
-composed only of numbers (such as a date).
+Datasets listed within the same metadata file must be given unique names, which
+may include spaces. The special name ``neurotic_config`` is reserved for
+**neurotic** configuration settings and cannot be used for datasets.
+
+In addition to names, a long description can be provided for each dataset.
+
+Details pertaining to each dataset, including the description, are nested
+beneath the dataset name using indentation. You may need to use double quotes
+around names, descriptions, or other text if they contain special characters
+(such as ``:`` or ``#``) or are composed only of numbers (such as a date).
 
 .. code-block:: yaml
 
@@ -107,14 +111,16 @@ are appended to ``remote_data_dir`` to obtain the complete URLs for downloading
 these files, and they will be saved to the local ``data_dir``.
 
 If you have many datasets hosted by the same server, you can specify the server
-URL just once using the special ``remote_data_root`` key, which should be given
-outside of any dataset's YAML block with no indentation. This allows you to
-provide for each dataset a partial URL to a folder in ``remote_data_dir`` which
-is relative to ``remote_data_root``. For example:
+URL just once using the special ``remote_data_root`` key, which should be
+nested under the reserved name ``neurotic_config`` outside of any dataset's
+YAML block. This allows you to provide for each dataset a partial URL to a
+folder in ``remote_data_dir`` which is relative to ``remote_data_root``. For
+example:
 
 .. code-block:: yaml
 
-    remote_data_root: http://myserver
+    neurotic_config:  # reserved name for global settings
+        remote_data_root:   http://myserver
 
     my favorite dataset:
         data_dir:           C:\Users\me\folder1
@@ -137,7 +143,8 @@ to the metadata file. In the example above, if the metadata file is located in
 
 .. code-block:: yaml
 
-    remote_data_root: http://myserver
+    neurotic_config:
+        remote_data_root:   http://myserver
 
     my favorite dataset:
         data_dir:           folder1
@@ -157,11 +164,40 @@ to the metadata file. In the example above, if the metadata file is located in
 
     **Portability is easy with neurotic!** Use relative paths in your metadata
     file along with a remotely accessible data store such as GIN_ to make your
-    metadata file fully portable. The same metadata file could be copied to a
-    different computer, and downloaded files will automatically be saved to the
-    right place. Data stores can be password protected and **neurotic** will
-    prompt you for a user name and password. This makes it easy to share the
-    **neurotic** experience with your colleagues! 🤪
+    metadata file fully portable. The example above is a simple model of this
+    style. A metadata file like this can be copied to a different computer, and
+    downloaded files will automatically be saved to the right place. Data
+    stores can be password protected and **neurotic** will prompt you for a
+    user name and password. This makes it easy to share the **neurotic**
+    experience with your colleagues! 🤪
+
+.. _congig-metadata-globals:
+
+Global Configuration Settings:
+------------------------------
+
+The top-level name ``neurotic_config`` is reserved for configuration settings
+that apply to all datasets or to the app itself. Presently, only one
+configuration setting is implemented, but future versions of **neurotic** may
+add more under this name.
+
+======================  ========================================================
+Key                     Description
+======================  ========================================================
+``remote_data_root``    A URL prepended to each ``remote_data_dir`` that is not
+                        already a full URL (i.e., does not already begin with a
+                        protocol scheme like ``https://``)
+======================  ========================================================
+
+For example:
+
+.. code-block:: yaml
+
+    neurotic_config:
+        remote_data_root:   http://myserver
+
+    my favorite dataset:
+        # dataset details here
 
 .. _config-metadata-video:
 
