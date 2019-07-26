@@ -463,8 +463,8 @@ def DetectSpikes(sig, discriminator, epochs):
     else:
         raise ValueError('amplitude discriminator must have two nonnegative thresholds or two nonpositive thresholds: {}'.format(discriminator))
 
-    spikes_crossing_min = elephant.spike_train_generation.peak_detection(sig, min_threshold*pq.uV, sign, 'raw')
-    spikes_crossing_max = elephant.spike_train_generation.peak_detection(sig, max_threshold*pq.uV, sign, 'raw')
+    spikes_crossing_min = elephant.spike_train_generation.peak_detection(sig, pq.Quantity(min_threshold, discriminator['units']), sign, 'raw')
+    spikes_crossing_max = elephant.spike_train_generation.peak_detection(sig, pq.Quantity(max_threshold, discriminator['units']), sign, 'raw')
     if sign == 'above':
         spikes_between_min_and_max = np.setdiff1d(spikes_crossing_min, spikes_crossing_max)
     elif sign == 'below':

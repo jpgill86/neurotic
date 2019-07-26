@@ -409,11 +409,13 @@ for each amplitude discriminator.
 
             - name: Unit 1
               channel: Extracellular
-              amplitude: [50, 150] # uV
+              units: uV
+              amplitude: [50, 150]
 
             - name: Unit 2
               channel: Extracellular
-              amplitude: [20, 50] # uV
+              units: uV
+              amplitude: [20, 50]
               epoch: Unit 2 activity
 
 Here two units are detected on the same channel with different amplitude
