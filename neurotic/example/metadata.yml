@@ -13,9 +13,7 @@ example dataset:
 
     epoch_encoder_possible_labels:
         - force
-        - large hump
-        - small hump
-        - B38
+        - B38 activity
 
     plots:
         - channel: I2
@@ -55,7 +53,7 @@ example dataset:
         - name: B38
           channel: BN2
           amplitude: [17, 26] # uV
-          epoch: B38
+          epoch: B38 activity
 
         - name: B4/B5
           channel: BN3
