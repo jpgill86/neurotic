@@ -505,9 +505,19 @@ class EphyviewerConfigurator():
 
         if self.is_shown('epoch_encoder') and self.metadata['epoch_encoder_file'] is not None:
 
+            possible_labels = self.metadata['epoch_encoder_possible_labels']
+
+            # append labels found in the epoch encoder file but not in the
+            # epoch_encoder_possible_labels list, preserving the original
+            # ordering of epoch_encoder_possible_labels
+            labels_from_file = [ep.name for ep in seg.epochs if len(ep.times) > 0 and '(from epoch encoder file)' in ep.labels]
+            for label in labels_from_file:
+                if label not in possible_labels:
+                    possible_labels.append(label)
+
             writable_epoch_source = MyWritableEpochSource(
                 filename = abs_path(self.metadata, 'epoch_encoder_file'),
-                possible_labels = self.metadata['epoch_encoder_possible_labels'],
+                possible_labels = possible_labels,
             )
 
             epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'epoch encoder')
