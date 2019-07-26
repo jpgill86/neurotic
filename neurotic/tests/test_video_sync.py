@@ -36,7 +36,7 @@ class VideoSyncUnitTest(unittest.TestCase):
 
     def test_video_jumps(self):
         """Test video jump estimation for AxoGraph file with pauses"""
-        dataset = 'events-and-epochs'
+        dataset = 'video-jumps-unset'
         metadata = neurotic.MetadataSelector(file=self.temp_file,
                                              initial_selection=dataset)
         metadata.download('data_file')
