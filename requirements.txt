@@ -5,7 +5,6 @@ neo>=0.7.2
 numpy
 packaging
 pandas
-pylttb
 pyqt5
 pyyaml
 quantities
