@@ -25,6 +25,10 @@ matrix:
                   git+https://github.com/NeuralEnsemble/elephant.git \
                   git+https://github.com/NeuralEnsemble/ephyviewer.git
 
+              # remove elephant's strict requirements for neo
+              # - without this patch, the neurotic CLI script may fail to start
+              - "sed -i '/^Requires-Dist: neo/d' /home/travis/miniconda/envs/test-environment/lib/python3.7/site-packages/elephant-*.dist-info/METADATA"
+
               # list versions
               - python --version
               - python -c "import os, sys; assert sys.version_info[:2] == tuple(map(int, os.environ['TRAVIS_PYTHON_VERSION'].split('.')))[:2]"
