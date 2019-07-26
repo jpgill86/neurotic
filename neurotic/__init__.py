@@ -9,4 +9,3 @@ from .version import git_revision as __git_revision__
 from .datasets import *
 from .gui import *
 from .scripts import *
-from .utils import *
