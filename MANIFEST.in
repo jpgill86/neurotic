@@ -2,7 +2,6 @@
 include LICENSE
 include README.rst
 include requirements*.txt
-include environment.yml
 
 # package data included in source distribution and installation
 include neurotic/example/metadata.yml
