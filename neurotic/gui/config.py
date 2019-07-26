@@ -275,6 +275,9 @@ class EphyviewerConfigurator():
         win.setWindowTitle(self.metadata['key'])
         win.setWindowIcon(ephyviewer.QT.QIcon(':/neurotic-logo-150.png'))
 
+        # delete on close so that memory and file resources are released
+        win.setAttribute(ephyviewer.QT.WA_DeleteOnClose, True)
+
         ########################################################################
         # PREPARE TRACE PARAMETERS
 
