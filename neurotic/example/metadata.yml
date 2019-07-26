@@ -48,13 +48,16 @@ example dataset:
 
         - name: B3
           channel: BN2
-          amplitude: [50, 150] # uV
+          units: uV
+          amplitude: [50, 150]
 
         - name: B38
           channel: BN2
-          amplitude: [17, 26] # uV
+          units: uV
+          amplitude: [17, 26]
           epoch: B38 activity
 
         - name: B4/B5
           channel: BN3
-          amplitude: [85, 200] # uV
+          units: uV
+          amplitude: [85, 200]

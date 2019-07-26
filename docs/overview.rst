@@ -35,6 +35,7 @@ this (see :ref:`config-metadata`):
         amplitude_discriminators:  # used only if fast loading is off (lazy=False)
             - name: B3 neuron
               channel: BN2
+              units: uV
               amplitude: [50, 100]
             # etc
 

@@ -45,6 +45,7 @@ To use the app, first organize your datasets in a *metadata file* like this
         amplitude_discriminators:  # used only if fast loading is off (lazy=False)
             - name: B3 neuron
               channel: BN2
+              units: uV
               amplitude: [50, 100]
             # etc
 
