@@ -346,7 +346,6 @@ class DataExplorer(QT.QMainWindow):
 
             win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width)
             self.windows.append(win)
-            win.setAttribute(QT.WA_DeleteOnClose, True)
             win.destroyed.connect(lambda qobject, i=len(self.windows)-1: self.free_resources(i))
             win.show()
 
