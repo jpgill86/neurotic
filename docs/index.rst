@@ -24,6 +24,7 @@ colleagues and they too will quickly be looking at the same datasets!
    install
    gettingstarted
    metadata
+   api
    releasenotes
 
 

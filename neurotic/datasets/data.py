@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Import raw data, annotations, and spike sorting results as Neo objects
+The :mod:`neurotic.datasets.data` module implements a function for loading a
+dataset from selected metadata.
+
+.. autofunction:: load_dataset
 """
 
 from packaging import version
@@ -10,21 +13,34 @@ import quantities as pq
 import elephant
 import neo
 
-from ..datasets.metadata import abs_path
-from neo.test.generate_datasets import fake_neo
+from ..datasets.metadata import _abs_path
 
-def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False, fake_data_for_testing=False):
+def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False):
     """
+    Load a dataset.
 
+    ``metadata`` may be a :class:`MetadataSelector
+    <neurotic.datasets.metadata.MetadataSelector>` or a simple dictionary
+    containing the appropriate data.
+
+    The ``data_file`` in ``metadata`` is read into a Neo :class:`Block
+    <neo.core.Block>` using an automatically detected :mod:`neo.io` class
+    if ``lazy=False`` or a :mod:`neo.rawio` class if ``lazy=True``.
+
+    Epochs and events loaded from ``annotations_file`` and
+    ``epoch_encoder_file`` and spike trains loaded from ``tridesclous_file``
+    are added to the Neo Block.
+
+    If ``lazy=False``, filters given in ``metadata`` are applied to the
+    signals and amplitude discriminators are run to detect spikes.
     """
 
     # read in the electrophysiology data
-    blk = ReadDataFile(metadata, lazy, signal_group_mode)
-    # blk = CreateNeoBlockExample()
+    blk = _read_data_file(metadata, lazy, signal_group_mode)
 
     # apply filters to signals if not using lazy loading of signals
     if not lazy:
-        blk = ApplyFilters(metadata, blk)
+        blk = _apply_filters(metadata, blk)
 
     # copy events into epochs and vice versa
     epochs_from_events = [neo.Epoch(name=ev.name, times=ev.times, labels=ev.labels, durations=np.zeros_like(ev.times)) for ev in blk.segments[0].events]
@@ -34,31 +50,25 @@ def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', filt
     blk.segments[0].events += events_from_epochs
 
     # read in annotations
-    annotations_dataframe = ReadAnnotationsFile(metadata)
-    blk.segments[0].epochs += CreateNeoEpochsFromDataframe(annotations_dataframe, metadata, abs_path(metadata, 'annotations_file'), filter_events_from_epochs)
-    blk.segments[0].events += CreateNeoEventsFromDataframe(annotations_dataframe, metadata, abs_path(metadata, 'annotations_file'))
+    annotations_dataframe = _read_annotations_file(metadata)
+    blk.segments[0].epochs += _create_neo_epochs_from_dataframe(annotations_dataframe, metadata, _abs_path(metadata, 'annotations_file'), filter_events_from_epochs)
+    blk.segments[0].events += _create_neo_events_from_dataframe(annotations_dataframe, metadata, _abs_path(metadata, 'annotations_file'))
 
     # read in epoch encoder file
-    epoch_encoder_dataframe = ReadEpochEncoderFile(metadata)
-    blk.segments[0].epochs += CreateNeoEpochsFromDataframe(epoch_encoder_dataframe, metadata, abs_path(metadata, 'epoch_encoder_file'), filter_events_from_epochs)
-    blk.segments[0].events += CreateNeoEventsFromDataframe(epoch_encoder_dataframe, metadata, abs_path(metadata, 'epoch_encoder_file'))
+    epoch_encoder_dataframe = _read_epoch_encoder_file(metadata)
+    blk.segments[0].epochs += _create_neo_epochs_from_dataframe(epoch_encoder_dataframe, metadata, _abs_path(metadata, 'epoch_encoder_file'), filter_events_from_epochs)
+    blk.segments[0].events += _create_neo_events_from_dataframe(epoch_encoder_dataframe, metadata, _abs_path(metadata, 'epoch_encoder_file'))
 
     # classify spikes by amplitude if not using lazy loading of signals
     if not lazy:
-        blk.segments[0].spiketrains += RunAmplitudeDiscriminators(metadata, blk)
+        blk.segments[0].spiketrains += _run_amplitude_discriminators(metadata, blk)
 
     # read in spikes identified by spike sorting using tridesclous
     t_start = blk.segments[0].analogsignals[0].t_start
     t_stop = blk.segments[0].analogsignals[0].t_stop
     sampling_period = blk.segments[0].analogsignals[0].sampling_period
-    spikes_dataframe = ReadSpikesFile(metadata, blk)
-    blk.segments[0].spiketrains += CreateNeoSpikeTrainsFromDataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period)
-
-    if fake_data_for_testing:
-        # load fake data as a demo
-        blk.segments[0].epochs += [fake_neo('Epoch') for _ in range(5)]
-        blk.segments[0].events += [fake_neo('Event') for _ in range(5)]
-        blk.segments[0].spiketrains += [fake_neo('SpikeTrain') for _ in range(5)]
+    spikes_dataframe = _read_spikes_file(metadata, blk)
+    blk.segments[0].spiketrains += _create_neo_spike_trains_from_dataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period)
 
     # alphabetize epoch and event channels by name
     blk.segments[0].epochs.sort(key=lambda ep: ep.name)
@@ -66,15 +76,18 @@ def LoadAndPrepareData(metadata, lazy=False, signal_group_mode='split-all', filt
 
     return blk
 
-def ReadDataFile(metadata, lazy=False, signal_group_mode='split-all'):
+def _read_data_file(metadata, lazy=False, signal_group_mode='split-all'):
     """
-
+    Read in the ``data_file`` given in ``metadata`` using an automatically
+    detected :mod:`neo.io` class if ``lazy=False`` or a :mod:`neo.rawio` class
+    if ``lazy=True``. If ``lazy=True``, manually load epochs, events, and spike
+    trains, but not signals. Return a Neo :class:`Block <neo.core.Block>`.
     """
 
     # read in the electrophysiology data
     # - signal_group_mode='split-all' ensures every channel gets its own
     #   AnalogSignal, which is important for indexing in EphyviewerConfigurator
-    io = neo.io.get_io(abs_path(metadata, 'data_file'))
+    io = neo.io.get_io(_abs_path(metadata, 'data_file'))
     blk = io.read_block(lazy=lazy, signal_group_mode=signal_group_mode)
 
     # load all objects except analog signals
@@ -99,9 +112,9 @@ def ReadDataFile(metadata, lazy=False, signal_group_mode='split-all'):
 
         else:  # Neo < 0.8.0 does not have proxy objects
 
-            neorawioclass = neo.rawio.get_rawio_class(abs_path(metadata, 'data_file'))
+            neorawioclass = neo.rawio.get_rawio_class(_abs_path(metadata, 'data_file'))
             if neorawioclass is not None:
-                neorawio = neorawioclass(abs_path(metadata, 'data_file'))
+                neorawio = neorawioclass(_abs_path(metadata, 'data_file'))
                 neorawio.parse_header()
 
                 for i in range(len(blk.segments[0].epochs)):
@@ -141,9 +154,10 @@ def ReadDataFile(metadata, lazy=False, signal_group_mode='split-all'):
 
     return blk
 
-def ReadAnnotationsFile(metadata):
+def _read_annotations_file(metadata):
     """
-
+    Read in epochs and events from the ``annotations_file`` in ``metadata`` and
+    return a dataframe.
     """
 
     if metadata['annotations_file'] is None:
@@ -161,7 +175,7 @@ def ReadAnnotationsFile(metadata):
         }
 
         # parse the file and create a dataframe
-        df = pd.read_csv(abs_path(metadata, 'annotations_file'), dtype = dtypes)
+        df = pd.read_csv(_abs_path(metadata, 'annotations_file'), dtype = dtypes)
 
         # increment row labels by 2 so they match the source file
         # which is 1-indexed and has a header
@@ -204,9 +218,10 @@ def ReadAnnotationsFile(metadata):
         # return the dataframe
         return df
 
-def ReadEpochEncoderFile(metadata):
+def _read_epoch_encoder_file(metadata):
     """
-
+    Read in epochs from the ``epoch_encoder_file`` in ``metadata`` and return a
+    dataframe.
     """
 
     if metadata['epoch_encoder_file'] is None:
@@ -223,7 +238,7 @@ def ReadEpochEncoderFile(metadata):
         }
 
         # parse the file and create a dataframe
-        df = pd.read_csv(abs_path(metadata, 'epoch_encoder_file'), dtype = dtypes)
+        df = pd.read_csv(_abs_path(metadata, 'epoch_encoder_file'), dtype = dtypes)
 
         # increment row labels by 2 so they match the source file
         # which is 1-indexed and has a header
@@ -272,9 +287,10 @@ def ReadEpochEncoderFile(metadata):
         # return the dataframe
         return df
 
-def ReadSpikesFile(metadata, blk):
+def _read_spikes_file(metadata, blk):
     """
-    Read in spikes identified by spike sorting with tridesclous.
+    Read in spikes identified by spike sorting with tridesclous and return a
+    dataframe.
     """
 
     if metadata['tridesclous_file'] is None or metadata['tridesclous_channels'] is None:
@@ -284,7 +300,7 @@ def ReadSpikesFile(metadata, blk):
     else:
 
         # parse the file and create a dataframe
-        df = pd.read_csv(abs_path(metadata, 'tridesclous_file'), names = ['index', 'label'])
+        df = pd.read_csv(_abs_path(metadata, 'tridesclous_file'), names = ['index', 'label'])
 
         # drop clusters with negative labels
         df = df[df['label'] >= 0]
@@ -301,9 +317,10 @@ def ReadSpikesFile(metadata, blk):
         # return the dataframe
         return df
 
-def CreateNeoEpochsFromDataframe(dataframe, metadata, file_origin, filter_events_from_epochs=False):
+def _create_neo_epochs_from_dataframe(dataframe, metadata, file_origin, filter_events_from_epochs=False):
     """
-
+    Convert the contents of a dataframe into Neo :class:`Epochs
+    <neo.core.Epoch>`.
     """
 
     epochs_list = []
@@ -331,9 +348,10 @@ def CreateNeoEpochsFromDataframe(dataframe, metadata, file_origin, filter_events
     # return the list of Neo Epochs
     return epochs_list
 
-def CreateNeoEventsFromDataframe(dataframe, metadata, file_origin):
+def _create_neo_events_from_dataframe(dataframe, metadata, file_origin):
     """
-
+    Convert the contents of a dataframe into Neo :class:`Events
+    <neo.core.Event>`.
     """
 
     events_list = []
@@ -356,9 +374,10 @@ def CreateNeoEventsFromDataframe(dataframe, metadata, file_origin):
     # return the list of Neo Events
     return events_list
 
-def CreateNeoSpikeTrainsFromDataframe(dataframe, metadata, t_start, t_stop, sampling_period):
+def _create_neo_spike_trains_from_dataframe(dataframe, metadata, t_start, t_stop, sampling_period):
     """
-
+    Convert the contents of a dataframe into Neo :class:`SpikeTrains
+    <neo.core.SpikeTrain>`.
     """
 
     spiketrain_list = []
@@ -374,7 +393,7 @@ def CreateNeoSpikeTrainsFromDataframe(dataframe, metadata, t_start, t_stop, samp
             # create a Neo SpikeTrain for each cluster label
             st = neo.SpikeTrain(
                 name = str(spike_label),
-                file_origin = abs_path(metadata, 'tridesclous_file'),
+                file_origin = _abs_path(metadata, 'tridesclous_file'),
                 channels = channels, # custom annotation
                 amplitude = None,    # custom annotation
                 times = t_start + sampling_period * df['index'].values,
@@ -386,9 +405,10 @@ def CreateNeoSpikeTrainsFromDataframe(dataframe, metadata, t_start, t_stop, samp
 
     return spiketrain_list
 
-def ApplyFilters(metadata, blk):
+def _apply_filters(metadata, blk):
     """
-
+    Apply filters specified in ``metadata`` the the signals in ``blk`` using
+    :func:`elephant.signal_processing.butter`.
     """
 
     if metadata['filters'] is not None:
@@ -418,9 +438,10 @@ def ApplyFilters(metadata, blk):
 
     return blk
 
-def RunAmplitudeDiscriminators(metadata, blk):
+def _run_amplitude_discriminators(metadata, blk):
     """
-
+    Run all amplitude discriminators for spike detection given in ``metadata``
+    on the signals in ``blk``.
     """
 
     spiketrain_list = []
@@ -441,15 +462,17 @@ def RunAmplitudeDiscriminators(metadata, blk):
             else:
 
                 sig = blk.segments[0].analogsignals[index]
-                st = DetectSpikes(sig, discriminator, epochs)
+                st = _detect_spikes(sig, discriminator, epochs)
                 spiketrain_list.append(st)
 
     return spiketrain_list
 
 
-def DetectSpikes(sig, discriminator, epochs):
+def _detect_spikes(sig, discriminator, epochs):
     """
-
+    Detect spikes in the amplitude window given by ``discriminator`` using
+    :func:`elephant.spike_train_generation.peak_detection`, and optionally
+    filter them by coincidence with epochs of a given name.
     """
 
     assert sig.name == discriminator['channel'], 'sig name "{}" does not match amplitude discriminator channel "{}"'.format(sig.name, discriminator['channel'])

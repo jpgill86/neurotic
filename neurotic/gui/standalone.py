@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
+The :mod:`neurotic.gui.standalone` module implements the main window of the
+app.
 
+.. autoclass:: MainWindow
 """
 
 import os
@@ -14,102 +17,21 @@ import elephant
 from ephyviewer import QT, QT_MODE
 
 from .. import __version__
-from ..datasets import MetadataSelector, LoadAndPrepareData, selector_labels
+from ..datasets import MetadataSelector, load_dataset
+from ..datasets.metadata import _selector_labels
 from ..gui.config import EphyviewerConfigurator
 
 
-class MetadataSelectorQt(MetadataSelector, QT.QListWidget):
+class MainWindow(QT.QMainWindow):
     """
-
-    """
-
-    def __init__(self):
-        """
-
-        """
-
-        MetadataSelector.__init__(self)
-        QT.QListWidget.__init__(self)
-
-        self.setSelectionMode(QT.QListWidget.SingleSelection)
-        self.setStyleSheet('font: 9pt Courier;')
-
-        self.currentRowChanged.connect(self._on_select)
-
-    def _on_select(self, currentRow):
-        """
-
-        """
-
-        if currentRow >= 0:
-            self._selection = list(self.all_metadata)[currentRow]
-        else:
-            self._selection = None
-
-    def load(self):
-        """
-
-        """
-
-        # remember the current selection
-        old_selection = self._selection
-
-        try:
-            MetadataSelector.load(self)
-        except Exception as e:
-            print('Bad metadata file:', e)
-
-        if self.all_metadata is not None:
-
-            # clear and repopulate the list,
-            # which triggers the selection to change
-            self.clear()
-            for label in selector_labels(self.all_metadata):
-                QT.QListWidgetItem(label, self)
-
-            if old_selection in self.all_metadata:
-                # reselect the original selection if it still exists
-                self.setCurrentRow(list(self.all_metadata).index(old_selection))
-            else:
-                # otherwise select the first item
-                self.setCurrentRow(0)
-
-
-class DownloadWorker(QT.QObject):
-    """
-
-    """
-
-    download_finished = QT.pyqtSignal()
-
-    def __init__(self, metadata_selector):
-        """
-
-        """
-
-        QT.QObject.__init__(self)
-
-        self.metadata_selector = metadata_selector
-
-    def download(self):
-        """
-
-        """
-
-        self.metadata_selector.download_all_data_files()
-        self.download_finished.emit()
-
-
-class DataExplorer(QT.QMainWindow):
-    """
-
+    The main window of the app.
     """
 
     request_download = QT.pyqtSignal()
 
     def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', support_increased_line_width=False):
         """
-
+        Initialize a new MainWindow.
         """
 
         QT.QMainWindow.__init__(self)
@@ -136,12 +58,12 @@ class DataExplorer(QT.QMainWindow):
         self.windows = []
 
         # metadata selector
-        self.metadata_selector = MetadataSelectorQt()
+        self.metadata_selector = _MetadataSelectorQt()
         self.setCentralWidget(self.metadata_selector)
 
         # create a worker thread for downloading data
         self.download_thread = QT.QThread()
-        self.download_worker = DownloadWorker(self.metadata_selector)
+        self.download_worker = _DownloadWorker(self.metadata_selector)
         self.download_worker.moveToThread(self.download_thread)
         self.request_download.connect(self.download_worker.download)
         self.download_worker.download_finished.connect(self.on_download_finished)
@@ -169,7 +91,7 @@ class DataExplorer(QT.QMainWindow):
 
     def create_menus(self):
         """
-
+        Construct the menus of the app.
         """
 
         self.file_menu = self.menuBar().addMenu(self.tr('&File'))
@@ -247,7 +169,7 @@ class DataExplorer(QT.QMainWindow):
 
     def open_metadata(self):
         """
-
+        Open and load a metadata file.
         """
 
         file, _ = QT.QFileDialog.getOpenFileName(
@@ -262,7 +184,7 @@ class DataExplorer(QT.QMainWindow):
 
     def edit_metadata(self):
         """
-        Open the metadata file in an editor
+        Open the metadata file in an editor.
         """
 
         path = self.metadata_selector.file
@@ -283,7 +205,7 @@ class DataExplorer(QT.QMainWindow):
 
     def download_files(self):
         """
-
+        Download all files for the selected dataset in a separate thread.
         """
 
         self.download_thread.start()
@@ -293,7 +215,8 @@ class DataExplorer(QT.QMainWindow):
 
     def on_download_finished(self):
         """
-
+        Cleanup download thread and reload the metadata list content to update
+        file indicators.
         """
 
         self.download_thread.quit()
@@ -303,7 +226,8 @@ class DataExplorer(QT.QMainWindow):
 
     def open_directory(self):
         """
-        Open the directory of the selected dataset in Win Explorer / Mac Finder
+        Open the directory of the selected dataset in Win Explorer / Mac
+        Finder.
         """
 
         metadata = self.metadata_selector.selected_metadata
@@ -325,14 +249,14 @@ class DataExplorer(QT.QMainWindow):
 
     def launch(self):
         """
-
+        Load data for the selected dataset and launch the ephyviewer window.
         """
 
         metadata = self.metadata_selector.selected_metadata
 
         try:
 
-            blk = LoadAndPrepareData(metadata, lazy=self.lazy)
+            blk = load_dataset(metadata, lazy=self.lazy)
 
             rauc_sigs = []
             if not self.lazy:
@@ -356,7 +280,7 @@ class DataExplorer(QT.QMainWindow):
 
     def show_about(self):
         """
-        Display the "About neurotic" message box
+        Display the "About neurotic" message box.
         """
 
         import elephant
@@ -410,33 +334,18 @@ class DataExplorer(QT.QMainWindow):
         QT.QMessageBox.about(self, title, text)
 
     def toggle_lazy(self, checked):
-        """
-
-        """
         self.lazy = checked
 
     def toggle_support_increased_line_width(self, checked):
-        """
-
-        """
         self.support_increased_line_width = checked
 
     def select_light_theme(self):
-        """
-
-        """
         self.theme = 'light'
 
     def select_dark_theme(self):
-        """
-
-        """
         self.theme = 'dark'
 
     def select_original_theme(self):
-        """
-
-        """
         self.theme = 'original'
 
     def free_resources(self, i):
@@ -460,3 +369,86 @@ class DataExplorer(QT.QMainWindow):
 
         # run garbage collection
         gc.collect()
+
+
+class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
+    """
+    A QListWidget that displays the state of a MetadataSelector.
+    """
+
+    def __init__(self):
+        """
+        Initialize a new _MetadataSelectorQt.
+        """
+
+        MetadataSelector.__init__(self)
+        QT.QListWidget.__init__(self)
+
+        self.setSelectionMode(QT.QListWidget.SingleSelection)
+        self.setStyleSheet('font: 9pt Courier;')
+
+        self.currentRowChanged.connect(self._on_select)
+
+    def _on_select(self, currentRow):
+        """
+        Update the MetadataSelector's selection after changing the
+        QListWidget's selection.
+        """
+
+        if currentRow >= 0:
+            self._selection = list(self.all_metadata)[currentRow]
+        else:
+            self._selection = None
+
+    def load(self):
+        """
+        Load or reload the metadata file and populate the QListWidget.
+        """
+
+        # remember the current selection
+        old_selection = self._selection
+
+        try:
+            MetadataSelector.load(self)
+        except Exception as e:
+            print('Bad metadata file:', e)
+
+        if self.all_metadata is not None:
+
+            # clear and repopulate the list,
+            # which triggers the selection to change
+            self.clear()
+            for label in _selector_labels(self.all_metadata):
+                QT.QListWidgetItem(label, self)
+
+            if old_selection in self.all_metadata:
+                # reselect the original selection if it still exists
+                self.setCurrentRow(list(self.all_metadata).index(old_selection))
+            else:
+                # otherwise select the first item
+                self.setCurrentRow(0)
+
+
+class _DownloadWorker(QT.QObject):
+    """
+    A thread worker for downloading data files.
+    """
+
+    download_finished = QT.pyqtSignal()
+
+    def __init__(self, metadata_selector):
+        """
+        Initialize a new _DownloadWorker.
+        """
+
+        QT.QObject.__init__(self)
+
+        self.metadata_selector = metadata_selector
+
+    def download(self):
+        """
+        Download all files and emit a signal when complete.
+        """
+
+        self.metadata_selector.download_all_data_files()
+        self.download_finished.emit()

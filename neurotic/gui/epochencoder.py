@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
+The :mod:`neurotic.gui.epochencoder` module implements a subclass of
+:class:`ephyviewer.datasource.epochs.WritableEpochSource`.
 
+.. autoclass:: NeuroticWritableEpochSource
 """
 
 import os
@@ -9,14 +12,15 @@ import numpy as np
 import pandas as pd
 from ephyviewer import WritableEpochSource
 
-class MyWritableEpochSource(WritableEpochSource):
+class NeuroticWritableEpochSource(WritableEpochSource):
     """
-
+    A subclass of :class:`ephyviewer.datasource.epochs.WritableEpochSource` for
+    custom CSV column formatting and automatic file backup.
     """
 
     def __init__(self, filename, possible_labels, color_labels=None, channel_name='', backup=True):
         """
-
+        Initialize a new NeuroticWritableEpochSource.
         """
 
         self.filename = filename
@@ -56,7 +60,8 @@ class MyWritableEpochSource(WritableEpochSource):
 
     def save(self):
         """
-
+        Save the epoch data to a CSV file, creating a backup first if the file
+        already exists.
         """
 
         # if file already exists, make a backup copy first

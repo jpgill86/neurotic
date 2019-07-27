@@ -9,7 +9,7 @@ import argparse
 from ephyviewer import mkQApp
 
 from . import __version__
-from .gui.standalone import DataExplorer
+from .gui.standalone import MainWindow
 
 def parse_args(argv):
     """
@@ -52,9 +52,9 @@ def win_from_args(args):
 
     """
 
-    win = DataExplorer(file=args.file, initial_selection=args.dataset,
-                       lazy=args.lazy, theme=args.theme,
-                       support_increased_line_width=args.thick)
+    win = MainWindow(file=args.file, initial_selection=args.dataset,
+                     lazy=args.lazy, theme=args.theme,
+                     support_increased_line_width=args.thick)
     return win
 
 def main():

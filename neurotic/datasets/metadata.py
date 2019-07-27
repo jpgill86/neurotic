@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Import metadata about experimental data
+The :mod:`neurotic.datasets.metadata` module implements a class for reading
+metadata files.
+
+.. autoclass:: MetadataSelector
+   :members:
 """
 
 import os
@@ -10,76 +14,265 @@ import yaml
 from ..datasets.download import safe_download
 
 
-def abs_path(metadata, file):
+class MetadataSelector():
     """
-    Convert the relative path of file to an absolute path using data_dir
+    A class for managing metadata.
+
+    A metadata file can be specified at initialization, in which case it is
+    read immediately. The file contents are stored as a dictionary in
+    :attr:`all_metadata`.
+
+    >>> metadata = MetadataSelector(file='metadata.yml')
+    >>> print(metadata.all_metadata)
+
+    File contents can be reloaded after they have been changed, or after
+    changing ``file``, using the :meth:`load` method.
+
+    >>> metadata = MetadataSelector()
+    >>> metadata.file = 'metadata.yml'
+    >>> metadata.load()
+
+    A particular metadata set contained within the file can be selected at
+    initialization with ``initial_selection`` or later using the :meth:`select`
+    method. After making a selection, the selected metadata set is accessible
+    at :meth:`metadata.selected_metadata <selected_metadata>`, e.g.
+
+    >>> metadata = MetadataSelector(file='metadata.yml')
+    >>> metadata.select('Data Set 5')
+    >>> print(metadata.selected_metadata['data_file'])
+
+    A compact indexing method is implemented that allows the selected metadata
+    set to be accessed directly, e.g.
+
+    >>> print(metadata['data_file'])
+
+    This allows the MetadataSelector to be passed to functions expecting a
+    simple dictionary corresponding to a single metadata set, and the selected
+    metadata set will be used automatically.
+
+    Files associated with the selected metadata set can be downloaded
+    individually or all together, e.g.
+
+    >>> metadata.download('video_file')
+
+    or
+
+    >>> metadata.download_all_data_files()
+
+    The absolute path to a local file or the full URL to a remote file
+    associated with the selected metadata set can be resolved with the
+    :meth:`abs_path` and :meth:`abs_url` methods, e.g.
+
+    >>> print(metadata.abs_path('data_file'))
+    >>> print(metadata.abs_url('data_file'))
     """
-    if metadata[file] is None:
-        return None
+
+    def __init__(self, file=None, local_data_root=None, remote_data_root=None, initial_selection=None):
+        """
+        Initialize a new MetadataSelector.
+        """
+
+        self.file = file
+        self.local_data_root = local_data_root
+        self.remote_data_root = remote_data_root
+
+        self.all_metadata = None  #: A dictionary containing the entire file contents, set by :meth:`load`.
+        self._selection = None
+        if self.file is not None:
+            self.load()
+            if initial_selection is not None:
+                self.select(initial_selection)
+
+    def load(self):
+        """
+        Read the metadata file.
+        """
+        self.all_metadata = _load_metadata(self.file, self.local_data_root, self.remote_data_root)
+        if self._selection not in self.all_metadata:
+            self._selection = None
+
+    def select(self, selection):
+        """
+        Select a metadata set.
+        """
+        if self.all_metadata is None:
+            print('load metadata before selecting')
+        elif selection not in self.all_metadata:
+            raise ValueError('{} was not found in {}'.format(selection, self.file))
+        else:
+            self._selection = selection
+
+    @property
+    def selected_metadata(self):
+        """
+        The access point for the selected metadata set.
+        """
+        if self._selection is None:
+            return None
+        else:
+            return self.all_metadata[self._selection]
+
+    def abs_path(self, file):
+        """
+        Convert the relative path of ``file`` to an absolute path using
+        ``data_dir``.
+        """
+        return _abs_path(self.selected_metadata, file)
+
+    def abs_url(self, file):
+        """
+        Convert the relative path of ``file`` to a full URL using
+        ``remote_data_dir``.
+        """
+        return _abs_url(self.selected_metadata, file)
+
+    def download(self, file):
+        """
+        Download a file associated with the selected metadata set.
+        """
+        _download_file(self.selected_metadata, file)
+
+    def download_all_data_files(self):
+        """
+        Download all files associated with the selected metadata set.
+        """
+        _download_all_data_files(self.selected_metadata)
+
+    def __iter__(self, *args):
+        return self.selected_metadata.__iter__(*args)
+
+    def __getitem__(self, *args):
+        return self.selected_metadata.__getitem__(*args)
+
+    def __setitem__(self, *args):
+        return self.selected_metadata.__setitem__(*args)
+
+    def __delitem__(self, *args):
+        return self.selected_metadata.__delitem__(*args)
+
+    def get(self, *args):
+        return self.selected_metadata.get(*args)
+
+    def setdefault(self, *args):
+        return self.selected_metadata.setdefault(*args)
+
+
+def _load_metadata(file = 'metadata.yml', local_data_root = None, remote_data_root = None):
+    """
+    Read metadata stored in a YAML file about available collections of data,
+    assign defaults to missing parameters, and resolve absolute paths for local
+    data stores and full URLs for remote data stores.
+
+    ``local_data_root`` must be an absolute or relative path on the local
+    system, or None. If it is a relative path, it is relative to the current
+    working directory. If it is None, its value defaults to the directory
+    containing ``file``.
+
+    ``remote_data_root`` must be a full URL or None. If it is None, ``file``
+    will be checked for a fallback value. "remote_data_root" may be provided in
+    the YAML file under the reserved keyword "neurotic_config". Any non-None
+    value passed to this function will override the value provided in the file.
+    If both are unspecified, it is assumed that no remote data store exists.
+
+    The "data_dir" property must be provided for every data set in ``file`` and
+    specifies the directory on the local system containing the data files.
+    "data_dir" may be an absolute path or a relative path with respect to
+    ``local_data_root``. If it is a relative path, it will be converted to an
+    absolute path.
+
+    The "remote_data_dir" property is optional for every data set in ``file``
+    and specifies the directory on a remote server containing the data files.
+    "remote_data_dir" may be a full URL or a relative path with respect to
+    ``remote_data_root``. If it is a relative path, it will be converted to a
+    full URL.
+
+    File paths (e.g., "data_file", "video_file") are assumed to be relative to
+    both "data_dir" and "remote_data_dir" (i.e., the local and remote data
+    stores mirror one another) and can be resolved with ``_abs_path`` or
+    ``_abs_url``.
+    """
+
+    assert file is not None, 'metadata file must be specified'
+    assert os.path.exists(file), 'metadata file "{}" cannot be found'.format(file)
+
+    # local_data_root defaults to the directory containing file
+    if local_data_root is None:
+        local_data_root = os.path.dirname(file)
+
+    # load metadata from file
+    with open(file) as f:
+        md = yaml.safe_load(f)
+
+    # remove special entry "neurotic_config" from the dict if it exists
+    config = md.pop('neurotic_config', None)
+    if isinstance(config, dict):
+        # process global settings
+        remote_data_root_from_file = config.get('remote_data_root', None)
     else:
-        return os.path.normpath(os.path.join(metadata['data_dir'], metadata[file]))
+        # use defaults for all global settings
+        remote_data_root_from_file = None
 
-
-def abs_url(metadata, file):
-    """
-    Convert the relative path of file to a full URL using remote_data_dir
-    """
-    if metadata[file] is None or metadata['remote_data_dir'] is None:
-        return None
+    # use remote_data_root passed to function preferentially
+    if remote_data_root is not None:
+        if not _is_url(remote_data_root):
+            raise ValueError('"remote_data_root" passed to function is not a full URL: "{}"'.format(remote_data_root))
+        else:
+            # use the value passed to the function
+            pass
+    elif remote_data_root_from_file is not None:
+        if not _is_url(remote_data_root_from_file):
+            raise ValueError('"remote_data_root" provided in file is not a full URL: "{}"'.format(remote_data_root_from_file))
+        else:
+            # use the value provided in the file
+            remote_data_root = remote_data_root_from_file
     else:
-        file_path = metadata[file].replace(os.sep, '/')
-        url = '/'.join([metadata['remote_data_dir'], file_path])
-        # url = urllib.parse.unquote(url)
-        # url = urllib.parse.quote(url, safe='/:')
-        return url
+        # both potential sources of remote_data_root are None
+        pass
 
+    # iterate over all data sets
+    for key in md:
 
-def is_url(url):
-    """
-    Returns True only if the parameter begins with the form <scheme>://<netloc>
-    """
-    try:
-        result = urllib.parse.urlparse(url)
-        return all([result.scheme, result.netloc])
-    except Exception:
-        return False
+        assert type(md[key]) is dict, 'File "{}" may be formatted incorrectly, especially beginning with entry "{}"'.format(file, key)
 
+        # fill in missing metadata with default values
+        defaults = _defaults_for_key(key)
+        for k in defaults:
+            md[key].setdefault(k, defaults[k])
 
-def download_file(metadata, file):
-    """
-    Download a file
-    """
+        # determine the absolute path of the local data directory
+        if md[key]['data_dir'] is not None:
+            # data_dir is either an absolute path already or is specified
+            # relative to local_data_root
+            if os.path.isabs(md[key]['data_dir']):
+                dir = md[key]['data_dir']
+            else:
+                dir = os.path.abspath(os.path.join(local_data_root, md[key]['data_dir']))
+        else:
+            # data_dir is a required property
+            raise ValueError('"data_dir" missing for "{}"'.format(key))
+        md[key]['data_dir'] = os.path.normpath(dir)
 
-    if not is_url(metadata['remote_data_dir']):
-        print('metadata[remote_data_dir] is not a full URL')
-        return
+        # determine the full URL to the remote data directory
+        if md[key]['remote_data_dir'] is not None:
+            # remote_data_dir is either a full URL already or is specified
+            # relative to remote_data_root
+            if _is_url(md[key]['remote_data_dir']):
+                url = md[key]['remote_data_dir']
+            elif _is_url(remote_data_root):
+                url = '/'.join([remote_data_root, md[key]['remote_data_dir']])
+            else:
+                url = None
+        else:
+            # there is no remote data store
+            url = None
+        md[key]['remote_data_dir'] = url
 
-    if metadata[file]:
-
-        # create directories if necessary
-        if not os.path.exists(os.path.dirname(abs_path(metadata, file))):
-            os.makedirs(os.path.dirname(abs_path(metadata, file)))
-
-        # download the file only if it does not already exist
-        safe_download(abs_url(metadata, file), abs_path(metadata, file))
-
-
-def DownloadAllDataFiles(metadata):
-    """
-    Download all files associated with metadata
-    """
-
-    if not is_url(metadata['remote_data_dir']):
-        print('metadata[remote_data_dir] is not a full URL')
-        return
-
-    for file in [k for k in metadata if k.endswith('_file')]:
-        download_file(metadata, file)
+    return md
 
 
 def _defaults_for_key(key):
     """
-
+    Default values for metadata.
     """
 
     defaults = {
@@ -92,16 +285,16 @@ def _defaults_for_key(key):
         # the path of the directory containing the data on the local system
         # - this may be an absolute or relative path, but not None since data
         #   must be located locally
-        # - if it is a relative path, it will be interpreted by LoadMetadata as
-        #   relative to local_data_root and will be converted to an absolute
+        # - if it is a relative path, it will be interpreted by _load_metadata
+        #   as relative to local_data_root and will be converted to an absolute
         #   path
         'data_dir': None,
 
         # the path of the directory containing the data on a remote server
         # - this may be a full URL or a relative path, or None if there exists
         #   no remote data store
-        # - if it is a relative path, it will be interpreted by LoadMetadata as
-        #   relative to remote_data_root and will be converted to a full URL
+        # - if it is a relative path, it will be interpreted by _load_metadata
+        #   as relative to remote_data_root and will be converted to a full URL
         'remote_data_dir': None,
 
         # the ephys data file
@@ -177,119 +370,75 @@ def _defaults_for_key(key):
 
     return defaults
 
-def LoadMetadata(file = 'metadata.yml', local_data_root = None, remote_data_root = None):
+
+def _abs_path(metadata, file):
     """
-    Read metadata stored in a YAML file about available collections of data,
-    assign defaults to missing parameters, and resolve absolute paths for local
-    data stores and full URLs for remote data stores.
+    Convert the relative path of file to an absolute path using data_dir
+    """
+    if metadata[file] is None:
+        return None
+    else:
+        return os.path.normpath(os.path.join(metadata['data_dir'], metadata[file]))
 
-    ``local_data_root`` must be an absolute or relative path on the local
-    system, or None. If it is a relative path, it is relative to the current
-    working directory. If it is None, its value defaults to the directory
-    containing ``file``.
 
-    ``remote_data_root`` must be a full URL or None. If it is None, ``file``
-    will be checked for a fallback value. "remote_data_root" may be provided in
-    the YAML file under the reserved keyword "neurotic_config". Any non-None
-    value passed to this function will override the value provided in the file.
-    If both are unspecified, it is assumed that no remote data store exists.
+def _abs_url(metadata, file):
+    """
+    Convert the relative path of file to a full URL using remote_data_dir
+    """
+    if metadata[file] is None or metadata['remote_data_dir'] is None:
+        return None
+    else:
+        file_path = metadata[file].replace(os.sep, '/')
+        url = '/'.join([metadata['remote_data_dir'], file_path])
+        # url = urllib.parse.unquote(url)
+        # url = urllib.parse.quote(url, safe='/:')
+        return url
 
-    The "data_dir" property must be provided for every data set in ``file`` and
-    specifies the directory on the local system containing the data files.
-    "data_dir" may be an absolute path or a relative path with respect to
-    ``local_data_root``. If it is a relative path, it will be converted to an
-    absolute path.
 
-    The "remote_data_dir" property is optional for every data set in ``file``
-    and specifies the directory on a remote server containing the data files.
-    "remote_data_dir" may be a full URL or a relative path with respect to
-    ``remote_data_root``. If it is a relative path, it will be converted to a
-    full URL.
+def _is_url(url):
+    """
+    Returns True only if the parameter begins with the form <scheme>://<netloc>
+    """
+    try:
+        result = urllib.parse.urlparse(url)
+        return all([result.scheme, result.netloc])
+    except Exception:
+        return False
 
-    File paths (e.g., "data_file", "video_file") are assumed to be relative to
-    both "data_dir" and "remote_data_dir" (i.e., the local and remote data
-    stores mirror one another) and can be resolved with ``abs_path`` or
-    ``abs_url``.
+
+def _download_file(metadata, file):
+    """
+    Download a file
     """
 
-    assert file is not None, 'metadata file must be specified'
-    assert os.path.exists(file), 'metadata file "{}" cannot be found'.format(file)
+    if not _is_url(metadata['remote_data_dir']):
+        print('metadata[remote_data_dir] is not a full URL')
+        return
 
-    # local_data_root defaults to the directory containing file
-    if local_data_root is None:
-        local_data_root = os.path.dirname(file)
+    if metadata[file]:
 
-    # load metadata from file
-    with open(file) as f:
-        md = yaml.safe_load(f)
+        # create directories if necessary
+        if not os.path.exists(os.path.dirname(_abs_path(metadata, file))):
+            os.makedirs(os.path.dirname(_abs_path(metadata, file)))
 
-    # remove special entry "neurotic_config" from the dict if it exists
-    config = md.pop('neurotic_config', None)
-    if isinstance(config, dict):
-        # process global settings
-        remote_data_root_from_file = config.get('remote_data_root', None)
-    else:
-        # use defaults for all global settings
-        remote_data_root_from_file = None
+        # download the file only if it does not already exist
+        safe_download(_abs_url(metadata, file), _abs_path(metadata, file))
 
-    # use remote_data_root passed to function preferentially
-    if remote_data_root is not None:
-        if not is_url(remote_data_root):
-            raise ValueError('"remote_data_root" passed to function is not a full URL: "{}"'.format(remote_data_root))
-        else:
-            # use the value passed to the function
-            pass
-    elif remote_data_root_from_file is not None:
-        if not is_url(remote_data_root_from_file):
-            raise ValueError('"remote_data_root" provided in file is not a full URL: "{}"'.format(remote_data_root_from_file))
-        else:
-            # use the value provided in the file
-            remote_data_root = remote_data_root_from_file
-    else:
-        # both potential sources of remote_data_root are None
-        pass
 
-    # iterate over all data sets
-    for key in md:
+def _download_all_data_files(metadata):
+    """
+    Download all files associated with metadata
+    """
 
-        assert type(md[key]) is dict, 'File "{}" may be formatted incorrectly, especially beginning with entry "{}"'.format(file, key)
+    if not _is_url(metadata['remote_data_dir']):
+        print('metadata[remote_data_dir] is not a full URL')
+        return
 
-        # fill in missing metadata with default values
-        defaults = _defaults_for_key(key)
-        for k in defaults:
-            md[key].setdefault(k, defaults[k])
+    for file in [k for k in metadata if k.endswith('_file')]:
+        _download_file(metadata, file)
 
-        # determine the absolute path of the local data directory
-        if md[key]['data_dir'] is not None:
-            # data_dir is either an absolute path already or is specified
-            # relative to local_data_root
-            if os.path.isabs(md[key]['data_dir']):
-                dir = md[key]['data_dir']
-            else:
-                dir = os.path.abspath(os.path.join(local_data_root, md[key]['data_dir']))
-        else:
-            # data_dir is a required property
-            raise ValueError('"data_dir" missing for "{}"'.format(key))
-        md[key]['data_dir'] = os.path.normpath(dir)
 
-        # determine the full URL to the remote data directory
-        if md[key]['remote_data_dir'] is not None:
-            # remote_data_dir is either a full URL already or is specified
-            # relative to remote_data_root
-            if is_url(md[key]['remote_data_dir']):
-                url = md[key]['remote_data_dir']
-            elif is_url(remote_data_root):
-                url = '/'.join([remote_data_root, md[key]['remote_data_dir']])
-            else:
-                url = None
-        else:
-            # there is no remote data store
-            url = None
-        md[key]['remote_data_dir'] = url
-
-    return md
-
-def selector_labels(all_metadata):
+def _selector_labels(all_metadata):
     """
 
     """
@@ -298,7 +447,7 @@ def selector_labels(all_metadata):
     has_local_data = {}
     for key, metadata in all_metadata.items():
         filenames = [k for k in metadata if k.endswith('_file') and metadata[k] is not None]
-        files_exist = [os.path.exists(abs_path(metadata, file)) for file in filenames]
+        files_exist = [os.path.exists(_abs_path(metadata, file)) for file in filenames]
         if all(files_exist):
             has_local_data[key] = '◆'
         elif any(files_exist):
@@ -328,161 +477,3 @@ def selector_labels(all_metadata):
         for k in all_metadata.keys()]
 
     return labels
-
-
-class MetadataSelector():
-    """
-    A class for managing metadata.
-
-    A metadata file can be specified at initialization, in which case it is
-    read immediately. The file contents are stored in ``all_metadata``.
-
-    >>> metadata = MetadataSelector(file='metadata.yml')
-    >>> print(metadata.all_metadata)
-
-    File contents can be reloaded after they have been changed, or after
-    changing ``file``, using the ``load`` method.
-
-    >>> metadata = MetadataSelector()
-    >>> metadata.file = 'metadata.yml'
-    >>> metadata.load()
-
-    A particular metadata set contained within the file can be selected at
-    initialization with ``initial_selection`` or later using the ``select``
-    method. After making a selection, the selected metadata set is accessible
-    at ``metadata.selected_metadata``, e.g.
-
-    >>> metadata = MetadataSelector(file='metadata.yml')
-    >>> metadata.select('Data Set 5')
-    >>> print(metadata.selected_metadata['data_file'])
-
-    A compact indexing method is implemented that allows the selected metadata
-    set to be accessed directly, e.g.
-
-    >>> print(metadata['data_file'])
-
-    This allows the MetadataSelector to be passed to functions expecting a
-    simple dictionary corresponding to a single metadata set, and the selected
-    metadata set will be used automatically.
-
-    Files associated with the selected metadata set can be downloaded
-    individually or all together, e.g.
-
-    >>> metadata.download('video_file')
-
-    or
-
-    >>> metadata.download_all_data_files()
-
-    The absolute path to a local file or the full URL to a remote file
-    associated with the selected metadata set can be resolved with the
-    ``abs_path`` and ``abs_url`` methods, e.g.
-
-    >>> print(metadata.abs_path('data_file'))
-    >>> print(metadata.abs_url('data_file'))
-    """
-
-    def __init__(self, file=None, local_data_root=None, remote_data_root=None, initial_selection=None):
-        """
-        Initialize a new MetadataSelector.
-        """
-
-        self.file = file
-        self.local_data_root = local_data_root
-        self.remote_data_root = remote_data_root
-
-        self.all_metadata = None
-        self._selection = None
-        if self.file is not None:
-            self.load()
-            if initial_selection is not None:
-                self.select(initial_selection)
-
-    def load(self):
-        """
-        Read the metadata file.
-        """
-        self.all_metadata = LoadMetadata(self.file, self.local_data_root, self.remote_data_root)
-        if self._selection not in self.all_metadata:
-            self._selection = None
-
-    def select(self, selection):
-        """
-        Select a metadata set.
-        """
-        if self.all_metadata is None:
-            print('load metadata before selecting')
-        elif selection not in self.all_metadata:
-            raise ValueError('{} was not found in {}'.format(selection, self.file))
-        else:
-            self._selection = selection
-
-    @property
-    def selected_metadata(self):
-        """
-        The access point for the selected metadata set.
-        """
-        if self._selection is None:
-            return None
-        else:
-            return self.all_metadata[self._selection]
-
-    def abs_path(self, file):
-        """
-        Convert the relative path of file to an absolute path using data_dir.
-        """
-        return abs_path(self.selected_metadata, file)
-
-    def abs_url(self, file):
-        """
-        Convert the relative path of file to a full URL using remote_data_dir.
-        """
-        return abs_url(self.selected_metadata, file)
-
-    def download(self, file):
-        """
-        Download a file associated with the selected metadata set.
-        """
-        download_file(self.selected_metadata, file)
-
-    def download_all_data_files(self):
-        """
-        Download all files associated with the selected metadata set.
-        """
-        DownloadAllDataFiles(self.selected_metadata)
-
-    def __iter__(self, *args):
-        """
-        Pass-through method for using __iter__ on the selected metadata set.
-        """
-        return self.selected_metadata.__iter__(*args)
-
-    def __getitem__(self, *args):
-        """
-        Pass-through method for using __getitem__ on the selected metadata set.
-        """
-        return self.selected_metadata.__getitem__(*args)
-
-    def __setitem__(self, *args):
-        """
-        Pass-through method for using __setitem__ on the selected metadata set.
-        """
-        return self.selected_metadata.__setitem__(*args)
-
-    def __delitem__(self, *args):
-        """
-        Pass-through method for using __delitem__ on the selected metadata set.
-        """
-        return self.selected_metadata.__delitem__(*args)
-
-    def get(self, *args):
-        """
-        Pass-through method for using get() on the selected metadata set.
-        """
-        return self.selected_metadata.get(*args)
-
-    def setdefault(self, *args):
-        """
-        Pass-through method for using setdefault() on the selected metadata set.
-        """
-        return self.selected_metadata.setdefault(*args)
