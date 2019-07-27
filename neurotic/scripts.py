@@ -5,6 +5,8 @@
 
 import sys
 import argparse
+import subprocess
+import pkg_resources
 
 from ephyviewer import mkQApp
 
@@ -43,6 +45,11 @@ def parse_args(argv):
                         default='light', help='a color theme for the GUI ' \
                                               '(default: light)')
 
+    parser.add_argument('--launch-example-notebook', action='store_true',
+                        help='launch Jupyter with an example notebook ' \
+                             'instead of starting the standalone app (other ' \
+                             'args will be ignored)')
+
     args = parser.parse_args(argv[1:])
 
     return args
@@ -57,14 +64,42 @@ def win_from_args(args):
                      support_increased_line_width=args.thick)
     return win
 
+def launch_example_notebook():
+    """
+
+    """
+
+    path = pkg_resources.resource_filename('neurotic',
+                                           'example/example-notebook.ipynb')
+    out = None
+
+    # check whether Jupyter is installed
+    try:
+        out = subprocess.Popen(['jupyter', 'notebook', '--version'],
+                               stdout=subprocess.PIPE).communicate()[0]
+    except FileNotFoundError as e:
+        print('Unable to verify Jupyter is installed using "jupyter ' \
+              'notebook --version". Is it installed?')
+
+    if out:
+        # run Jupyter on the example notebook
+        try:
+            out = subprocess.Popen(['jupyter', 'notebook', path],
+                                   stdout=subprocess.PIPE).communicate()[0]
+        except FileNotFoundError as e:
+            print(f'Unable to locate the example notebook at {path}')
+
 def main():
     """
 
     """
 
     args = parse_args(sys.argv)
-    app = mkQApp()
-    win = win_from_args(args)
-    win.show()
-    print('Ready')
-    app.exec_()
+    if args.launch_example_notebook:
+        launch_example_notebook()
+    else:
+        app = mkQApp()
+        win = win_from_args(args)
+        win.show()
+        print('Ready')
+        app.exec_()

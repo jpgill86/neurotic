@@ -130,12 +130,17 @@ To inspect the metadata file associated with the example or to make changes to
 it, click "Edit metadata". See `Configuring Metadata`_ for details about the
 format.
 
-The command line interface accepts arguments as well:
+If you prefer Jupyter notebooks, you can launch an example notebook instead for
+experimenting with **neurotic**'s API::
+
+    neurotic --launch-example-notebook
+
+The command line interface accepts other arguments too:
 
 .. code-block::
 
     usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces]
-                    [--theme {light,dark,original}]
+                    [--theme {light,dark,original}] [--launch-example-notebook]
                     [file] [dataset]
 
     neurotic lets you curate, visualize, annotate, and share your behavioral ephys
@@ -157,7 +162,10 @@ The command line interface accepts arguments as well:
                             support)
       --theme {light,dark,original}
                             a color theme for the GUI (default: light)
-
+      --launch-example-notebook
+                            launch Jupyter with an example notebook instead of
+                            starting the standalone app (other args will be
+                            ignored)
 
 .. |neurotic logo| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/neurotic/gui/icons/img/neurotic-logo-30.png
     :alt: Project logo
