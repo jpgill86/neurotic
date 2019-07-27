@@ -173,8 +173,8 @@ to the metadata file. In the example above, if the metadata file is located in
 
 .. _congig-metadata-globals:
 
-Global Configuration Settings:
-------------------------------
+Global Configuration Settings
+-----------------------------
 
 The top-level name ``neurotic_config`` is reserved for configuration settings
 that apply to all datasets or to the app itself. Presently, only one

@@ -1,148 +1,53 @@
 # -*- coding: utf-8 -*-
 """
+The :mod:`neurotic.gui.config` module implements a class for configuring and
+launching ephyviewer for a loaded dataset.
 
+.. autoclass:: EphyviewerConfigurator
+   :members:
 """
 
 import re
-from functools import wraps
 
 import numpy as np
 import pandas as pd
 import quantities as pq
 import ephyviewer
 
-from ..datasets import abs_path
-from ..gui.epochencoder import MyWritableEpochSource
+from ..datasets.metadata import _abs_path
+from ..gui.epochencoder import NeuroticWritableEpochSource
 
 pq.mN = pq.UnitQuantity('millinewton', pq.N/1e3, symbol = 'mN');  # define millinewton
 
-def defaultKeepSignal(sig):
-    """
-
-    """
-    return (not sig.name.startswith('Analog Input #')) and (sig.name != 'Clock')
-
-def defaultUnits(sig):
-    """
-
-    """
-
-    mapping = {
-        'V': 'uV', # convert voltages to microvolts
-        'N': 'mN', # convert forces to millinewtons
-    }
-    mapping = {pq.Quantity(1, k).dimensionality.simplified: v for k, v in mapping.items()}
-    return mapping.get(sig.units.dimensionality.simplified, sig.units)
-
-def defaultYLim(sig):
-    """
-
-    """
-
-    mapping = {
-        'V': [-120, 120], # plot range for voltages
-        'N': [ -10, 300], # plot range for forces
-    }
-    mapping = {pq.Quantity(1, k).dimensionality.simplified: v for k, v in mapping.items()}
-    return mapping.get(sig.units.dimensionality.simplified, [-1, 1])
-
-def setDefaultsForPlots(metadata, blk):
-    """
-
-    """
-
-    sigs = blk.segments[0].analogsignals
-    signalNameToIndex = {sig.name:i for i, sig in enumerate(sigs)}
-
-    if metadata['plots'] is None:
-        metadata['plots'] = [{'channel': sig.name} for sig in sigs if defaultKeepSignal(sig)]
-
-    plots = []
-    for plot in metadata['plots']:
-        index = signalNameToIndex.get(plot['channel'], None)
-        if index is None:
-            print('Warning: removing plot with channel name "{}" because channel was not found in blk!'.format(plot['channel']))
-        else:
-            plot['index'] = index
-            plot.setdefault('units',  defaultUnits(sigs[index]))
-            plot.setdefault('ylim',   defaultYLim(sigs[index]))
-            plot.setdefault('ylabel', sigs[index].name)
-            plots.append(plot)
-    metadata['plots'] = plots
-
-    return metadata['plots']
-
-def NeoEpochToDataFrame(neo_epochs, exclude_epoch_encoder_epochs=False):
-    """
-
-    """
-
-    dtypes = {
-        'Start (s)':    float,
-        'End (s)':      float,
-        'Duration (s)': float,
-        'Type':         str,
-        'Label':        str,
-    }
-    columns = list(dtypes.keys())
-    df = pd.DataFrame(columns=columns)
-    for ep in neo_epochs:
-        if not exclude_epoch_encoder_epochs or '(from epoch encoder file)' not in ep.labels:
-            data = np.array([ep.times, ep.times+ep.durations, ep.durations, [ep.name]*len(ep), ep.labels]).T
-            df = df.append(pd.DataFrame(data, columns=columns), ignore_index=True)
-    return df.astype(dtype=dtypes).sort_values(['Start (s)', 'End (s)', 'Type', 'Label']).reset_index(drop=True)
-
-def EstimateVideoJumpTimes(blk):
-    """
-    Estimate how much time to skip in video playback if AxoGraph was temporarily
-    paused during data acquisition while the video continued to record. Returns
-    a list of ordered pairs suitable for the video_jumps metadata parameter. The
-    returned stop times are exact, but pause durations have only whole-second
-    precision and should be manually refined by inspecting the video before
-    using.
-    """
-
-    if 'notes' not in blk.annotations:
-        return None
-    else:
-
-        # obtain approximate start and stop times according to AxoGraph notes
-        note_start_times = np.array([0], dtype=np.int)
-        note_stop_times = np.array([], dtype=np.int)
-        for note_line in blk.annotations['notes'].split('\n'):
-            m = re.match('\d\d\d: Start at (\d*) s', note_line)
-            if m:
-                note_start_times = np.append(note_start_times, int(m.group(1)))
-            m = re.match('\d\d\d: Stop at (\d*) s', note_line)
-            if m:
-                note_stop_times = np.append(note_stop_times, int(m.group(1)))
-
-        # calculate approximate pause durations
-        pause_durations = note_start_times[1:]-note_stop_times[:-1]
-
-        # obtain exact stop times (AxoGraph time, not video time)
-        event_stop_times = np.array([], dtype=np.float)
-        ev = next((ev for ev in blk.segments[0].events if ev.name == 'AxoGraph Tags'), None)
-        if ev is not None:
-            for time, label in zip(ev.times, ev.labels):
-                if label == 'Stop':
-                    event_stop_times = np.append(event_stop_times, time.magnitude)
-
-        # pair stop times with pause durations
-        video_jumps = []
-        for t, dur in zip(event_stop_times[:-1], pause_durations):
-            video_jumps.append([t, dur])
-
-        return video_jumps
 
 class EphyviewerConfigurator():
     """
+    A class for launching ephyviewer for a dataset with configurable viewers.
 
+    At initialization, invalid viewers are automatically disabled (e.g., the
+    video viewer is disabled if ``video_file`` is not given in ``metadata``).
+    Viewers can be hidden or shown before launch using the built-in methods.
+    Valid viewer names are:
+
+        * ``traces``
+        * ``traces_rauc``
+        * ``freqs``
+        * ``spike_trains``
+        * ``epochs``
+        * ``epoch_encoder``
+        * ``video``
+        * ``event_list``
+        * ``data_frame``
+
+    :meth:`launch_ephyviewer` is provided for starting a new Qt app and
+    launching the ephyviewer main window all at once.
+    :meth:`create_ephyviewer_window` generates just the ephyviewer window
+    and should be used if there is already a Qt app running.
     """
 
     def __init__(self, metadata, blk, rauc_sigs = None, lazy = False):
         """
-
+        Initialize a new EphyviewerConfigurator.
         """
 
         self.metadata = metadata
@@ -212,7 +117,7 @@ class EphyviewerConfigurator():
             print('data because video_offset is unspecified! Consider adding')
             print('it to your metadata.')
         if metadata['video_file'] is not None and metadata['video_jumps'] is None:
-            approx_video_jumps = EstimateVideoJumpTimes(blk)
+            approx_video_jumps = _estimate_video_jump_times(blk)
             if approx_video_jumps:
                 print('WARNING: It seems that AxoGraph was paused at least once')
                 print('during data acquisition, but video_jumps is unspecified.')
@@ -229,7 +134,7 @@ class EphyviewerConfigurator():
 
     def is_enabled(self, name):
         """
-
+        Return whether the viewer ``name`` is enabled.
         """
         if name in self.viewer_settings:
             return not self.viewer_settings[name]['disabled']
@@ -238,21 +143,21 @@ class EphyviewerConfigurator():
 
     def enable(self, name):
         """
-
+        Enable the viewer ``name``.
         """
         if name in self.viewer_settings:
             self.viewer_settings[name]['disabled'] = False
 
     def disable(self, name):
         """
-
+        Disable the viewer ``name``.
         """
         if name in self.viewer_settings:
             self.viewer_settings[name]['disabled'] = True
 
     def is_shown(self, name):
         """
-
+        Return whether the viewer ``name`` is shown.
         """
         if name in self.viewer_settings:
             return self.viewer_settings[name]['show']
@@ -261,7 +166,7 @@ class EphyviewerConfigurator():
 
     def show(self, name):
         """
-
+        Show the viewer ``name``.
         """
         if name in self.viewer_settings:
             if not self.viewer_settings[name]['disabled']:
@@ -273,7 +178,7 @@ class EphyviewerConfigurator():
 
     def hide(self, name):
         """
-
+        Hide the viewer ``name``.
         """
         if name in self.viewer_settings:
             self.viewer_settings[name]['show'] = False
@@ -282,7 +187,7 @@ class EphyviewerConfigurator():
 
     def show_all(self):
         """
-
+        Show all viewers.
         """
         for name in self.viewer_settings:
             if not self.viewer_settings[name]['disabled']:
@@ -290,14 +195,14 @@ class EphyviewerConfigurator():
 
     def hide_all(self):
         """
-
+        Hide all viewers.
         """
         for name in self.viewer_settings:
             self.hide(name)
 
     def launch_ephyviewer(self, theme='light', support_increased_line_width=False):
         """
-
+        Start a Qt app and create an ephyviewer window.
         """
 
         app = ephyviewer.mkQApp()
@@ -307,7 +212,7 @@ class EphyviewerConfigurator():
 
     def create_ephyviewer_window(self, theme='light', support_increased_line_width=False):
         """
-
+        Load data into each ephyviewer viewer and return the main window.
         """
 
         ########################################################################
@@ -345,7 +250,7 @@ class EphyviewerConfigurator():
         ########################################################################
         # PREPARE TRACE PARAMETERS
 
-        setDefaultsForPlots(self.metadata, self.blk)
+        _set_defaults_for_plots(self.metadata, self.blk)
 
         plotNameToIndex = {p['channel']:i for i, p in enumerate(self.metadata['plots'])}
 
@@ -376,10 +281,10 @@ class EphyviewerConfigurator():
 
             if self.lazy:
                 import neo
-                neorawioclass = neo.rawio.get_rawio_class(abs_path(self.metadata, 'data_file'))
+                neorawioclass = neo.rawio.get_rawio_class(_abs_path(self.metadata, 'data_file'))
                 if neorawioclass is None:
-                    raise ValueError('This file type cannot be read with fast loading (lazy=True): {}'.format(abs_path(self.metadata, 'data_file')))
-                neorawio = neorawioclass(abs_path(self.metadata, 'data_file'))
+                    raise ValueError('This file type cannot be read with fast loading (lazy=True): {}'.format(_abs_path(self.metadata, 'data_file')))
+                neorawio = neorawioclass(_abs_path(self.metadata, 'data_file'))
                 neorawio.parse_header()
 
                 # Intan-specific tricks
@@ -579,8 +484,8 @@ class EphyviewerConfigurator():
                 if label not in possible_labels:
                     possible_labels.append(label)
 
-            writable_epoch_source = MyWritableEpochSource(
-                filename = abs_path(self.metadata, 'epoch_encoder_file'),
+            writable_epoch_source = NeuroticWritableEpochSource(
+                filename = _abs_path(self.metadata, 'epoch_encoder_file'),
                 possible_labels = possible_labels,
             )
 
@@ -600,7 +505,7 @@ class EphyviewerConfigurator():
 
         if self.is_shown('video') and self.metadata['video_file'] is not None:
 
-            video_source = ephyviewer.MultiVideoFileSource(video_filenames = [abs_path(self.metadata, 'video_file')])
+            video_source = ephyviewer.MultiVideoFileSource(video_filenames = [_abs_path(self.metadata, 'video_file')])
 
             # some video files are loaded with an incorrect start time, so
             # reset video start to zero
@@ -658,7 +563,7 @@ class EphyviewerConfigurator():
         ########################################################################
         # DATAFRAME
 
-        annotations_dataframe = NeoEpochToDataFrame(seg.epochs, exclude_epoch_encoder_epochs=True)
+        annotations_dataframe = _neo_epoch_to_dataframe(seg.epochs, exclude_epoch_encoder_epochs=True)
         if self.is_shown('data_frame') and len(annotations_dataframe) > 0:
 
             data_frame_view = ephyviewer.DataFrameView(source = annotations_dataframe, name = 'table')
@@ -681,3 +586,126 @@ class EphyviewerConfigurator():
         win.set_xsize(self.metadata['t_width']) # seconds
 
         return win
+
+def _set_defaults_for_plots(metadata, blk):
+    """
+    Set defaults for plot channels, units, ylim, and ylabel if these
+    parameters are missing from ``metadata``.
+    """
+
+    sigs = blk.segments[0].analogsignals
+    signalNameToIndex = {sig.name:i for i, sig in enumerate(sigs)}
+
+    if metadata['plots'] is None:
+        metadata['plots'] = [{'channel': sig.name} for sig in sigs if _default_keep_signal(sig)]
+
+    plots = []
+    for plot in metadata['plots']:
+        index = signalNameToIndex.get(plot['channel'], None)
+        if index is None:
+            print('Warning: removing plot with channel name "{}" because channel was not found in blk!'.format(plot['channel']))
+        else:
+            plot['index'] = index
+            plot.setdefault('units',  _default_units(sigs[index]))
+            plot.setdefault('ylim',   _default_ylim(sigs[index]))
+            plot.setdefault('ylabel', sigs[index].name)
+            plots.append(plot)
+    metadata['plots'] = plots
+
+    return metadata['plots']
+
+def _default_keep_signal(sig):
+    """
+    If ``plots`` is not specified in ``metadata``, this function determines
+    which channels are plotted by default.
+    """
+    return (not sig.name.startswith('Analog Input #')) and (sig.name != 'Clock')
+
+def _default_units(sig):
+    """
+    If ``plots`` is missing ``units`` in ``metadata``, this function determines
+    default units.
+    """
+
+    mapping = {
+        'V': 'uV', # convert voltages to microvolts
+        'N': 'mN', # convert forces to millinewtons
+    }
+    mapping = {pq.Quantity(1, k).dimensionality.simplified: v for k, v in mapping.items()}
+    return mapping.get(sig.units.dimensionality.simplified, sig.units)
+
+def _default_ylim(sig):
+    """
+    If ``plots`` is missing ``ylim`` in ``metadata``, this function determines
+    default plot ranges.
+    """
+
+    mapping = {
+        'V': [-120, 120], # plot range for voltages
+        'N': [ -10, 300], # plot range for forces
+    }
+    mapping = {pq.Quantity(1, k).dimensionality.simplified: v for k, v in mapping.items()}
+    return mapping.get(sig.units.dimensionality.simplified, [-1, 1])
+
+def _neo_epoch_to_dataframe(neo_epochs, exclude_epoch_encoder_epochs=False):
+    """
+    Convert a list of Neo Epochs into a dataframe.
+    """
+
+    dtypes = {
+        'Start (s)':    float,
+        'End (s)':      float,
+        'Duration (s)': float,
+        'Type':         str,
+        'Label':        str,
+    }
+    columns = list(dtypes.keys())
+    df = pd.DataFrame(columns=columns)
+    for ep in neo_epochs:
+        if not exclude_epoch_encoder_epochs or '(from epoch encoder file)' not in ep.labels:
+            data = np.array([ep.times, ep.times+ep.durations, ep.durations, [ep.name]*len(ep), ep.labels]).T
+            df = df.append(pd.DataFrame(data, columns=columns), ignore_index=True)
+    return df.astype(dtype=dtypes).sort_values(['Start (s)', 'End (s)', 'Type', 'Label']).reset_index(drop=True)
+
+def _estimate_video_jump_times(blk):
+    """
+    Estimate how much time to skip in video playback if AxoGraph was temporarily
+    paused during data acquisition while the video continued to record. Returns
+    a list of ordered pairs suitable for the video_jumps metadata parameter. The
+    returned stop times are exact, but pause durations have only whole-second
+    precision and should be manually refined by inspecting the video before
+    using.
+    """
+
+    if 'notes' not in blk.annotations:
+        return None
+    else:
+
+        # obtain approximate start and stop times according to AxoGraph notes
+        note_start_times = np.array([0], dtype=np.int)
+        note_stop_times = np.array([], dtype=np.int)
+        for note_line in blk.annotations['notes'].split('\n'):
+            m = re.match('\d\d\d: Start at (\d*) s', note_line)
+            if m:
+                note_start_times = np.append(note_start_times, int(m.group(1)))
+            m = re.match('\d\d\d: Stop at (\d*) s', note_line)
+            if m:
+                note_stop_times = np.append(note_stop_times, int(m.group(1)))
+
+        # calculate approximate pause durations
+        pause_durations = note_start_times[1:]-note_stop_times[:-1]
+
+        # obtain exact stop times (AxoGraph time, not video time)
+        event_stop_times = np.array([], dtype=np.float)
+        ev = next((ev for ev in blk.segments[0].events if ev.name == 'AxoGraph Tags'), None)
+        if ev is not None:
+            for time, label in zip(ev.times, ev.labels):
+                if label == 'Stop':
+                    event_stop_times = np.append(event_stop_times, time.magnitude)
+
+        # pair stop times with pause durations
+        video_jumps = []
+        for t, dur in zip(event_stop_times[:-1], pause_durations):
+            video_jumps.append([t, dur])
+
+        return video_jumps

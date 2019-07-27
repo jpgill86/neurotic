@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 """
+The :mod:`neurotic.gui.notebook` module implements Jupyter notebook widget
+counterparts for the :class:`MetadataSelector
+<neurotic.datasets.metadata.MetadataSelector>` and the
+:class:`EphyviewerConfigurator <neurotic.gui.config.EphyviewerConfigurator>`.
 
+.. autoclass:: MetadataSelectorWidget
+
+.. autoclass:: EphyviewerConfiguratorWidget
+   :members:
 """
 
 try:
@@ -10,7 +18,7 @@ try:
 except ImportError:
     HAVE_IPYWIDGETS = False
 
-from ..datasets import MetadataSelector, selector_labels
+from ..datasets.metadata import MetadataSelector, _selector_labels
 from ..gui.config import EphyviewerConfigurator
 
 
@@ -62,7 +70,7 @@ class MetadataSelectorWidget(MetadataSelector):
 
         if self.all_metadata is not None:
             # create display text for the selector from keys and descriptions
-            self.selector.options = zip(selector_labels(self.all_metadata), self.all_metadata.keys())
+            self.selector.options = zip(_selector_labels(self.all_metadata), self.all_metadata.keys())
 
             # set initial selection
             if self._selection is None:
@@ -122,7 +130,7 @@ class MetadataSelectorWidget(MetadataSelector):
             old_selection = self._selection
 
             # changing the options triggers the selection to change
-            self.selector.options = zip(selector_labels(self.all_metadata), self.all_metadata.keys())
+            self.selector.options = zip(_selector_labels(self.all_metadata), self.all_metadata.keys())
 
             # reselect the original selection if it still exists
             if old_selection in self.all_metadata:
@@ -137,12 +145,14 @@ class MetadataSelectorWidget(MetadataSelector):
 
 class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
     """
-
+    Interactive button grid for Jupyter notebooks that allows the user to
+    select which ephyviewer viewers they would like to display and then launch
+    ephyviewer.
     """
 
     def __init__(self, metadata, blk, rauc_sigs = None, lazy = False):
         """
-
+        Initialize a new EphyviewerConfiguratorWidget.
         """
 
         assert HAVE_IPYWIDGETS, 'ipywidgets is a requirement for EphyviewerConfiguratorWidget'
@@ -189,7 +199,7 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
 
     def _on_toggle(self, change):
         """
-
+        Show or hide the viewer corresponding to the clicked button.
         """
         name = change['owner'].key
         show = change['new']
@@ -200,13 +210,13 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
 
     def _on_launch_clicked(self, button):
         """
-
+        Start a Qt app and create an ephyviewer window.
         """
         self.launch_ephyviewer()
 
     def enable(self, name):
         """
-
+        Enable the viewer ``name``.
         """
         EphyviewerConfigurator.enable(self, name)
         if name in self.controls:
@@ -215,7 +225,7 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
 
     def disable(self, name):
         """
-
+        Disable the viewer ``name``.
         """
         EphyviewerConfigurator.disable(self, name)
         if name in self.controls:
@@ -223,7 +233,7 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
 
     def show(self, name):
         """
-
+        Show the viewer ``name``.
         """
         EphyviewerConfigurator.show(self, name)
         if name in self.controls:
@@ -232,7 +242,7 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
 
     def hide(self, name):
         """
-
+        Hide the viewer ``name``.
         """
         EphyviewerConfigurator.hide(self, name)
         if name in self.controls:

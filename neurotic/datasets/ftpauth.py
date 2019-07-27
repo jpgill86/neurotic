@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+The :mod:`neurotic.datasets.ftpauth` module implements a
+:mod:`urllib.request`-compatible FTP handler that prompts for and remembers
+passwords.
 
+.. autoclass:: FTPBasicAuthHandler
+
+.. autofunction:: setup_ftpauth
 """
 
 import ftplib
@@ -11,17 +17,19 @@ from urllib.parse import splitport, splituser, unquote
 
 class FTPBasicAuthHandler(FTPHandler):
     """
-    This subclass of urllib.request.FTPHandler implements basic authentication
-    management for FTP connections. Like HTTPBasicAuthHandler, this handler for
-    FTP connections has a password manager that it checks for login credentials
-    before connecting to a server.
+    This subclass of :class:`urllib.request.FTPHandler` implements basic
+    authentication management for FTP connections. Like
+    :class:`urllib.request.HTTPBasicAuthHandler`, this handler for FTP connections
+    has a password manager that it checks for login credentials before
+    connecting to a server.
 
     This subclass also ensures that file size is included in the response
-    header, which can fail for some FTP servers if the original FTPHandler is
-    used.
+    header, which can fail for some FTP servers if the original
+    :class:`FTPHandler <urllib.request.FTPHandler>` is used.
 
     This handler can be installed globally in a Python session so that calls
-    to urllib.request.urlopen('ftp://...') will use it automatically:
+    to :func:`urllib.request.urlopen('ftp://...') <urllib.request.urlopen>`
+    will use it automatically:
 
     >>> handler = FTPBasicAuthHandler()
     >>> handler.add_password(None, uri, user, passwd)  # realm must be None
@@ -31,7 +39,7 @@ class FTPBasicAuthHandler(FTPHandler):
 
     def __init__(self, password_mgr=None):
         """
-
+        Initialize a new FTPBasicAuthHandler.
         """
 
         if password_mgr is None:
@@ -43,21 +51,21 @@ class FTPBasicAuthHandler(FTPHandler):
     def ftp_open(self, req):
         """
         When ftp requests are made using this handler, this function gets
-        called at some point, and it in turn calls the connect_ftp method. In
-        this subclass's reimplementation of connect_ftp, the FQDN of the
-        request's host is needed for looking up login credentials in the
-        password manager. However, by the time connect_ftp is called, that
+        called at some point, and it in turn calls the ``connect_ftp`` method.
+        In this subclass's reimplementation of ``connect_ftp``, the FQDN of
+        the request's host is needed for looking up login credentials in the
+        password manager. However, by the time ``connect_ftp`` is called, that
         information has been stripped away, and the host argument passed to
-        connect_ftp contains only the host's IP address instead of the FQDN.
-        This reimplementation of ftp_open, which is little more than a
-        copy-and-paste from the superclass's implementation, captures the
+        ``connect_ftp`` contains only the host's IP address instead of the
+        FQDN. This reimplementation of ``ftp_open``, which is little more than
+        a copy-and-paste from the superclass's implementation, captures the
         original host FQDN before it is replaced with the IP address and saves
         it for later use.
 
         This reimplementation also ensures that the file size appears in the
         response header by querying for it directly. For some FTP servers the
-        original implementation should handle this (retrlen should contain the
-        file size). However, for others this can fail silently due to the
+        original implementation should handle this (``retrlen`` should contain
+        the file size). However, for others this can fail silently due to the
         server response not matching an anticipated regular expression.
         """
 
@@ -142,11 +150,12 @@ class FTPBasicAuthHandler(FTPHandler):
     def connect_ftp(self, user, passwd, host, port, dirs, timeout):
         """
         Unless authentication credentials are provided in the request URL
-        (ftp://user:passwd@host/path), this method will be called with empty
-        user and passwd arguments. In that case, this reimplementation of
-        connect_ftp checks the password manager for credentials matching the
-        last_req_host (the host argument will be an IP address instead of the
-        FQDN and is thereby useless if the password manager is keyed by FQDN).
+        (``ftp://user:passwd@host/path``), this method will be called with
+        empty user and passwd arguments. In that case, this reimplementation of
+        ``connect_ftp`` checks the password manager for credentials matching
+        the ``last_req_host`` (the host argument will be an IP address instead
+        of the FQDN and is thereby useless if the password manager is keyed by
+        FQDN).
         """
 
         if not user and not passwd:
@@ -154,12 +163,14 @@ class FTPBasicAuthHandler(FTPHandler):
         return super().connect_ftp(user, passwd, host, port, dirs, timeout)
 
 
-def setup():
+def setup_ftpauth():
     """
-    Install FTPBasicAuthHandler as the global default FTP handler
+    Install :class:`neurotic.datasets.ftpauth.FTPBasicAuthHandler` as the
+    global default FTP handler.
 
-    Note that install_opener will remove all other non-default handlers
-    installed in a different opener, such as an HTTPBasicAuthHandler.
+    Note that :func:`urllib.request.install_opener` used here will remove all
+    other non-default handlers installed in a different opener, such as an
+    :class:`urllib.request.HTTPBasicAuthHandler`.
     """
 
     handler = FTPBasicAuthHandler()

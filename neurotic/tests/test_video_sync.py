@@ -41,15 +41,15 @@ class VideoSyncUnitTest(unittest.TestCase):
                                              initial_selection=dataset)
         metadata.download('data_file')
 
-        blk = neurotic.LoadAndPrepareData(metadata=metadata, lazy=True)
-        video_jumps = neurotic.EstimateVideoJumpTimes(blk)
+        blk = neurotic.load_dataset(metadata=metadata, lazy=True)
+        video_jumps = neurotic.gui.config._estimate_video_jump_times(blk)
         del blk
 
         assert_array_almost_equal(
             np.array(video_jumps),
             np.array([[1.1998, 3], [4.6998, 3], [5.2998, 3]]),
             decimal=12,
-            err_msg='EstimateVideoJumpTimes gave unexpected result')
+            err_msg='_estimate_video_jump_times gave unexpected result')
 
 if __name__ == '__main__':
     unittest.main()
