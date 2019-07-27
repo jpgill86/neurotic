@@ -10,10 +10,10 @@ from setuptools import setup, find_packages
 
 # Change version number here, not in neurotic/version.py, which is generated
 # by this script. Try to follow recommended versioning guidelines at semver.org.
-MAJOR       = 0     # increment for backwards-incompatible changes
-MINOR       = 8     # increment for backwards-compatible feature additions
+MAJOR       = 1     # increment for backwards-incompatible changes
+MINOR       = 0     # increment for backwards-compatible feature additions
 MICRO       = 0     # increment for backwards-compatible bug fixes
-IS_RELEASED = False # determines whether version will be marked as development
+IS_RELEASED = True  # determines whether version will be marked as development
 VERSION     = f'{MAJOR}.{MINOR}.{MICRO}'
 
 # Try to fetch the git revision number from the .git directory if it exists,
@@ -111,7 +111,7 @@ setup(
         'Bug tracker': 'https://github.com/jpgill86/neurotic/issues',
     },
     classifiers = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
