@@ -66,7 +66,7 @@ Key                     Description
 ``video_file``          A video file that can be synchronized with ``data_file``
 ``annotations_file``    A CSV file for read-only annotations
 ``epoch_encoder_file``  A CSV file for annotations writable by the epoch encoder
-``tridesclous_file``    A CSV file output by tridesclous_'s DataIO.export_spikes_
+``tridesclous_file``    A CSV file output by tridesclous_'s :meth:`DataIO.export_spikes <tridesclous.dataio.DataIO.export_spikes>`
 ======================  ========================================================
 
 Note that the ``annotations_file`` must contain exactly 4 columns with
@@ -436,7 +436,8 @@ tridesclous Spike Sorting Results
 ---------------------------------
 
 tridesclous_ is a sophisticated spike sorting toolkit. The results of a sorting
-process can be exported to a CSV file using tridesclous's DataIO.export_spikes_
+process can be exported to a CSV file using tridesclous's
+:meth:`DataIO.export_spikes <tridesclous.dataio.DataIO.export_spikes>`
 function. This file contains two columns: the first is the sample index of a
 spike, and the second is the ID for a cluster of spikes. If this file is
 specified with ``tridesclous_file``, then a mapping from the cluster IDs to
@@ -500,7 +501,6 @@ without arguments:
    :language: yaml
 
 
-.. _DataIO.export_spikes: https://tridesclous.readthedocs.io/en/latest/api.html#tridesclous.dataio.DataIO.export_spikes
 .. _GIN:                  https://gin.g-node.org
 .. _Neo:                  https://github.com/NeuralEnsemble/python-neo
 .. _tridesclous:          https://github.com/tridesclous/tridesclous
