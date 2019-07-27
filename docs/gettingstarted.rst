@@ -22,7 +22,12 @@ To inspect the metadata file associated with the example or to make changes to
 it, click "Edit metadata". See :ref:`config-metadata` for details about the
 format.
 
-The command line interface accepts arguments as well:
+If you prefer Jupyter notebooks, you can launch an example notebook instead for
+experimenting with **neurotic**'s API::
+
+    neurotic --launch-example-notebook
+
+The command line interface accepts other arguments too:
 
 .. program-output:: neurotic --help
 
