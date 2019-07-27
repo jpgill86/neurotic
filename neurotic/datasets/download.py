@@ -9,7 +9,7 @@ credentials if a bad user name or password is given.
 The module installs an :class:`urllib.request.HTTPBasicAuthHandler` and a
 :class:`neurotic.datasets.ftpauth.FTPBasicAuthHandler` at import time.
 
-.. autofunction:: safe_download
+.. autofunction:: download
 """
 
 import os
@@ -31,11 +31,11 @@ _opener = urllib.request.build_opener(_http_auth_handler, _ftp_auth_handler)
 urllib.request.install_opener(_opener)
 
 
-def safe_download(url, local_file, **kwargs):
+def download(url, local_file, overwrite_existing=False, show_progress=True, bytes_per_chunk=1024*8):
     """
-    Download unless the file already exists locally.
+    Download a file.
     """
-    if os.path.exists(local_file):
+    if not overwrite_existing and os.path.exists(local_file):
         print(f'Skipping {os.path.basename(local_file)} (already exists)')
         return
 
@@ -44,7 +44,7 @@ def safe_download(url, local_file, **kwargs):
 
     print(f'Downloading {os.path.basename(local_file)}')
     try:
-        _download(url, local_file, **kwargs)
+        _download_with_progress_bar(url, local_file, show_progress=show_progress, bytes_per_chunk=bytes_per_chunk)
 
     except urllib.error.HTTPError as e:
 
@@ -102,9 +102,9 @@ def safe_download(url, local_file, **kwargs):
                 return
 
 
-def _download(url, local_file, bytes_per_chunk=1024*8, show_progress=True):
+def _download_with_progress_bar(url, local_file, show_progress=True, bytes_per_chunk=1024*8):
     """
-    Download after authenticating if necessary.
+    Authenticate if necessary, then download while showing a progress bar.
     """
 
     auth_needed =  _auth_needed(url)

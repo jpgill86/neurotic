@@ -11,7 +11,7 @@ import os
 import urllib
 import yaml
 
-from ..datasets.download import safe_download
+from ..datasets.download import download
 
 
 class MetadataSelector():
@@ -126,17 +126,23 @@ class MetadataSelector():
         """
         return _abs_url(self.selected_metadata, file)
 
-    def download(self, file):
+    def download(self, file, **kwargs):
         """
         Download a file associated with the selected metadata set.
-        """
-        _download_file(self.selected_metadata, file)
 
-    def download_all_data_files(self):
+        See :func:`neurotic.datasets.download.download` for possible keyword
+        arguments.
+        """
+        _download_file(self.selected_metadata, file, **kwargs)
+
+    def download_all_data_files(self, **kwargs):
         """
         Download all files associated with the selected metadata set.
+
+        See :func:`neurotic.datasets.download.download` for possible keyword
+        arguments.
         """
-        _download_all_data_files(self.selected_metadata)
+        _download_all_data_files(self.selected_metadata, **kwargs)
 
     def __iter__(self, *args):
         return self.selected_metadata.__iter__(*args)
@@ -406,9 +412,12 @@ def _is_url(url):
         return False
 
 
-def _download_file(metadata, file):
+def _download_file(metadata, file, **kwargs):
     """
-    Download a file
+    Download a file.
+
+    See :func:`neurotic.datasets.download.download` for possible keyword
+    arguments.
     """
 
     if not _is_url(metadata['remote_data_dir']):
@@ -422,12 +431,15 @@ def _download_file(metadata, file):
             os.makedirs(os.path.dirname(_abs_path(metadata, file)))
 
         # download the file only if it does not already exist
-        safe_download(_abs_url(metadata, file), _abs_path(metadata, file))
+        download(_abs_url(metadata, file), _abs_path(metadata, file), **kwargs)
 
 
-def _download_all_data_files(metadata):
+def _download_all_data_files(metadata, **kwargs):
     """
-    Download all files associated with metadata
+    Download all files associated with metadata.
+
+    See :func:`neurotic.datasets.download.download` for possible keyword
+    arguments.
     """
 
     if not _is_url(metadata['remote_data_dir']):
@@ -435,7 +447,7 @@ def _download_all_data_files(metadata):
         return
 
     for file in [k for k in metadata if k.endswith('_file')]:
-        _download_file(metadata, file)
+        _download_file(metadata, file, **kwargs)
 
 
 def _selector_labels(all_metadata):
