@@ -1,7 +1,7 @@
 .. _api:
 
-API Reference
-=============
+API Reference Guide
+===================
 
 In addition to using **neurotic** as a standalone app, you can also leverage
 its API in your own code.
