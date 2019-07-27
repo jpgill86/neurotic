@@ -1,0 +1,47 @@
+.. _v1.0.0:
+
+neurotic 1.0.0
+==============
+
+2019-07-27
+
+🎊 First stable release! 🎉
+
+Improvements
+------------
+
+* Major API changes
+  (`#104 <https://github.com/jpgill86/neurotic/pull/104>`__,
+  `#100 <https://github.com/jpgill86/neurotic/pull/100>`__,
+  `#106 <https://github.com/jpgill86/neurotic/pull/106>`__)
+
+    * In preparation for this stable release, many formerly public classes and
+      functions were made private. This was done to minimize the number of
+      public classes/functions, which beginning with this release will be
+      treated as stable APIs that are ideally modified only in backwards
+      compatible ways. Users should trust that public classes and functions
+      will not be changed without good reason and a major version bump.
+
+* Many improvements to the documentation, including the addition of an `API
+  Reference Guide <https://neurotic.readthedocs.io/en/latest/api.html>`__
+
+* Add example Jupyter notebook and command line argument for launching it
+  (`#108 <https://github.com/jpgill86/neurotic/pull/108>`__)
+
+* Add file overwrite option to download functions
+  (`#106 <https://github.com/jpgill86/neurotic/pull/106>`__)
+
+* Reserve the metadata keyword ``neurotic_config`` for global parameters
+  (`#93 <https://github.com/jpgill86/neurotic/pull/93>`__)
+
+    * The ``remote_data_root`` key must now be nested under
+      ``neurotic_config``.
+
+Bug fixes
+---------
+
+* Fix crash when epoch encoder file contains labels not listed in metadata
+  (`#97 <https://github.com/jpgill86/neurotic/pull/97>`__)
+
+* Allow amplitude discriminators to be specified with arbitrary units
+  (`#99 <https://github.com/jpgill86/neurotic/pull/99>`__)
