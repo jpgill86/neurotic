@@ -4,5 +4,6 @@ include README.rst
 include requirements*.txt
 
 # package data included in source distribution and installation
+include neurotic/example/example-notebook.ipynb
 include neurotic/example/metadata.yml
 include neurotic/tests/metadata-for-tests.yml
