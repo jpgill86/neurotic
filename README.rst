@@ -139,7 +139,7 @@ The command line interface accepts other arguments too:
 
 .. code-block::
 
-    usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces]
+    usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces] [--show-datetime]
                     [--theme {light,dark,original}] [--launch-example-notebook]
                     [file] [dataset]
 
@@ -160,6 +160,9 @@ The command line interface accepts other arguments too:
       --thick-traces        enable support for traces with thick lines, which has
                             a performance cost (default: disable thick line
                             support)
+      --show-datetime       display the real-world date and time, which may be
+                            inaccurate if the data file includes pauses (default:
+                            do not display)
       --theme {light,dark,original}
                             a color theme for the GUI (default: light)
       --launch-example-notebook
