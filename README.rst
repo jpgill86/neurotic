@@ -108,6 +108,11 @@ or install the latest development version from GitHub_ using ::
 
     pip install -U git+https://github.com/jpgill86/neurotic.git
 
+Note that if you install the development version, you may also need the latest
+development version of ephyviewer_, which you can get using ::
+
+    pip install -U git+https://github.com/NeuralEnsemble/ephyviewer.git
+
 Getting Started
 ---------------
 
