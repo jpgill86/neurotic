@@ -41,6 +41,10 @@ def parse_args(argv):
                         help='enable support for traces with thick lines, ' \
                              'which has a performance cost (default: ' \
                              'disable thick line support)')
+    parser.add_argument('--show-datetime', action='store_true', dest='datetime',
+                        help='display the real-world date and time, which ' \
+                             'may be inaccurate if the data file includes ' \
+                             'pauses (default: do not display)')
     parser.add_argument('--theme', choices=['light', 'dark', 'original'],
                         default='light', help='a color theme for the GUI ' \
                                               '(default: light)')
@@ -61,7 +65,8 @@ def win_from_args(args):
 
     win = MainWindow(file=args.file, initial_selection=args.dataset,
                      lazy=args.lazy, theme=args.theme,
-                     support_increased_line_width=args.thick)
+                     support_increased_line_width=args.thick,
+                     show_datetime=args.datetime)
     return win
 
 def launch_example_notebook():

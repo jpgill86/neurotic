@@ -200,17 +200,17 @@ class EphyviewerConfigurator():
         for name in self.viewer_settings:
             self.hide(name)
 
-    def launch_ephyviewer(self, theme='light', support_increased_line_width=False):
+    def launch_ephyviewer(self, theme='light', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
         """
         Start a Qt app and create an ephyviewer window.
         """
 
         app = ephyviewer.mkQApp()
-        win = self.create_ephyviewer_window(theme=theme, support_increased_line_width=support_increased_line_width)
+        win = self.create_ephyviewer_window(theme=theme, support_increased_line_width=support_increased_line_width, show_datetime=show_datetime, datetime_format=datetime_format)
         win.show()
         app.exec_()
 
-    def create_ephyviewer_window(self, theme='light', support_increased_line_width=False):
+    def create_ephyviewer_window(self, theme='light', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
         """
         Load data into each ephyviewer viewer and return the main window.
         """
@@ -234,12 +234,23 @@ class EphyviewerConfigurator():
         ########################################################################
         # WINDOW
 
+        # optionally display the real-world date and time
+        if show_datetime and self.blk.rec_datetime is not None:
+            show_label_datetime = True
+            datetime0 = self.blk.rec_datetime
+        else:
+            show_label_datetime = False
+            datetime0 = None
+
         # create a window that will be populated with viewers
         win = ephyviewer.MainViewer(
             # settings_name='test2', # remember settings (e.g. xsize) between sessions
             show_auto_scale = False,
             global_xsize_zoom = True,
             play_interval = 0.1, # refresh period in seconds
+            show_label_datetime = show_label_datetime,
+            datetime0 = datetime0,
+            datetime_format = datetime_format,
         )
         win.setWindowTitle(self.metadata['key'])
         win.setWindowIcon(ephyviewer.QT.QIcon(':/neurotic-logo-150.png'))

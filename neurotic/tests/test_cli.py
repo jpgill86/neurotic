@@ -70,6 +70,8 @@ class CLITestCase(unittest.TestCase):
         self.assertTrue(win.lazy, 'lazy loading disabled without --no-lazy')
         self.assertFalse(win.support_increased_line_width,
                          'thick traces enabled without --thick-traces')
+        self.assertFalse(win.show_datetime,
+                         'datetime enabled without --show-datetime')
         self.assertEqual(win.theme, 'light', 'theme changed without --theme')
         self.assertEqual(win.metadata_selector.file, self.default_file,
                          'file was not set to default')
@@ -93,6 +95,15 @@ class CLITestCase(unittest.TestCase):
         win = neurotic.win_from_args(args)
         self.assertTrue(win.support_increased_line_width,
                         'thick traces disabled with --thick-traces')
+
+    def test_show_datetime(self):
+        """Test that --show-datetime enables display of real-world datetime"""
+        argv = ['neurotic', '--show-datetime']
+        args = neurotic.parse_args(argv)
+        app = mkQApp()
+        win = neurotic.win_from_args(args)
+        self.assertTrue(win.show_datetime,
+                        'datetime not displayed with --show-datetime')
 
     def test_theme(self):
         """Test that --theme changes the theme"""
