@@ -29,7 +29,7 @@ class MainWindow(QT.QMainWindow):
 
     request_download = QT.pyqtSignal()
 
-    def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', support_increased_line_width=False):
+    def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', support_increased_line_width=False, show_datetime=False):
         """
         Initialize a new MainWindow.
         """
@@ -52,6 +52,12 @@ class MainWindow(QT.QMainWindow):
         # also degrades overall performance somewhat and uses a mode of
         # pyqtgraph that is reportedly unstable
         self.support_increased_line_width = support_increased_line_width
+
+        # show_datetime=True will display the real-world date and time next to
+        # the in-file time, but this may be inaccurate if data acquisition was
+        # paused and continued after some delay (e.g. in the same situations
+        # that video_jumps may be necessary for synchronization)
+        self.show_datetime = show_datetime
 
         # windows are appended to this list so that they persist after the
         # function that spawned them returns
@@ -133,6 +139,12 @@ class MainWindow(QT.QMainWindow):
         do_toggle_support_increased_line_width.setChecked(self.support_increased_line_width)
         do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
         self.options_menu.addAction(do_toggle_support_increased_line_width)
+
+        do_toggle_show_datetime = QT.QAction('&Display date and time (inaccurate if DAQ was paused)', self)
+        do_toggle_show_datetime.setCheckable(True)
+        do_toggle_show_datetime.setChecked(self.show_datetime)
+        do_toggle_show_datetime.triggered.connect(self.toggle_show_datetime)
+        self.options_menu.addAction(do_toggle_show_datetime)
 
         self.theme_menu = self.menuBar().addMenu(self.tr('&Theme'))
         self.theme_group = QT.QActionGroup(self.theme_menu)
@@ -268,7 +280,7 @@ class MainWindow(QT.QMainWindow):
             ephyviewer_config = EphyviewerConfigurator(metadata, blk, rauc_sigs, self.lazy)
             ephyviewer_config.show_all()
 
-            win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width)
+            win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width, show_datetime=self.show_datetime)
             self.windows.append(win)
             win.destroyed.connect(lambda qobject, i=len(self.windows)-1: self.free_resources(i))
             win.show()
@@ -338,6 +350,9 @@ class MainWindow(QT.QMainWindow):
 
     def toggle_support_increased_line_width(self, checked):
         self.support_increased_line_width = checked
+
+    def toggle_show_datetime(self, checked):
+        self.show_datetime = checked
 
     def select_light_theme(self):
         self.theme = 'light'
