@@ -171,6 +171,25 @@ to the metadata file. In the example above, if the metadata file is located in
     user name and password. This makes it easy to share the **neurotic**
     experience with your colleagues! 🤪
 
+.. _gin-urls:
+
+URLs to Use with GIN
+....................
+
+If you have data stored in a **public** repository on GIN_, you can access it
+from a URL of this form::
+
+    https://gin.g-node.org/<username>/<reponame>/raw/master/<path>
+
+For **private** repositories, you must use a different URL that takes advantage
+of the WebDAV protocol::
+
+    https://gin.g-node.org/<username>/<reponame>/_dav/<path>
+
+The second form works with public repos too, but GIN login credentials are
+still required. Consequently, the first form is more convenient for public
+repos.
+
 .. _congig-metadata-globals:
 
 Global Configuration Settings
