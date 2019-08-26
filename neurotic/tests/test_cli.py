@@ -124,6 +124,11 @@ class CLITestCase(unittest.TestCase):
         win = neurotic.win_from_args(args)
         self.assertEqual(win.theme, 'original', 'unexpected theme')
 
+        argv = ['neurotic', '--theme', 'printer-friendly']
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
+        self.assertEqual(win.theme, 'printer-friendly', 'unexpected theme')
+
     def test_file(self):
         """Test that metadata file can be set"""
         argv = ['neurotic', self.temp_file]

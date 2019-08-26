@@ -164,12 +164,19 @@ class MainWindow(QT.QMainWindow):
         do_select_original_theme.triggered.connect(self.select_original_theme)
         self.theme_group.addAction(do_select_original_theme)
 
+        do_select_printer_friendly_theme = self.theme_menu.addAction('&Printer-friendly theme')
+        do_select_printer_friendly_theme.setCheckable(True)
+        do_select_printer_friendly_theme.triggered.connect(self.select_printer_friendly_theme)
+        self.theme_group.addAction(do_select_printer_friendly_theme)
+
         if self.theme == 'light':
             do_select_light_theme.setChecked(True)
         elif self.theme == 'dark':
             do_select_dark_theme.setChecked(True)
         elif self.theme == 'original':
             do_select_original_theme.setChecked(True)
+        elif self.theme == 'printer-friendly':
+            do_select_printer_friendly_theme.setChecked(True)
         else:
             raise ValueError('theme "{}" is unrecognized'.format(self.theme))
 
@@ -362,6 +369,9 @@ class MainWindow(QT.QMainWindow):
 
     def select_original_theme(self):
         self.theme = 'original'
+
+    def select_printer_friendly_theme(self):
+        self.theme = 'printer-friendly'
 
     def free_resources(self, i):
         """

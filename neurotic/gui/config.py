@@ -81,6 +81,12 @@ class EphyviewerConfigurator():
             'vline_color': '#FFFFFFAA', # transparent white
             'label_fill_color': '#222222DD', # transparent dark gray
         }
+        self.themes['printer-friendly'] = {
+            'cmap': 'Dark2', # dark traces
+            'background_color': '#FFFFFF', # white
+            'vline_color': '#000000AA', # transparent black
+            'label_fill_color': '#DDDDDDDD', # transparent light gray
+        }
 
         # hide and disable viewers for which inputs are missing
         if not self.rauc_sigs:
