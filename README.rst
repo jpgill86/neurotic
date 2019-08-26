@@ -145,7 +145,8 @@ The command line interface accepts other arguments too:
 .. code-block::
 
     usage: neurotic [-h] [-V] [--no-lazy] [--thick-traces] [--show-datetime]
-                    [--theme {light,dark,original}] [--launch-example-notebook]
+                    [--theme {light,dark,original,printer-friendly}]
+                    [--launch-example-notebook]
                     [file] [dataset]
 
     neurotic lets you curate, visualize, annotate, and share your behavioral ephys
@@ -168,7 +169,7 @@ The command line interface accepts other arguments too:
       --show-datetime       display the real-world date and time, which may be
                             inaccurate if the data file includes pauses (default:
                             do not display)
-      --theme {light,dark,original}
+      --theme {light,dark,original,printer-friendly}
                             a color theme for the GUI (default: light)
       --launch-example-notebook
                             launch Jupyter with an example notebook instead of

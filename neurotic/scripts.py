@@ -45,7 +45,8 @@ def parse_args(argv):
                         help='display the real-world date and time, which ' \
                              'may be inaccurate if the data file includes ' \
                              'pauses (default: do not display)')
-    parser.add_argument('--theme', choices=['light', 'dark', 'original'],
+    parser.add_argument('--theme', choices=['light', 'dark', 'original',
+                                            'printer-friendly'],
                         default='light', help='a color theme for the GUI ' \
                                               '(default: light)')
 
