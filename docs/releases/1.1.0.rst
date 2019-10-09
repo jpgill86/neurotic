@@ -1,0 +1,23 @@
+.. _v1.1.0:
+
+neurotic 1.1.0
+==============
+
+2019-10-09
+
+Improvements
+------------
+
+* Add API parameters and CLI argument for displaying the real-world date and
+  time (potentially inaccurate)
+  (`#110 <https://github.com/jpgill86/neurotic/pull/110>`__,
+  `#118 <https://github.com/jpgill86/neurotic/pull/118>`__)
+
+* Add printer-friendly theme (white background)
+  (`#114 <https://github.com/jpgill86/neurotic/pull/114>`__)
+
+Documentation
+-------------
+
+* Add documentation of GIN URLs for public and private repos
+  (`#113 <https://github.com/jpgill86/neurotic/pull/113>`__)
