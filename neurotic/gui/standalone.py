@@ -54,9 +54,9 @@ class MainWindow(QT.QMainWindow):
         self.support_increased_line_width = support_increased_line_width
 
         # show_datetime=True will display the real-world date and time next to
-        # the in-file time, but this may be inaccurate if data acquisition was
-        # paused and continued after some delay (e.g. in the same situations
-        # that video_jumps may be necessary for synchronization)
+        # the in-file time, but this may be inaccurate for several reasons,
+        # e.g. if data acquisition was paused and continued after some delay or
+        # if an AxoGraph chart was not started immediately after creation
         self.show_datetime = show_datetime
 
         # windows are appended to this list so that they persist after the
@@ -140,7 +140,7 @@ class MainWindow(QT.QMainWindow):
         do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
         self.options_menu.addAction(do_toggle_support_increased_line_width)
 
-        do_toggle_show_datetime = QT.QAction('&Display date and time (inaccurate if DAQ was paused)', self)
+        do_toggle_show_datetime = QT.QAction('&Display date and time (potentially inaccurate)', self)
         do_toggle_show_datetime.setCheckable(True)
         do_toggle_show_datetime.setChecked(self.show_datetime)
         do_toggle_show_datetime.triggered.connect(self.toggle_show_datetime)

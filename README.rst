@@ -167,8 +167,8 @@ The command line interface accepts other arguments too:
                             a performance cost (default: disable thick line
                             support)
       --show-datetime       display the real-world date and time, which may be
-                            inaccurate if the data file includes pauses (default:
-                            do not display)
+                            inaccurate depending on file type and acquisition
+                            software (default: do not display)
       --theme {light,dark,original,printer-friendly}
                             a color theme for the GUI (default: light)
       --launch-example-notebook

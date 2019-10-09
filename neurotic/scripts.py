@@ -43,8 +43,8 @@ def parse_args(argv):
                              'disable thick line support)')
     parser.add_argument('--show-datetime', action='store_true', dest='datetime',
                         help='display the real-world date and time, which ' \
-                             'may be inaccurate if the data file includes ' \
-                             'pauses (default: do not display)')
+                             'may be inaccurate depending on file type and ' \
+                             'acquisition software (default: do not display)')
     parser.add_argument('--theme', choices=['light', 'dark', 'original',
                                             'printer-friendly'],
                         default='light', help='a color theme for the GUI ' \
