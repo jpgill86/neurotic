@@ -93,7 +93,7 @@ def _read_data_file(metadata, lazy=False, signal_group_mode='split-all'):
     # load all objects except analog signals
     if lazy:
 
-        if version.parse(neo.__version__) >= version.parse('0.8.0.dev'):  # Neo >= 0.8.0 has proxy objects with load method
+        if version.parse(neo.__version__) >= version.parse('0.8.0'):  # Neo >= 0.8.0 has proxy objects with load method
 
             for i in range(len(blk.segments[0].epochs)):
                 epoch = blk.segments[0].epochs[i]
@@ -407,7 +407,7 @@ def _create_neo_spike_trains_from_dataframe(dataframe, metadata, t_start, t_stop
 
 def _apply_filters(metadata, blk):
     """
-    Apply filters specified in ``metadata`` the the signals in ``blk`` using
+    Apply filters specified in ``metadata`` to the signals in ``blk`` using
     :func:`elephant.signal_processing.butter`.
     """
 
