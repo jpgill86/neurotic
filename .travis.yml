@@ -69,7 +69,12 @@ install:
 
     # install package
     - echo "INSTALLING NEUROTIC"
-    - python setup.py install
+    # - python setup.py install
+
+    # temporary, very dirty workaround for elephant incompatibility with neo 0.8 -- REMOVE LATER
+    - pip install --no-warn-conflicts .  # will write version.py to a temp dir, so manually create it below
+    - echo version=\'unknown\' > neurotic/version.py
+    - echo git_revision=\'unknown\' >> neurotic/version.py
 
 before_script:
     # list versions
