@@ -205,7 +205,6 @@ intersphinx_mapping = {
     'python':       ('https://docs.python.org/3', None),
     'neo':          ('https://neo.readthedocs.io/en/latest', None),
     'ephyviewer':   ('https://ephyviewer.readthedocs.io/en/latest', None),
-    'elephant':     ('https://elephant.readthedocs.io/en/latest', None),
     'tridesclous':  ('https://tridesclous.readthedocs.io/en/latest', None),
 }
 
