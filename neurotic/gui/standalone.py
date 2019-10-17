@@ -13,12 +13,12 @@ import subprocess
 import pkg_resources
 
 import quantities as pq
-import elephant
 from ephyviewer import QT, QT_MODE
 
 from .. import __version__
 from ..datasets import MetadataSelector, load_dataset
 from ..datasets.metadata import _selector_labels
+from ..elephant_tools import _rauc
 from ..gui.config import EphyviewerConfigurator
 
 
@@ -280,7 +280,7 @@ class MainWindow(QT.QMainWindow):
             rauc_sigs = []
             if not self.lazy:
                 for sig in blk.segments[0].analogsignals:
-                    rauc = elephant.signal_processing.rauc(sig, bin_duration = 0.1*pq.s)
+                    rauc = _rauc(sig, bin_duration = 0.1*pq.s)
                     rauc.name = sig.name + ' RAUC'
                     rauc_sigs.append(rauc)
 
@@ -302,7 +302,6 @@ class MainWindow(QT.QMainWindow):
         Display the "About neurotic" message box.
         """
 
-        import elephant
         import ephyviewer
         import neo
         import numpy
@@ -341,7 +340,6 @@ class MainWindow(QT.QMainWindow):
 
         <p>Installed dependencies:</p>
         <table width='80%' align='center'>
-        <tr><td>elephant</td>           <td>{elephant.__version__}</td></tr>
         <tr><td>ephyviewer</td>         <td>{ephyviewer.__version__}</td></tr>
         <tr><td>neo</td>                <td>{neo.__version__}</td></tr>
         <tr><td>numpy</td>              <td>{numpy.__version__}</td></tr>

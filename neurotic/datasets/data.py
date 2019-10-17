@@ -10,10 +10,10 @@ from packaging import version
 import numpy as np
 import pandas as pd
 import quantities as pq
-import elephant
 import neo
 
 from ..datasets.metadata import _abs_path
+from ..elephant_tools import _butter, _peak_detection
 
 def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False):
     """
@@ -407,8 +407,7 @@ def _create_neo_spike_trains_from_dataframe(dataframe, metadata, t_start, t_stop
 
 def _apply_filters(metadata, blk):
     """
-    Apply filters specified in ``metadata`` to the signals in ``blk`` using
-    :func:`elephant.signal_processing.butter`.
+    Apply filters specified in ``metadata`` to the signals in ``blk``.
     """
 
     if metadata['filters'] is not None:
@@ -430,7 +429,7 @@ def _apply_filters(metadata, blk):
                     high *= pq.Hz
                 if low:
                     low  *= pq.Hz
-                blk.segments[0].analogsignals[index] = elephant.signal_processing.butter(  # may raise a FutureWarning
+                blk.segments[0].analogsignals[index] = _butter(
                     signal = blk.segments[0].analogsignals[index],
                     highpass_freq = high,
                     lowpass_freq  = low,
@@ -470,9 +469,8 @@ def _run_amplitude_discriminators(metadata, blk):
 
 def _detect_spikes(sig, discriminator, epochs):
     """
-    Detect spikes in the amplitude window given by ``discriminator`` using
-    :func:`elephant.spike_train_generation.peak_detection`, and optionally
-    filter them by coincidence with epochs of a given name.
+    Detect spikes in the amplitude window given by ``discriminator`` and
+    optionally filter them by coincidence with epochs of a given name.
     """
 
     assert sig.name == discriminator['channel'], 'sig name "{}" does not match amplitude discriminator channel "{}"'.format(sig.name, discriminator['channel'])
@@ -486,8 +484,8 @@ def _detect_spikes(sig, discriminator, epochs):
     else:
         raise ValueError('amplitude discriminator must have two nonnegative thresholds or two nonpositive thresholds: {}'.format(discriminator))
 
-    spikes_crossing_min = elephant.spike_train_generation.peak_detection(sig, pq.Quantity(min_threshold, discriminator['units']), sign, 'raw')
-    spikes_crossing_max = elephant.spike_train_generation.peak_detection(sig, pq.Quantity(max_threshold, discriminator['units']), sign, 'raw')
+    spikes_crossing_min = _peak_detection(sig, pq.Quantity(min_threshold, discriminator['units']), sign, 'raw')
+    spikes_crossing_max = _peak_detection(sig, pq.Quantity(max_threshold, discriminator['units']), sign, 'raw')
     if sign == 'above':
         spikes_between_min_and_max = np.setdiff1d(spikes_crossing_min, spikes_crossing_max)
     elif sign == 'below':
