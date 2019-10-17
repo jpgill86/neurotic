@@ -1,0 +1,12 @@
+.. _v1.1.1:
+
+neurotic 1.1.1
+==============
+
+2019-10-17
+
+Changes
+-------
+
+* Remove elephant as a dependency
+  (`#120 <https://github.com/jpgill86/neurotic/pull/120>`__)
