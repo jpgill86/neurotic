@@ -62,7 +62,8 @@ flat (no subdirectories), these should be simply the file names. Only
 ======================  ========================================================
 Key                     Description
 ======================  ========================================================
-``data_file``           A single Neo_-compatible data file (required)
+``data_file``           A single Neo_-compatible data file (see :mod:`neo.io`
+                        for file formats)
 ``video_file``          A video file that can be synchronized with ``data_file``
 ``annotations_file``    A CSV file for read-only annotations
 ``epoch_encoder_file``  A CSV file for annotations writable by the epoch encoder
