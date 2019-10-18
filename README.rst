@@ -9,9 +9,10 @@ Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
 **neurotic** is an app for Windows, macOS, and Linux that allows you to easily
 review and annotate your electrophysiology data and simultaneously captured
-video. It is an easy way to load your Neo_-compatible data into ephyviewer_
-without doing any programming. Share a single metadata file with your
-colleagues and they too will quickly be looking at the same datasets!
+video. It is an easy way to load your Neo_-compatible data (see neo.io_ for
+file formats) into ephyviewer_ without doing any programming. Share a single
+metadata file with your colleagues and they too will quickly be looking at the
+same datasets!
 
 To use the app, first organize your datasets in a *metadata file* like this
 (see `Configuring Metadata`_):
@@ -212,6 +213,7 @@ The command line interface accepts other arguments too:
 .. _GitHub:         https://github.com/jpgill86/neurotic
 .. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
+.. _neo.io:         https://neo.readthedocs.io/en/latest/io.html#module-neo.io
 .. _PyAV:           https://docs.mikeboers.com/pyav/develop/installation.html
 .. _PyPI:           https://pypi.org/project/neurotic
 .. _ReadTheDocs:    https://readthedocs.org/projects/neurotic
