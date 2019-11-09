@@ -8,4 +8,5 @@ pyqt5
 pyyaml
 quantities
 scipy
+setuptools
 tqdm
