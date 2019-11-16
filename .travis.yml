@@ -5,12 +5,10 @@ python:
     # We don't actually use the Travis Python, but this keeps it organized.
     - "3.6"
     - "3.7"
+    - "3.8"
 
 matrix:
     include:
-        - name: Python 3.8
-          python: "3.8"
-
         - name: Sphinx docs
           python: "3.7"
           env: JOB_REQS="requirements-docs.txt"
@@ -20,7 +18,7 @@ matrix:
           after_success: skip
 
         - name: Future
-          python: "3.7"
+          python: "3.8"
           before_script:
               # install dev versions of important packages
               - pip install -U \
@@ -35,7 +33,6 @@ matrix:
               - conda list
 
     allow_failures:
-          - name: Python 3.8
           - name: Future
 
     fast_finish: true
