@@ -192,10 +192,10 @@ def _peak_detection(signal, threshold=0.0 * mV, sign='above', format=None):
     """
     assert threshold is not None, "A threshold must be provided"
 
-    if sign is 'above':
+    if sign == 'above':
         cutout = np.where(signal > threshold)[0]
         peak_func = np.argmax
-    elif sign in 'below':
+    elif sign == 'below':
         cutout = np.where(signal < threshold)[0]
         peak_func = np.argmin
     else:
@@ -308,10 +308,10 @@ def _rauc(signal, baseline=None, bin_duration=None, t_start=None, t_stop=None):
 
     if baseline is None:
         pass
-    elif baseline is 'mean':
+    elif baseline == 'mean':
         # subtract mean from each channel
         signal = signal - signal.mean(axis=0)
-    elif baseline is 'median':
+    elif baseline == 'median':
         # subtract median from each channel
         signal = signal - np.median(signal.as_quantity(), axis=0)
     elif isinstance(baseline, pq.Quantity):
