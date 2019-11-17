@@ -3,7 +3,7 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |GitHub badge| |Docs badge| |Build badge| |Coverage badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge|
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
@@ -203,17 +203,29 @@ The command line interface accepts other arguments too:
     :target: PyPI_
     :alt: PyPI project
 
+.. |Anaconda badge| image:: https://img.shields.io/conda/vn/conda-forge/neurotic.svg?label=anaconda&logo=anaconda&logoColor=white
+    :target: `Anaconda Cloud`_
+    :alt: Anaconda Cloud project
+
 .. |GitHub badge| image:: https://img.shields.io/badge/github-source_code-blue.svg?logo=github&logoColor=white
     :target: GitHub_
     :alt: GitHub source code
 
+.. |Feedstock badge| image:: https://img.shields.io/badge/conda--forge-feedstock-blue.svg?logo=conda-forge&logoColor=white
+    :target: `conda-forge feedstock`_
+    :alt: conda-forge feedstock
+
 .. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
     :target: ReadTheDocs_
-    :alt: Documentation Status
+    :alt: Documentation status
 
-.. |Build badge| image:: https://img.shields.io/travis/com/jpgill86/neurotic/master.svg?logo=travis-ci&logoColor=white
+.. |Travis badge| image:: https://img.shields.io/travis/com/jpgill86/neurotic/master.svg?logo=travis-ci&logoColor=white
     :target: Travis_
-    :alt: Build status
+    :alt: Travis build status
+
+.. |Azure badge| image:: https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/neurotic-feedstock?branchName=master
+    :target: `conda-forge CI`_
+    :alt: conda-forge build status
 
 .. |Coverage badge| image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
     :target: Coveralls_
@@ -223,7 +235,10 @@ The command line interface accepts other arguments too:
     :target: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
     :alt: Screenshot
 
+.. _Anaconda Cloud: https://anaconda.org/conda-forge/neurotic
 .. _conda:          https://docs.conda.io/projects/conda/en/latest/user-guide/install/
+.. _conda-forge CI: https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=8417&branchName=master
+.. _conda-forge feedstock: https://github.com/conda-forge/neurotic-feedstock
 .. _Configuring Metadata: https://neurotic.readthedocs.io/en/latest/metadata.html
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _Documentation:  https://neurotic.readthedocs.io/en/latest
