@@ -9,14 +9,14 @@ Improvements
 ------------
 
 * Remove dependency on ipywidgets by making notebook widgets optional
-  (`#25 <https://github.com/jpgill86/neurotic/pull/25>`__)
+  (:pr:`25`)
 
   * Notebook widget classes renamed:
     ``MetadataSelector`` → ``MetadataSelectorWidget``,
     ``EphyviewerConfigurator`` → ``EphyviewerConfiguratorWidget``
 
 * Add app description and screenshot to README
-  (`#22 <https://github.com/jpgill86/neurotic/pull/22>`__)
+  (:pr:`22`)
 
 * Promote to beta status
-  (`#23 <https://github.com/jpgill86/neurotic/pull/23>`__)
+  (:pr:`23`)

@@ -9,4 +9,4 @@ Bug fixes
 ---------
 
 * Fix for EstimateVideoJumpTimes regression introduced in 0.4.0
-  (`#33 <https://github.com/jpgill86/neurotic/pull/33>`__)
+  (:pr:`33`)

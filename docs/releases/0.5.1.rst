@@ -9,4 +9,4 @@ Compatibility updates
 ---------------------
 
 * Compatibility update for RawIOs with non-zero offset
-  (`#37 <https://github.com/jpgill86/neurotic/pull/37>`__)
+  (:pr:`37`)

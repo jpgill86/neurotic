@@ -9,4 +9,4 @@ Bug fixes
 ---------
 
 * Fix various downloader errors
-  (`#7 <https://github.com/jpgill86/neurotic/pull/7>`__)
+  (:pr:`7`)
