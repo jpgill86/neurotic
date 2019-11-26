@@ -9,4 +9,4 @@ Changes
 -------
 
 * Remove elephant as a dependency
-  (`#120 <https://github.com/jpgill86/neurotic/pull/120>`__)
+  (:pr:`120`)

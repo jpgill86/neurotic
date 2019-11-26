@@ -9,10 +9,10 @@ Improvements
 ------------
 
 * Add a basic "About neurotic" window with version and website information
-  (`#38 <https://github.com/jpgill86/neurotic/pull/38>`__)
+  (:pr:`38`)
 
 * Update logo
-  (`#39 <https://github.com/jpgill86/neurotic/pull/39>`__)
+  (:pr:`39`)
 
 * Add keywords and project URLs to package metadata
-  (`#40 <https://github.com/jpgill86/neurotic/pull/40>`__)
+  (:pr:`40`)

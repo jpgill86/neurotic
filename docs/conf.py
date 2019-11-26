@@ -42,6 +42,7 @@ release = version
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
+    'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
@@ -198,6 +199,13 @@ epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+
+# -- Options for external links extension ------------------------------------
+
+extlinks = {
+    'issue': ('https://github.com/jpgill86/neurotic/issues/%s', '#'),
+    'pr':    ('https://github.com/jpgill86/neurotic/pull/%s', '#'),
+}
 
 # -- Options for intersphinx extension ---------------------------------------
 

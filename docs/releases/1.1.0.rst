@@ -10,14 +10,13 @@ Improvements
 
 * Add API parameters and CLI argument for displaying the real-world date and
   time (potentially inaccurate)
-  (`#110 <https://github.com/jpgill86/neurotic/pull/110>`__,
-  `#118 <https://github.com/jpgill86/neurotic/pull/118>`__)
+  (:pr:`110`, :pr:`118`)
 
 * Add printer-friendly theme (white background)
-  (`#114 <https://github.com/jpgill86/neurotic/pull/114>`__)
+  (:pr:`114`)
 
 Documentation
 -------------
 
 * Add documentation of GIN URLs for public and private repos
-  (`#113 <https://github.com/jpgill86/neurotic/pull/113>`__)
+  (:pr:`113`)
