@@ -252,10 +252,10 @@ following way:
         io_class: AsciiSignalIO
 
         io_args:
-            skiprows: 1  # skip header
-            delimiter: ' '  # space-delimited
-            t_start: 5  # sec
-            sampling_rate: 1000  # Hz
+            skiprows: 1 # skip header
+            delimiter: ' ' # space-delimited
+            t_start: 5 # sec
+            sampling_rate: 1000 # Hz
             units: mV
 
 .. _config-metadata-video:

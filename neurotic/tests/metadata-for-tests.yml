@@ -14,3 +14,59 @@ video-jumps-unset:
         - channel: Clock
           units: V
           ylim: [-0.1, 5.1]
+
+missing-extension-without-io_class:
+    description: (should error)
+
+    data_dir: missing-extension
+    remote_data_dir: missing-extension
+    data_file: events_and_epochs_axgx_no_ext
+
+    plots:
+        - channel: "Analog Input #5"
+          units: mV
+          ylim: [-5, 0]
+        - channel: Clock
+          units: V
+          ylim: [-0.1, 5.1]
+
+missing-extension-with-io_class:
+    data_dir: missing-extension
+    remote_data_dir: missing-extension
+    data_file: events_and_epochs_axgx_no_ext
+
+    io_class: AxographIO
+
+    plots:
+        - channel: "Analog Input #5"
+          units: mV
+          ylim: [-5, 0]
+        - channel: Clock
+          units: V
+          ylim: [-0.1, 5.1]
+
+plain-text-axograph:
+    data_dir: plain-text-axograph
+    remote_data_dir: plain-text-axograph
+    data_file: plain_text.axgt
+
+    io_class: AsciiSignalIO
+    io_args:
+        skiprows: 1 # skip header
+        usecols: [1, 2] # drop time column
+        sampling_rate: 5000 # Hz
+        t_start: 0.0002 # sec
+        # time column cannot be used because AsciiSignalIO imports data with
+        # only 32-bit precision, then judges the resulting variability between
+        # times caused by numerical imprecision to be too great, and so it
+        # creates IrregularlySampledSignals instead of AnalogSignals
+
+    plots:
+        - channel: Column 0
+          ylabel: "Analog Input #5"
+          units: mV
+          ylim: [-5, 0]
+        - channel: Column 1
+          ylabel: Clock
+          units: V
+          ylim: [-0.1, 5.1]
