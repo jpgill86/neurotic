@@ -3,8 +3,8 @@
 Configuring Metadata
 ====================
 
-To load your data with **neurotic**, you must organized them in one or more
-YAML files, called *metadata files*.
+To load your data with **neurotic**, you must organize them in one or more YAML
+files, called *metadata files*.
 
 YAML files are very sensitive to punctuation and indentation, so mind those
 details carefully! Importantly, the tab character cannot be used for
@@ -218,6 +218,45 @@ For example:
 
     my favorite dataset:
         # dataset details here
+
+.. _config-metadata-neo-io:
+
+Data Reader (Neo) Settings
+--------------------------
+
+The electrophysiology file specified by ``data_file`` is read using Neo_, which
+supports many file types. A complete list of the implemented formats can be
+found here: :mod:`neo.io`.
+
+By default, **neurotic** will use the file extension of ``data_file`` to guess
+the file format and choose the appropriate Neo IO class for reading it. If the
+guess fails, you can force **neurotic** to use a different class by specifying
+the class name with the ``io_class`` parameter (all available classes are
+listed here: :mod:`neo.io`).
+
+Some Neo IO classes accept additional arguments beyond just a filename (see the
+Neo docs for details: :mod:`neo.io`). You can specify these arguments in your
+metadata using the ``io_args`` parameter.
+
+For example, suppose you have data stored in a plain text file that is missing
+a file extension. The :class:`neo.io.AsciiSignalIO` class can read plain text
+files, but you must specify this manually using ``io_class`` because the
+extension is missing. You could do this and pass in supported arguments in the
+following way:
+
+.. code-block:: yaml
+
+    my favorite dataset:
+        data_file: plain_text_file_without_file_extension
+
+        io_class: AsciiSignalIO
+
+        io_args:
+            skiprows: 1 # skip header
+            delimiter: ' ' # space-delimited
+            t_start: 5 # sec
+            sampling_rate: 1000 # Hz
+            units: mV
 
 .. _config-metadata-video:
 

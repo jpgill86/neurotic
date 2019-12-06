@@ -12,8 +12,10 @@ import re
 import numpy as np
 import pandas as pd
 import quantities as pq
+import neo
 import ephyviewer
 
+from ..datasets.data import _get_io
 from ..datasets.metadata import _abs_path
 from ..gui.epochencoder import NeuroticWritableEpochSource
 
@@ -265,55 +267,27 @@ class EphyviewerConfigurator():
         win.setAttribute(ephyviewer.QT.WA_DeleteOnClose, True)
 
         ########################################################################
-        # PREPARE TRACE PARAMETERS
+        # TRACES WITH SCATTER PLOTS
 
         _set_defaults_for_plots(self.metadata, self.blk)
 
-        plotNameToIndex = {p['channel']:i for i, p in enumerate(self.metadata['plots'])}
-
-        ########################################################################
-        # PREPARE SCATTER PLOT PARAMETERS
-
-        if not self.lazy:
-            all_times = sigs[0].times.rescale('s').magnitude # assuming all AnalogSignals have the same sampling rate and start time
-            spike_indices = {}
-            spike_channels = {}
-            for st in seg.spiketrains:
-                if 'channels' in st.annotations:
-                    c = []
-                    for channel in st.annotations['channels']:
-                        index = plotNameToIndex.get(channel, None)
-                        if index is None:
-                            print('Note: Spike train {} will not be plotted on channel {} because that channel isn\'t being plotted'.format(st.name, channel))
-                        else:
-                            c.append(index)
-                    if c:
-                        spike_channels[st.name] = c
-                        spike_indices[st.name] = np.where(np.isin(all_times, st.times.magnitude))[0]
-
-        ########################################################################
-        # TRACES WITH SCATTER PLOTS
-
         if self.is_shown('traces'):
 
-            if self.lazy:
-                import neo
-                neorawioclass = neo.rawio.get_rawio_class(_abs_path(self.metadata, 'data_file'))
-                if neorawioclass is None:
-                    raise ValueError('This file type cannot be read with fast loading (lazy=True): {}'.format(_abs_path(self.metadata, 'data_file')))
-                neorawio = neorawioclass(_abs_path(self.metadata, 'data_file'))
-                neorawio.parse_header()
+            # get a Neo IO object appropriate for the data file type
+            io = _get_io(self.metadata)
+
+            if self.lazy and io.support_lazy:
 
                 # Intan-specific tricks
-                if type(neorawio) is neo.rawio.IntanRawIO:
+                if type(io) is neo.io.IntanIO:
                     # dirty trick for getting ungrouped channels into a single source
-                    neorawio.header['signal_channels']['group_id'] = 0
+                    io.header['signal_channels']['group_id'] = 0
 
                     # prepare to append custom channel names stored in data file to ylabels
-                    custom_channel_names = {c['native_channel_name']: c['custom_channel_name'] for c in neorawio._ordered_channels}
+                    custom_channel_names = {c['native_channel_name']: c['custom_channel_name'] for c in io._ordered_channels}
 
                 channel_indexes = [p['index'] for p in self.metadata['plots']]
-                sources['signal'].append(ephyviewer.AnalogSignalFromNeoRawIOSource(neorawio, channel_indexes))
+                sources['signal'].append(ephyviewer.AnalogSignalFromNeoRawIOSource(io, channel_indexes))
 
                 # modify loaded channel names to use ylabels
                 for i, p in enumerate(self.metadata['plots']):
@@ -321,15 +295,40 @@ class EphyviewerConfigurator():
                     ylabel = p['ylabel']
 
                     # Intan-specific tricks
-                    if type(neorawio) is neo.rawio.IntanRawIO:
+                    if type(io) is neo.io.IntanIO:
                         # append custom channel names stored in data file to ylabels
                         if custom_channel_names[p['channel']] != ylabel:
                             ylabel += ' ({})'.format(custom_channel_names[p['channel']])
 
                     sources['signal'][-1].channels['name'][i] = ylabel
 
-                # TODO support scatter
-            else:
+                # TODO support scatter from tridesclous_file
+
+            else: # lazy==False or io.support_lazy==False
+
+                # even if lazy==True, signals do not need to be loaded now
+                # because load_dataset will have already taken care of that and
+                # saved them in blk when it detected that Neo did not support
+                # lazy loading for the given file reader
+
+                # prepare scatter plot parameters
+                plotNameToIndex = {p['channel']:i for i, p in enumerate(self.metadata['plots'])}
+                all_times = sigs[0].times.rescale('s').magnitude # assuming all AnalogSignals have the same sampling rate and start time
+                spike_indices = {}
+                spike_channels = {}
+                for st in seg.spiketrains:
+                    if 'channels' in st.annotations:
+                        c = []
+                        for channel in st.annotations['channels']:
+                            index = plotNameToIndex.get(channel, None)
+                            if index is None:
+                                print('Note: Spike train {} will not be plotted on channel {} because that channel isn\'t being plotted'.format(st.name, channel))
+                            else:
+                                c.append(index)
+                        if c:
+                            spike_channels[st.name] = c
+                            spike_indices[st.name] = np.where(np.isin(all_times, st.times.magnitude))[0]
+
                 sources['signal'].append(ephyviewer.AnalogSignalSourceWithScatter(
                     signals = np.concatenate([sigs[p['index']].magnitude for p in self.metadata['plots']], axis = 1),
                     sample_rate = sigs[0].sampling_rate, # assuming all AnalogSignals have the same sampling rate

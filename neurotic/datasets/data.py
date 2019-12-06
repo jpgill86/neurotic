@@ -76,19 +76,77 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
 
     return blk
 
-def _read_data_file(metadata, lazy=False, signal_group_mode='split-all'):
+def _get_io(metadata):
     """
-    Read in the ``data_file`` given in ``metadata`` using an automatically
-    detected :mod:`neo.io` class if ``lazy=False`` or a :mod:`neo.rawio` class
-    if ``lazy=True``. If ``lazy=True``, manually load epochs, events, and spike
-    trains, but not signals. Return a Neo :class:`Block <neo.core.Block>`.
+    Return a :mod:`neo.io` object for reading the ``data_file`` in
+    ``metadata``. An appropriate :mod:`neo.io` class is typically determined
+    automatically from the file extension, but this can be overridden with the
+    optional ``io_class`` metadata parameter. Arbitrary arguments can be passed
+    to the :mod:`neo.io` class using the optional ``io_args`` metadata
+    parameter.
     """
 
-    # read in the electrophysiology data
-    # - signal_group_mode='split-all' ensures every channel gets its own
-    #   AnalogSignal, which is important for indexing in EphyviewerConfigurator
-    io = neo.io.get_io(_abs_path(metadata, 'data_file'))
-    blk = io.read_block(lazy=lazy, signal_group_mode=signal_group_mode)
+    # prepare arguments for instantiating a Neo IO class
+    if metadata['io_args'] is not None:
+        io_args = metadata['io_args'].copy()
+        if 'sampling_rate' in io_args:
+            # AsciiSignalIO's sampling_rate must be a Quantity
+            io_args['sampling_rate'] *= pq.Hz
+    else:
+        io_args = {}
+
+    if metadata['io_class'] is None:
+        try:
+            # detect the class automatically using the file extension
+            io = neo.io.get_io(_abs_path(metadata, 'data_file'), **io_args)
+        except IOError as e:
+            if e.args[0].startswith('File extension'):
+                # provide a useful error message when format detection fails
+                raise IOError("Could not find an appropriate neo.io class " \
+                              f"for data_file \"{metadata['data_file']}\". " \
+                              "Try specifying one in your metadata using " \
+                              "the io_class parameter.")
+            else:
+                # something else has gone wrong, like the file not being found
+                raise e
+
+    else:
+        # use a user-specified class
+        io_list = [io.__name__ for io in neo.io.iolist]
+        if metadata['io_class'] not in io_list:
+            raise ValueError(f"specified io_class \"{metadata['io_class']}\" was not found in neo.io.iolist: {io_list}")
+        io_class_index = io_list.index(metadata['io_class'])
+        io_class = neo.io.iolist[io_class_index]
+        io = io_class(_abs_path(metadata, 'data_file'), **io_args)
+
+    return io
+
+def _read_data_file(metadata, lazy=False, signal_group_mode='split-all'):
+    """
+    Read in the ``data_file`` given in ``metadata`` using a :mod:`neo.io`
+    class. Lazy-loading is used for signals if both ``lazy=True`` and the data
+    file type is supported by a :mod:`neo.rawio` class; otherwise, signals are
+    fully loaded. Lazy-loading is never used for epochs, events, and spike
+    trains contained in the data file; these are always fully loaded. Returns a
+    Neo :class:`Block <neo.core.Block>`.
+    """
+
+    # get a Neo IO object appropriate for the data file type
+    io = _get_io(metadata)
+
+    # force lazy=False if lazy is not supported by the reader class
+    if lazy and not io.support_lazy:
+        lazy = False
+        print(f'NOTE: Not reading signals in lazy mode because Neo\'s {io.__class__.__name__} reader does not support it.')
+
+    if type(io) is not neo.io.AsciiSignalIO:
+        # - signal_group_mode='split-all' is the default because this ensures
+        #   every channel gets its own AnalogSignal, which is important for
+        #   indexing in EphyviewerConfigurator
+        blk = io.read_block(lazy=lazy, signal_group_mode=signal_group_mode)
+    else:
+        # AsciiSignalIO.read_block does not have the signal_group_mode argument
+        blk = io.read_block(lazy=lazy)
 
     # load all objects except analog signals
     if lazy:
