@@ -6,7 +6,6 @@ dataset from selected metadata.
 .. autofunction:: load_dataset
 """
 
-import inspect
 from packaging import version
 import numpy as np
 import pandas as pd
