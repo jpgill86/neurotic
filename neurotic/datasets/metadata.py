@@ -307,6 +307,15 @@ def _defaults_for_key(key):
         # - path relative to data_dir and remote_data_dir
         'data_file': None,
 
+        # the name of a Neo IO class
+        # - this parameter is optional and exists for overriding the IO class
+        #   determined automatically from the data file's extension
+        'io_class': None,
+
+        # arguments for the Neo IO class
+        # - e.g. for AsciiSignalIO, {'delimiter': ',', 'sampling_rate': 1000, 'units': 'mV'}
+        'io_args': None,
+
         # digital filters to apply before analysis and plotting
         # 0 <= highpass <= lowpass < sample_rate/2
         # - e.g. [{'channel': 'Channel A', 'highpass': 0, 'lowpass': 50}, ...]
