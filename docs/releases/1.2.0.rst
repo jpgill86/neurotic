@@ -1,0 +1,25 @@
+.. _v1.2.0:
+
+neurotic 1.2.0
+==============
+
+2019-12-06
+
+**neurotic** should now have broader compatibility with file types supported by
+Neo's :mod:`neo.io` classes thanks to two new metadata parameters: ``io_class``
+and ``io_args``. See :ref:`config-metadata-neo-io` for details.
+
+**neurotic** is now available on conda-forge! See
+:ref:`installation-conda-forge` for details on how to install.
+
+Improvements
+------------
+
+* Add metadata parameters ``io_class`` and ``io_args``
+  (:pr:`137`)
+
+Documentation
+-------------
+
+* Add conda-forge installation instructions
+  (:pr:`128`)
