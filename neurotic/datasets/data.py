@@ -6,6 +6,7 @@ dataset from selected metadata.
 .. autofunction:: load_dataset
 """
 
+import inspect
 from packaging import version
 import numpy as np
 import pandas as pd
@@ -139,13 +140,13 @@ def _read_data_file(metadata, lazy=False, signal_group_mode='split-all'):
         lazy = False
         print(f'NOTE: Not reading signals in lazy mode because Neo\'s {io.__class__.__name__} reader does not support it.')
 
-    if type(io) is not neo.io.AsciiSignalIO:
+    if 'signal_group_mode' in inspect.signature(io.read_block).parameters.keys():
         # - signal_group_mode='split-all' is the default because this ensures
         #   every channel gets its own AnalogSignal, which is important for
         #   indexing in EphyviewerConfigurator
         blk = io.read_block(lazy=lazy, signal_group_mode=signal_group_mode)
     else:
-        # AsciiSignalIO.read_block does not have the signal_group_mode argument
+        # some IOs do not have signal_group_mode
         blk = io.read_block(lazy=lazy)
 
     # load all objects except analog signals
