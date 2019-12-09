@@ -70,3 +70,8 @@ plain-text-axograph:
           ylabel: Clock
           units: V
           ylim: [-0.1, 5.1]
+
+matlab example:
+    data_dir: matlab-example
+    remote_data_dir: matlab-example
+    data_file: neo-matlab.mat

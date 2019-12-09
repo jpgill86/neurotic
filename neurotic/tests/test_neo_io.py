@@ -61,5 +61,15 @@ class NeoIOUnitTest(unittest.TestCase):
         blk = neurotic.load_dataset(metadata=metadata, lazy=False)
         assert(blk)
 
+    def test_matlab(self):
+        """Test reading a MATLAB file"""
+        dataset = 'matlab example'
+        metadata = neurotic.MetadataSelector(file=self.temp_file,
+                                             initial_selection=dataset)
+        metadata.download('data_file')
+
+        blk = neurotic.load_dataset(metadata=metadata, lazy=False)
+        assert(blk)
+
 if __name__ == '__main__':
     unittest.main()
