@@ -1,0 +1,13 @@
+.. _v1.2.1:
+
+neurotic 1.2.1
+==============
+
+2019-12-09
+
+Bug fixes
+---------
+
+* Fix loading using Neo IOs lacking ``signals_group_mode`` (``TypeError:
+  read_block() got an unexpected keyword argument 'signal_group_mode'``)
+  (:pr:`143`)
