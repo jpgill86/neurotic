@@ -280,7 +280,7 @@ class MainWindow(QT.QMainWindow):
             rauc_sigs = []
             if not self.lazy:
                 for sig in blk.segments[0].analogsignals:
-                    rauc = _rauc(sig, bin_duration = 0.1*pq.s)
+                    rauc = _rauc(sig, baseline=metadata['rauc_baseline'], bin_duration=metadata['rauc_bin_duration']*pq.s)
                     rauc.name = sig.name + ' RAUC'
                     rauc_sigs.append(rauc)
 

@@ -489,6 +489,29 @@ the format supports epochs.
 
 Amplitude windows are permitted to be negative.
 
+.. _config-metadata-rauc:
+
+Rectified Area Under the Curve (RAUC)
+-------------------------------------
+
+One way to simplify a high-frequency signal is by plotted a time series of the
+rectified area under the curve (RAUC). Note that RAUCs are calculated
+automatically only in the standalone application and only if fast loading is
+off (``lazy=False``).
+
+For each signal, the baseline (mean or median) is optionally subtracted off.
+The signal is then rectified (absolute value) and divided into non-overlapping
+bins of fixed duration. Finally, the integral is calculated within each bin.
+The result is a new time series that represents the overall activity of the
+original signal. RAUC time series are plotted separately from the original
+signals in a second tab.
+
+The choice of baseline is controlled by the ``rauc_baseline`` metadata
+parameter, which may have the value ``None`` (default), ``'mean'``, or
+``'median'``. The size of the bins determines how smooth the RAUC time series
+is and is set by ``rauc_bin_duration``, given in seconds. The default bin
+duration is 0.1 seconds.
+
 .. _config-metadata-tridesclous:
 
 tridesclous Spike Sorting Results

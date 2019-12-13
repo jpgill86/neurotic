@@ -381,6 +381,15 @@ def _defaults_for_key(key):
 
         # amount of time in seconds to plot initially
         't_width': 40,
+
+        # factor to subtract from each signal before rectification when
+        # calculating rectified area under the curve (RAUC)
+        # - can be None, 'mean', or 'median'
+        'rauc_baseline': None,
+
+        # width of bins in seconds used for calculating rectified area under
+        # the curve (RAUC) for signals
+        'rauc_bin_duration': 0.1,
     }
 
     return defaults
