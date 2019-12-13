@@ -253,7 +253,7 @@ class EphyviewerConfigurator():
         # create a window that will be populated with viewers
         win = ephyviewer.MainViewer(
             # settings_name='test2', # remember settings (e.g. xsize) between sessions
-            show_auto_scale = False,
+            show_auto_scale = True,
             global_xsize_zoom = True,
             play_interval = 0.1, # refresh period in seconds
             show_label_datetime = show_label_datetime,
@@ -352,6 +352,7 @@ class EphyviewerConfigurator():
 
             win.add_view(trace_view)
 
+            trace_view.params['auto_scale_factor'] = 0.02
             trace_view.params['scatter_size'] = 5
             trace_view.params['line_width'] = line_width
             trace_view.params['display_labels'] = True
