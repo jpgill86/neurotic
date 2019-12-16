@@ -101,7 +101,7 @@ def _get_io(metadata):
             # detect the class automatically using the file extension
             io = neo.io.get_io(_abs_path(metadata, 'data_file'), **io_args)
         except IOError as e:
-            if e.args[0].startswith('File extension'):
+            if len(e.args) > 0 and type(e.args[0]) is str and e.args[0].startswith('File extension'):
                 # provide a useful error message when format detection fails
                 raise IOError("Could not find an appropriate neo.io class " \
                               f"for data_file \"{metadata['data_file']}\". " \
