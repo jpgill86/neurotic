@@ -20,10 +20,11 @@ matrix:
         - name: Future
           python: "3.8"
           before_script:
-              # install dev versions of important packages
+              # install dev or early release versions of important packages
               - pip install -U \
                   git+https://github.com/NeuralEnsemble/python-neo.git \
-                  git+https://github.com/NeuralEnsemble/ephyviewer.git
+                  git+https://github.com/NeuralEnsemble/ephyviewer.git \
+                  pyqtgraph==0.11.0rc
 
               # list versions
               - python --version
