@@ -31,6 +31,16 @@ class NeoIOUnitTest(unittest.TestCase):
         # remove the temp directory
         self.temp_dir.cleanup()
 
+    def test_missing_data_file(self):
+        """Test error is raised when data file is not found locally"""
+        dataset = 'video-jumps-unset'
+        metadata = neurotic.MetadataSelector(file=self.temp_file,
+                                             initial_selection=dataset)
+        # intentionally skipping downloading data file
+
+        with self.assertRaises(FileNotFoundError):
+            blk = neurotic.load_dataset(metadata=metadata, lazy=True)
+
     def test_missing_extension_error(self):
         """Test error is raised when file extension and io_class are missing"""
         dataset = 'missing-extension-without-io_class'
