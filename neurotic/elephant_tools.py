@@ -164,6 +164,39 @@ def _butter(signal, highpass_freq=None, lowpass_freq=None, order=4,
     else:
         return filtered_data
 
+def _isi(spiketrain, axis=-1):
+    """
+    Return an array containing the inter-spike intervals of the SpikeTrain.
+
+    Accepts a Neo SpikeTrain, a Quantity array, or a plain NumPy array.
+    If either a SpikeTrain or Quantity array is provided, the return value will
+    be a quantities array, otherwise a plain NumPy array. The units of
+    the quantities array will be the same as spiketrain.
+
+    Parameters
+    ----------
+
+    spiketrain : Neo SpikeTrain or Quantity array or NumPy ndarray
+                 The spike times.
+    axis : int, optional
+           The axis along which the difference is taken.
+           Default is the last axis.
+
+    Returns
+    -------
+
+    NumPy array or quantities array.
+
+    """
+    if axis is None:
+        axis = -1
+    if isinstance(spiketrain, neo.SpikeTrain):
+        intervals = np.diff(
+            np.sort(spiketrain.times.view(pq.Quantity)), axis=axis)
+    else:
+        intervals = np.diff(np.sort(spiketrain), axis=axis)
+    return intervals
+
 def _peak_detection(signal, threshold=0.0 * mV, sign='above', format=None):
     """
     Return the peak times for all events that cross threshold.
