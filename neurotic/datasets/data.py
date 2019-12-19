@@ -14,7 +14,7 @@ import quantities as pq
 import neo
 
 from ..datasets.metadata import _abs_path
-from ..elephant_tools import _butter, _peak_detection
+from ..elephant_tools import _butter, _isi, _peak_detection
 
 def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False):
     """
@@ -70,6 +70,10 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     sampling_period = blk.segments[0].analogsignals[0].sampling_period
     spikes_dataframe = _read_spikes_file(metadata, blk)
     blk.segments[0].spiketrains += _create_neo_spike_trains_from_dataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period)
+
+    # identify bursts from spike trains if not using lazy loading of signals
+    if not lazy:
+        blk.segments[0].epochs += _run_burst_detectors(metadata, blk)
 
     # alphabetize epoch and event channels by name
     blk.segments[0].epochs.sort(key=lambda ep: ep.name)
@@ -585,3 +589,95 @@ def _detect_spikes(sig, discriminator, epochs):
         st = st[np.any(time_masks, axis=0)]
 
     return st
+
+def _run_burst_detectors(metadata, blk):
+    """
+    Run all burst detectors given in ``metadata`` on the spike trains in
+    ``blk``.
+    """
+
+    burst_list = []
+
+    if metadata['burst_detectors'] is not None:
+
+        spikeTrainNameToIndex = {st.name:i for i, st in enumerate(blk.segments[0].spiketrains)}
+
+        # detect bursts spikes using frequency thresholds
+        for detector in metadata['burst_detectors']:
+
+            index = spikeTrainNameToIndex.get(detector['spiketrain'], None)
+            if index is None:
+
+                print("Warning: skipping burst detector for spike train named "
+                      f"\"{detector['spiketrain']}\" because spike train was "
+                      "not found!")
+
+            else:
+
+                st = blk.segments[0].spiketrains[index]
+                start_freq, stop_freq = detector['thresholds']*pq.Hz
+                burst = _find_bursts(st, start_freq, stop_freq)
+                burst.name = detector.get('name', detector['spiketrain'] + ' burst')
+                burst_list.append(burst)
+
+    return burst_list
+
+def _find_bursts(st, start_freq, stop_freq):
+    """
+    Find every period of time during which the instantaneous firing frequency
+    (IFF) of the Neo :class:`SpikeTrain <neo.core.SpikeTrain>` ``st`` meets the
+    criteria for bursting. Return the set of bursts as a Neo :class:`Epoch
+    <neo.core.Epoch>`, with ``array_annotations['spikes']`` listing the number
+    of spikes contained in each burst.
+
+    A burst is defined as a period beginning when the IFF exceeds
+    ``start_freq`` and ending when the IFF subsequently drops below the
+    ``stop_freq``. Note that in general ``stop_freq`` should not exceed
+    ``start_freq``, since otherwise bursts may not be detected.
+    """
+
+    isi = _isi(st).rescale('s')
+    iff = 1/isi
+
+    start_mask = iff > start_freq
+    stop_mask = iff < stop_freq
+
+    times = []
+    durations = []
+    n_spikes = []
+    scan_index = -1
+    while scan_index < iff.size:
+        start_index = None
+        stop_index = None
+
+        start_mask_indexes = np.where(start_mask)[0]
+        start_mask_indexes = start_mask_indexes[start_mask_indexes > scan_index]
+        if start_mask_indexes.size == 0:
+            break
+
+        start_index = start_mask_indexes[0] # first time that iff rises above start threshold
+
+        stop_mask_indexes = np.where(stop_mask)[0]
+        stop_mask_indexes = stop_mask_indexes[stop_mask_indexes > start_index]
+        if stop_mask_indexes.size > 0:
+            stop_index = stop_mask_indexes[0] # first time after start that iff drops below stop theshold
+        else:
+            stop_index = -1 # end of spike train (include all spikes after start)
+
+        times.append(st[start_index].rescale('s').magnitude)
+        durations.append((st[stop_index] - st[start_index]).rescale('s').magnitude)
+        n_spikes.append(stop_index-start_index+1 if stop_index > 0 else st.size-start_index)
+
+        if stop_index == -1:
+            break
+        else:
+            scan_index = stop_index
+
+    bursts = neo.Epoch(
+        times = times*pq.s,
+        durations = durations*pq.s,
+        labels = [''] * len(times),
+        array_annotations = {'spikes': n_spikes},
+    )
+
+    return bursts

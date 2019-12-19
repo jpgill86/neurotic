@@ -61,3 +61,14 @@ example dataset:
           channel: BN3
           units: uV
           amplitude: [85, 200]
+
+    burst_detectors:  # used only if fast loading is off (lazy=False)
+
+        - spiketrain: B3
+          thresholds: [8, 2] # Hz
+
+        - spiketrain: B38
+          thresholds: [8, 5] # Hz
+
+        - spiketrain: B4/B5
+          thresholds: [3, 3] # Hz

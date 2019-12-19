@@ -128,7 +128,7 @@ class MainWindow(QT.QMainWindow):
 
         self.options_menu = self.menuBar().addMenu(self.tr('&Options'))
 
-        do_toggle_lazy = QT.QAction('&Fast loading (disables filters, spike detection, RAUC)', self)
+        do_toggle_lazy = QT.QAction('&Fast loading (disables filters, spike and burst detection, RAUC)', self)
         do_toggle_lazy.setCheckable(True)
         do_toggle_lazy.setChecked(self.lazy)
         do_toggle_lazy.triggered.connect(self.toggle_lazy)
