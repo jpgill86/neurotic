@@ -3,7 +3,7 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge|
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
@@ -231,6 +231,10 @@ The command line interface accepts other arguments too:
     :target: Coveralls_
     :alt: Coverage status
 
+.. |Zenodo badge| image:: https://img.shields.io/badge/DOI-10.5281/zenodo.3564990-blue.svg
+   :target: Zenodo_
+   :alt: Zenodo archive
+
 .. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
     :target: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
     :alt: Screenshot
@@ -254,3 +258,4 @@ The command line interface accepts other arguments too:
 .. _Release Notes:  https://neurotic.readthedocs.io/en/latest/releasenotes.html
 .. _Travis:         https://travis-ci.com/jpgill86/neurotic
 .. _User Interface: https://ephyviewer.readthedocs.io/en/latest/interface.html
+.. _Zenodo:         https://doi.org/10.5281/zenodo.3564990

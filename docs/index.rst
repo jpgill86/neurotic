@@ -3,7 +3,7 @@ neurotic
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge|
 
 **Version:** |version| (`other versions`_)
 
@@ -61,6 +61,10 @@ at the same datasets!
    :target: Coveralls_
    :alt: Coverage status
 
+.. |Zenodo badge| image:: https://img.shields.io/badge/DOI-10.5281/zenodo.3564990-blue.svg
+   :target: Zenodo_
+   :alt: Zenodo archive
+
 .. |Example screenshot| image:: _static/example-screenshot.png
    :target: _static/example-screenshot.png
    :alt: Screenshot
@@ -76,3 +80,4 @@ at the same datasets!
 .. _PyPI:           https://pypi.org/project/neurotic
 .. _ReadTheDocs:    https://readthedocs.org/projects/neurotic
 .. _Travis:         https://travis-ci.com/jpgill86/neurotic
+.. _Zenodo:         https://doi.org/10.5281/zenodo.3564990
