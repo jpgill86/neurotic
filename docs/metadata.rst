@@ -49,10 +49,11 @@ Within a dataset's YAML block, paths to data and video files should be
 provided.
 
 All files associated with a dataset should be collected into a single
-directory. A path to the local copy of this directory must be provided using
-the ``data_dir`` key. You may specify ``data_dir`` as an absolute path (e.g.,
+directory. A path to the local copy of this directory can be provided using the
+``data_dir`` key. You may specify ``data_dir`` as an absolute path (e.g.,
 ``C:\Users\me\folder``) or as a path relative to the metadata file (e.g.,
-``folder``).
+``folder``). If left unspecified, the directory containing the metadata file is
+used.
 
 Paths to individual files within the dataset are provided using keys listed
 below. These paths should be given relative to ``data_dir``. If ``data_dir`` is
