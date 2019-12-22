@@ -180,7 +180,7 @@ def _load_metadata(file = 'metadata.yml', local_data_root = None, remote_data_ro
     value passed to this function will override the value provided in the file.
     If both are unspecified, it is assumed that no remote data store exists.
 
-    The "data_dir" property must be provided for every data set in ``file`` and
+    The "data_dir" property is optional for every data set in ``file`` and
     specifies the directory on the local system containing the data files.
     "data_dir" may be an absolute path or a relative path with respect to
     ``local_data_root``. If it is a relative path, it will be converted to an
@@ -294,7 +294,7 @@ def _defaults_for_key(key):
         # - if it is a relative path, it will be interpreted by _load_metadata
         #   as relative to local_data_root and will be converted to an absolute
         #   path
-        'data_dir': None,
+        'data_dir': '.',
 
         # the path of the directory containing the data on a remote server
         # - this may be a full URL or a relative path, or None if there exists
