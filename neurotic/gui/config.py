@@ -338,6 +338,16 @@ class EphyviewerConfigurator():
                     scatter_channels = spike_channels,
                 ))
 
+                # instead of passing colors into AnalogSignalSourceWithScatter
+                # constructor with scatter_colors, first let the constructor
+                # choose reasonable default colors (done above), and only then
+                # override colors for spike trains that have been explicitly
+                # set in amplitude_discriminators (done here)
+                unit_colors = {}
+                if self.metadata['amplitude_discriminators'] is not None:
+                    unit_colors = {d['name']: d['color'] for d in self.metadata['amplitude_discriminators'] if 'color' in d}
+                sources['signal'][-1].scatter_colors.update(unit_colors)
+
             # useOpenGL=True eliminates the extremely poor performance associated
             # with TraceViewer's line_width > 1.0, but it also degrades overall
             # performance somewhat and is reportedly unstable
@@ -469,6 +479,18 @@ class EphyviewerConfigurator():
                 spike_train_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
                 spike_train_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 spike_train_view.params_controller.on_automatic_color()
+
+            # set explicitly assigned spike train colors
+            if self.metadata['amplitude_discriminators'] is not None:
+                for d in self.metadata['amplitude_discriminators']:
+                    if 'color' in d:
+                        try:
+                            index = [st.name for st in seg.spiketrains].index(d['name'])
+                            spike_train_view.by_channel_params['ch{}'.format(index), 'color'] = d['color']
+                        except ValueError:
+                            # the amplitude discriminator name may not have
+                            # been found in the spike train list
+                            pass
 
         ########################################################################
         # EPOCHS
