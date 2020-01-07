@@ -1,0 +1,36 @@
+.. _v1.3.0:
+
+neurotic 1.3.0
+==============
+
+2020-01-07
+
+Improvements
+------------
+
+* Add burst detection via firing rate thresholding
+  (:pr:`156`)
+
+* Add button for auto-scaling signals to main window
+  (:pr:`150`)
+
+* Add metadata color parameters for ``amplitude_discriminators``
+  (:pr:`166`)
+
+* Add metadata parameters ``rauc_baseline`` and ``rauc_bin_duration``
+  (:pr:`151`)
+
+* Make ``data_dir`` default to metadata file directory
+  (:pr:`163`)
+
+Bug fixes
+---------
+
+* Unmask FileNotFoundError when local data file is missing
+  (:pr:`154`)
+
+Documentation
+-------------
+
+* Add Zenodo archive badge
+  (:pr:`162`)
