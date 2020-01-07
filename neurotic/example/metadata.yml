@@ -50,17 +50,20 @@ example dataset:
           channel: BN2
           units: uV
           amplitude: [50, 150]
+          color: '1b9e77'
 
         - name: B38
           channel: BN2
           units: uV
           amplitude: [17, 26]
           epoch: B38 activity
+          color: '7570b3'
 
         - name: B4/B5
           channel: BN3
           units: uV
           amplitude: [85, 200]
+          color: 'e6ab02'
 
     burst_detectors:  # used only if fast loading is off (lazy=False)
 

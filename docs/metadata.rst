@@ -450,7 +450,9 @@ the basis of amplitude alone. Note that amplitude discriminators are only
 applied if fast loading is off (``lazy=False``).
 
 Detected spikes are indicated on the signals with markers, and spike trains are
-displayed in a raster plot.
+displayed in a raster plot. Optionally, a color may be specified for an
+amplitude discriminator using a single letter color code (e.g., ``'b'`` for
+blue or ``'k'`` for black) or a hexadecimal color code (e.g., ``'1b9e77'``).
 
 In addition to restricting spike detection for a given unit to an amplitude
 window, detection can also be limited in time to overlap with epochs with a
@@ -471,12 +473,14 @@ for each amplitude discriminator.
               channel: Extracellular
               units: uV
               amplitude: [50, 150]
+              color: r
 
             - name: Unit 2
               channel: Extracellular
               units: uV
               amplitude: [20, 50]
               epoch: Unit 2 activity
+              color: 'e6ab02'
 
 Here two units are detected on the same channel with different amplitude
 windows. Any peaks between 50 and 150 microvolts on the "Extracellular" channel
