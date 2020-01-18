@@ -21,6 +21,9 @@ from tqdm.auto import tqdm
 from urllib.request import HTTPBasicAuthHandler, HTTPPasswordMgrWithDefaultRealm
 from ..datasets.ftpauth import FTPBasicAuthHandler
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 # install HTTP and FTP authentication handlers, the latter of which also adds
 # reliable file size retrieval before downloading
@@ -36,13 +39,13 @@ def download(url, local_file, overwrite_existing=False, show_progress=True, byte
     Download a file.
     """
     if not overwrite_existing and os.path.exists(local_file):
-        print(f'Skipping {os.path.basename(local_file)} (already exists)')
+        logger.info(f'Skipping {os.path.basename(local_file)} (already exists)')
         return
 
     error = None
     error_code = None
 
-    print(f'Downloading {os.path.basename(local_file)}')
+    logger.info(f'Downloading {os.path.basename(local_file)}')
     try:
         _download_with_progress_bar(url, local_file, show_progress=show_progress, bytes_per_chunk=bytes_per_chunk)
 
@@ -77,28 +80,28 @@ def download(url, local_file, overwrite_existing=False, show_progress=True, byte
 
             if error_code == 404:
                 # not found
-                print(f'Skipping {os.path.basename(local_file)} (not found on server)')
+                logger.critical(f'Skipping {os.path.basename(local_file)} (not found on server)')
                 return
 
             elif error_code == 550:
                 # no such file or folder, or permission denied
-                print(f'Skipping {os.path.basename(local_file)} (not found on server, or user is unauthorized)')
+                logger.critical(f'Skipping {os.path.basename(local_file)} (not found on server, or user is unauthorized)')
                 return
 
             elif error_code == 10060:
                 # timeout
                 hostname = urllib.parse.urlparse(url).hostname
-                print(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
+                logger.critical(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
                 return
 
             elif error_code == 11001:
                 # could not reach server or resolve hostname
                 hostname = urllib.parse.urlparse(url).hostname
-                print(f'Skipping {os.path.basename(local_file)} (cannot connect to {hostname})')
+                logger.critical(f'Skipping {os.path.basename(local_file)} (cannot connect to {hostname})')
                 return
 
             else:
-                print(f'Encountered a problem: {error}')
+                logger.critical(f'Encountered a problem: {error}')
                 return
 
 
@@ -250,13 +253,13 @@ def _authenticate(url):
                     raise error
 
         if bad_login_attempts >= _max_bad_login_attempts:
-            print('Unauthorized: Aborting login')
+            logger.critical('Unauthorized: Aborting login')
             return False
         else:
             if bad_login_attempts == 0:
-                print('Authentication required')
+                logger.info('Authentication required')
             else:
-                print(f'Failed login ({bad_login_attempts} of '
+                logger.warning(f'Failed login ({bad_login_attempts} of '
                       f'{_max_bad_login_attempts}): Bad login credentials, or '
                       f'else user {user} does not have permission to access '
                       f'{url}')
@@ -266,7 +269,7 @@ def _authenticate(url):
             host, port = urllib.parse.splitport(netloc)
             user = input(f'User name on {host}: ')
             if not user:
-                print('No user given, aborting login')
+                logger.critical('No user given, aborting login')
                 return False
             passwd = getpass('Password: ')
             handler.add_password(None, netloc, user, passwd)

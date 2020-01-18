@@ -12,13 +12,14 @@ import pkg_resources
 import copy
 import yaml
 import unittest
-import logging
 
 from ephyviewer import mkQApp
 
 import neurotic
 
+import logging
 logger = logging.getLogger(__name__)
+
 
 class CLITestCase(unittest.TestCase):
 

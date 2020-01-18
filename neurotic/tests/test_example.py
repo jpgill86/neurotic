@@ -8,11 +8,12 @@ import tempfile
 import shutil
 import gc
 import unittest
-import logging
 
 import neurotic
 
+import logging
 logger = logging.getLogger(__name__)
+
 
 class ExampleDatasetsUnitTest(unittest.TestCase):
 
