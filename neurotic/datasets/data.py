@@ -16,6 +16,10 @@ import neo
 from ..datasets.metadata import _abs_path
 from ..elephant_tools import _butter, _isi, _peak_detection
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False):
     """
     Load a dataset.

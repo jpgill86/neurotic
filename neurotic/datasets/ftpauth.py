@@ -14,6 +14,9 @@ import urllib
 from urllib.request import FTPHandler, HTTPPasswordMgr
 from urllib.parse import splitport, splituser, unquote
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class FTPBasicAuthHandler(FTPHandler):
     """

@@ -8,14 +8,15 @@ import tempfile
 import shutil
 import gc
 import unittest
-import logging
 
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
 import neurotic
 
+import logging
 logger = logging.getLogger(__name__)
+
 
 class VideoSyncUnitTest(unittest.TestCase):
 

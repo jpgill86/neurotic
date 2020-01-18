@@ -19,6 +19,10 @@ from ..datasets.data import _get_io
 from ..datasets.metadata import _abs_path
 from ..gui.epochencoder import NeuroticWritableEpochSource
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 pq.mN = pq.UnitQuantity('millinewton', pq.N/1e3, symbol = 'mN');  # define millinewton
 
 

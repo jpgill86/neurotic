@@ -4,12 +4,13 @@ Tests for Qt
 """
 
 import unittest
-import logging
 
 from ephyviewer import mkQApp
 from ephyviewer import QT
 
+import logging
 logger = logging.getLogger(__name__)
+
 
 class QtTestCase(unittest.TestCase):
 

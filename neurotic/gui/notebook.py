@@ -21,6 +21,9 @@ except ImportError:
 from ..datasets.metadata import MetadataSelector, _selector_labels
 from ..gui.config import EphyviewerConfigurator
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class MetadataSelectorWidget(MetadataSelector):
     """

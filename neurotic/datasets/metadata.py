@@ -13,6 +13,9 @@ import yaml
 
 from ..datasets.download import download
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class MetadataSelector():
     """

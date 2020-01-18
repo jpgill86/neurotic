@@ -21,6 +21,9 @@ from tqdm.auto import tqdm
 from urllib.request import HTTPBasicAuthHandler, HTTPPasswordMgrWithDefaultRealm
 from ..datasets.ftpauth import FTPBasicAuthHandler
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 # install HTTP and FTP authentication handlers, the latter of which also adds
 # reliable file size retrieval before downloading

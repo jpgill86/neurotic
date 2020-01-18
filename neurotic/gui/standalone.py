@@ -21,6 +21,9 @@ from ..datasets.metadata import _selector_labels
 from ..elephant_tools import _rauc
 from ..gui.config import EphyviewerConfigurator
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def open_path_with_default_program(path):
     """

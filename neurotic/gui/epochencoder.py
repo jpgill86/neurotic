@@ -12,6 +12,10 @@ import numpy as np
 import pandas as pd
 from ephyviewer import WritableEpochSource
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 class NeuroticWritableEpochSource(WritableEpochSource):
     """
     A subclass of :class:`ephyviewer.datasource.epochs.WritableEpochSource` for

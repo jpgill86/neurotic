@@ -13,6 +13,10 @@ from ephyviewer import mkQApp
 from . import __version__
 from .gui.standalone import MainWindow
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def parse_args(argv):
     """
 
