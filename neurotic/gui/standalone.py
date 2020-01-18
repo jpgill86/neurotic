@@ -296,6 +296,10 @@ class MainWindow(QT.QMainWindow):
             logger.critical('Some files were not found locally and may need '
                            f'to be downloaded: {e}')
 
+        except Exception:
+
+            logger.exception('Encountered a fatal error. Traceback will be written to log file.')
+
     def view_log_file(self):
         """
         Open the log file in an editor.
