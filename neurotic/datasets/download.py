@@ -80,28 +80,28 @@ def download(url, local_file, overwrite_existing=False, show_progress=True, byte
 
             if error_code == 404:
                 # not found
-                logger.critical(f'Skipping {os.path.basename(local_file)} (not found on server)')
+                logger.error(f'Skipping {os.path.basename(local_file)} (not found on server)')
                 return
 
             elif error_code == 550:
                 # no such file or folder, or permission denied
-                logger.critical(f'Skipping {os.path.basename(local_file)} (not found on server, or user is unauthorized)')
+                logger.error(f'Skipping {os.path.basename(local_file)} (not found on server, or user is unauthorized)')
                 return
 
             elif error_code == 10060:
                 # timeout
                 hostname = urllib.parse.urlparse(url).hostname
-                logger.critical(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
+                logger.error(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
                 return
 
             elif error_code == 11001:
                 # could not reach server or resolve hostname
                 hostname = urllib.parse.urlparse(url).hostname
-                logger.critical(f'Skipping {os.path.basename(local_file)} (cannot connect to {hostname})')
+                logger.error(f'Skipping {os.path.basename(local_file)} (cannot connect to {hostname})')
                 return
 
             else:
-                logger.critical(f'Encountered a problem: {error}')
+                logger.error(f'Encountered a problem: {error}')
                 return
 
 
@@ -253,7 +253,7 @@ def _authenticate(url):
                     raise error
 
         if bad_login_attempts >= _max_bad_login_attempts:
-            logger.critical('Unauthorized: Aborting login')
+            logger.error('Unauthorized: Aborting login')
             return False
         else:
             if bad_login_attempts == 0:
@@ -269,7 +269,7 @@ def _authenticate(url):
             host, port = urllib.parse.splitport(netloc)
             user = input(f'User name on {host}: ')
             if not user:
-                logger.critical('No user given, aborting login')
+                logger.error('No user given, aborting login')
                 return False
             passwd = getpass('Password: ')
             handler.add_password(None, netloc, user, passwd)

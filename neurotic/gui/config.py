@@ -188,7 +188,7 @@ class EphyviewerConfigurator():
             else:
                 logger.warning(self.viewer_settings[name]['reason'])
         else:
-            logger.critical(f'"{name}" is not a viewer in viewer_settings')
+            logger.error(f'"{name}" is not a viewer in viewer_settings')
 
     def hide(self, name):
         """
@@ -197,7 +197,7 @@ class EphyviewerConfigurator():
         if name in self.viewer_settings:
             self.viewer_settings[name]['show'] = False
         else:
-            logger.critical(f'"{name}" is not a viewer in viewer_settings')
+            logger.error(f'"{name}" is not a viewer in viewer_settings')
 
     def show_all(self):
         """
