@@ -15,12 +15,24 @@ import pkg_resources
 import quantities as pq
 from ephyviewer import QT, QT_MODE
 
-from .. import __version__
+from .. import __version__, log_file
 from ..datasets import MetadataSelector, load_dataset
 from ..datasets.metadata import _selector_labels
 from ..elephant_tools import _rauc
 from ..gui.config import EphyviewerConfigurator
 
+
+def open_path_with_default_program(path):
+    """
+    Open a directory or file with its default program.
+    """
+
+    if platform.system() == "Windows":
+        os.startfile(path)
+    elif platform.system() == "Darwin":
+        subprocess.Popen(["open", path])
+    else:
+        subprocess.Popen(["xdg-open", path])
 
 class MainWindow(QT.QMainWindow):
     """
@@ -182,6 +194,10 @@ class MainWindow(QT.QMainWindow):
 
         self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
 
+        do_view_log_file = QT.QAction('View &log file', self)
+        do_view_log_file.triggered.connect(self.view_log_file)
+        self.help_menu.addAction(do_view_log_file)
+
         do_show_about = QT.QAction('&About neurotic', self)
         do_show_about.triggered.connect(self.show_about)
         self.help_menu.addAction(do_show_about)
@@ -206,19 +222,9 @@ class MainWindow(QT.QMainWindow):
         Open the metadata file in an editor.
         """
 
-        path = self.metadata_selector.file
-
         try:
-
-            if platform.system() == "Windows":
-                os.startfile(path)
-            elif platform.system() == "Darwin":
-                subprocess.Popen(["open", path])
-            else:
-                subprocess.Popen(["xdg-open", path])
-
+            open_path_with_default_program(self.metadata_selector.file)
         except FileNotFoundError as e:
-
             print('The metadata file was not found:', e)
             return
 
@@ -249,20 +255,9 @@ class MainWindow(QT.QMainWindow):
         Finder.
         """
 
-        metadata = self.metadata_selector.selected_metadata
-        path = metadata['data_dir']
-
         try:
-
-            if platform.system() == "Windows":
-                os.startfile(path)
-            elif platform.system() == "Darwin":
-                subprocess.Popen(["open", path])
-            else:
-                subprocess.Popen(["xdg-open", path])
-
+            open_path_with_default_program(self.metadata_selector['data_dir'])
         except FileNotFoundError as e:
-
             print('The directory for the selected dataset was not found ' \
                   'locally, perhaps because it does not exist yet:', e)
 
@@ -296,6 +291,17 @@ class MainWindow(QT.QMainWindow):
 
             print('Some files were not found locally and may need to be ' \
                   'downloaded:', e)
+
+    def view_log_file(self):
+        """
+        Open the log file in an editor.
+        """
+
+        try:
+            open_path_with_default_program(log_file)
+        except FileNotFoundError as e:
+            print('The log file was not found:', e)
+            return
 
     def show_about(self):
         """
