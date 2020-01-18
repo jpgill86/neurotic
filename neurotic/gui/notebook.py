@@ -120,7 +120,7 @@ class MetadataSelectorWidget(MetadataSelector):
 
         # warn if video_offset is not set
         if self.selected_metadata['video_file'] is not None and self.selected_metadata['video_offset'] is None:
-            print('Warning: Video sync may be incorrect! video_offset not set for {}'.format(self._selection))
+            logger.warning('Video sync may be incorrect! video_offset not set for {}'.format(self._selection))
 
     def _on_reload_clicked(self, button):
         """

@@ -99,7 +99,7 @@ class MetadataSelector():
         Select a metadata set.
         """
         if self.all_metadata is None:
-            print('load metadata before selecting')
+            logger.critical('Load metadata before selecting')
         elif selection not in self.all_metadata:
             raise ValueError('{} was not found in {}'.format(selection, self.file))
         else:
@@ -451,7 +451,7 @@ def _download_file(metadata, file, **kwargs):
     """
 
     if not _is_url(metadata['remote_data_dir']):
-        print('metadata[remote_data_dir] is not a full URL')
+        logger.critical('metadata[remote_data_dir] is not a full URL')
         return
 
     if metadata[file]:
@@ -473,7 +473,7 @@ def _download_all_data_files(metadata, **kwargs):
     """
 
     if not _is_url(metadata['remote_data_dir']):
-        print('metadata[remote_data_dir] is not a full URL')
+        logger.critical('metadata[remote_data_dir] is not a full URL')
         return
 
     for file in [k for k in metadata if k.endswith('_file')]:

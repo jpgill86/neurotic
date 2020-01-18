@@ -64,7 +64,7 @@ class EphyviewerConfigurator():
         self.viewer_settings = {
             'traces':        {'show': True, 'disabled': False, 'reason': ''},
             'traces_rauc':   {'show': False, 'disabled': False, 'reason': ''},
-            'freqs':         {'show': False, 'disabled': True, 'reason': 'Experimental and computationally expensive'},
+            'freqs':         {'show': False, 'disabled': True, 'reason': 'Disabled because feature is experimental and computationally expensive'},
             'spike_trains':  {'show': True, 'disabled': False, 'reason': ''},
             'epochs':        {'show': True, 'disabled': False, 'reason': ''},
             'epoch_encoder': {'show': True, 'disabled': False, 'reason': ''},
@@ -125,24 +125,26 @@ class EphyviewerConfigurator():
 
         # warn about potential video sync problems
         if metadata['video_file'] is not None and metadata['video_offset'] is None:
-            print('WARNING: Your video will likely be out of sync with your')
-            print('data because video_offset is unspecified! Consider adding')
-            print('it to your metadata.')
+            logger.warning('Your video will likely be out of sync with your '
+                           'data because video_offset is unspecified! '
+                           'Consider adding it to your metadata.')
         if metadata['video_file'] is not None and metadata['video_jumps'] is None:
             approx_video_jumps = _estimate_video_jump_times(blk)
             if approx_video_jumps:
-                print('WARNING: It seems that AxoGraph was paused at least once')
-                print('during data acquisition, but video_jumps is unspecified.')
-                print('This will cause your video and data to get out of sync.')
-                print('Consider adding the following to your metadata:')
-                print('    video_jumps:')
-                for t, dur in approx_video_jumps:
-                    print(f'        - [{t}, {dur}]')
-                print('Each ordered pair specifies the timing of a pause and')
-                print('approximately how long the pause lasted in seconds. The')
-                print('pause durations are only rough estimates +/- a second! You')
-                print('should refine them by inspecting the video to make sure')
-                print('your sync is accurate!')
+                approx_video_jumps_recommendation = '    video_jumps:\n' + \
+                    '\n'.join([f'        - [{t}, {dur}]' for t, dur in approx_video_jumps])
+                logger.warning('It seems that AxoGraph was paused at least '
+                               'once during data acquisition, but video_jumps '
+                               'is unspecified. This will cause your video '
+                               'and data to get out of sync. Consider adding '
+                               'the following to your metadata:'
+                               f'\n{approx_video_jumps_recommendation}\n'
+                               'Each ordered pair specifies the timing of a '
+                               'pause and approximately how long the pause '
+                               'lasted in seconds. The pause durations are '
+                               'only rough estimates +/- a second! You should '
+                               'refine them by inspecting the video to make '
+                               'sure your sync is accurate!')
 
     def is_enabled(self, name):
         """
@@ -184,9 +186,9 @@ class EphyviewerConfigurator():
             if not self.viewer_settings[name]['disabled']:
                 self.viewer_settings[name]['show'] = True
             else:
-                print(self.viewer_settings[name]['reason'])
+                logger.warning(self.viewer_settings[name]['reason'])
         else:
-            print(f'"{name}" is not a viewer in viewer_settings')
+            logger.critical(f'"{name}" is not a viewer in viewer_settings')
 
     def hide(self, name):
         """
@@ -195,7 +197,7 @@ class EphyviewerConfigurator():
         if name in self.viewer_settings:
             self.viewer_settings[name]['show'] = False
         else:
-            print(f'"{name}" is not a viewer in viewer_settings')
+            logger.critical(f'"{name}" is not a viewer in viewer_settings')
 
     def show_all(self):
         """
@@ -326,7 +328,7 @@ class EphyviewerConfigurator():
                         for channel in st.annotations['channels']:
                             index = plotNameToIndex.get(channel, None)
                             if index is None:
-                                print('Note: Spike train {} will not be plotted on channel {} because that channel isn\'t being plotted'.format(st.name, channel))
+                                logger.warning('Spike train {} will not be plotted on channel {} because that channel isn\'t being plotted'.format(st.name, channel))
                             else:
                                 c.append(index)
                         if c:
@@ -646,7 +648,7 @@ def _set_defaults_for_plots(metadata, blk):
     for plot in metadata['plots']:
         index = signalNameToIndex.get(plot['channel'], None)
         if index is None:
-            print('Warning: removing plot with channel name "{}" because channel was not found in blk!'.format(plot['channel']))
+            logger.warning('Removing plot with channel name "{}" because channel was not found in blk!'.format(plot['channel']))
         else:
             plot['index'] = index
             plot.setdefault('units',  _default_units(sigs[index]))

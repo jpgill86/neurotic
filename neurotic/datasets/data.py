@@ -146,7 +146,7 @@ def _read_data_file(metadata, lazy=False, signal_group_mode='split-all'):
     # force lazy=False if lazy is not supported by the reader class
     if lazy and not io.support_lazy:
         lazy = False
-        print(f'NOTE: Not reading signals in lazy mode because Neo\'s {io.__class__.__name__} reader does not support it.')
+        logger.info(f'NOTE: Not reading signals in lazy mode because Neo\'s {io.__class__.__name__} reader does not support it.')
 
     if 'signal_group_mode' in inspect.signature(io.read_block).parameters.keys():
         # - signal_group_mode='split-all' is the default because this ensures
@@ -251,15 +251,17 @@ def _read_annotations_file(metadata):
         # discard entries with missing or negative start times
         bad_start = df['Start (s)'].isnull() | (df['Start (s)'] < 0)
         if bad_start.any():
-            print('NOTE: These rows will be discarded because their Start times are missing or negative:')
-            print(df[bad_start])
+            logger.warning('These rows will be discarded because their Start '
+                           'times are missing or negative:\n'
+                           f'{df[bad_start]}')
             df = df[~bad_start]
 
         # discard entries with end time preceding start time
         bad_end = df['End (s)'] < df['Start (s)']
         if bad_end.any():
-            print('NOTE: These rows will be discarded because their End times precede their Start times:')
-            print(df[bad_end])
+            logger.warning('These rows will be discarded because their End '
+                           'times precede their Start times:\n'
+                           f'{df[bad_end]}')
             df = df[~bad_end]
 
         # compute durations
@@ -314,15 +316,17 @@ def _read_epoch_encoder_file(metadata):
         # discard entries with missing or negative start times
         bad_start = df['Start (s)'].isnull() | (df['Start (s)'] < 0)
         if bad_start.any():
-            print('NOTE: These rows will be discarded because their Start times are missing or negative:')
-            print(df[bad_start])
+            logger.warning('These rows will be discarded because their Start '
+                           'times are missing or negative:\n'
+                           f'{df[bad_start]}')
             df = df[~bad_start]
 
         # discard entries with end time preceding start time
         bad_end = df['End (s)'] < df['Start (s)']
         if bad_end.any():
-            print('NOTE: These rows will be discarded because their End times precede their Start times:')
-            print(df[bad_end])
+            logger.warning('These rows will be discarded because their End '
+                           'times precede their Start times:\n'
+                           f'{df[bad_end]}')
             df = df[~bad_end]
 
         # compute durations
@@ -486,7 +490,7 @@ def _apply_filters(metadata, blk):
             index = signalNameToIndex.get(sig_filter['channel'], None)
             if index is None:
 
-                print('Warning: skipping filter with channel name {} because channel was not found!'.format(sig_filter['channel']))
+                logger.warning('Skipping filter with channel name {} because channel was not found!'.format(sig_filter['channel']))
 
             else:
 
@@ -523,7 +527,7 @@ def _run_amplitude_discriminators(metadata, blk):
             index = signalNameToIndex.get(discriminator['channel'], None)
             if index is None:
 
-                print('Warning: skipping amplitude discriminator with channel name {} because channel was not found!'.format(discriminator['channel']))
+                logger.warning('Skipping amplitude discriminator with channel name {} because channel was not found!'.format(discriminator['channel']))
 
             else:
 
@@ -612,7 +616,7 @@ def _run_burst_detectors(metadata, blk):
             index = spikeTrainNameToIndex.get(detector['spiketrain'], None)
             if index is None:
 
-                print("Warning: skipping burst detector for spike train named "
+                logger.warning("Skipping burst detector for spike train named "
                       f"\"{detector['spiketrain']}\" because spike train was "
                       "not found!")
 
