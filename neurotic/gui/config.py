@@ -23,6 +23,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# raise the threshold for PyAV messages printed to the console from
+# warning to critical
+logging.getLogger('libav').setLevel(logging.CRITICAL)
+
+
 pq.mN = pq.UnitQuantity('millinewton', pq.N/1e3, symbol = 'mN');  # define millinewton
 
 

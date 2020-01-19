@@ -65,6 +65,11 @@ def parse_args(argv):
 
     if args.debug:
         logger.parent.setLevel(logging.DEBUG)
+
+        # lower the threshold for PyAV messages printed to the console from
+        # critical to warning
+        logging.getLogger('libav').setLevel(logging.WARNING)
+
         if not args.launch_example_notebook:
             # show only if Jupyter won't be launched, since the setting will
             # not carry over into the kernel started by Jupyter
