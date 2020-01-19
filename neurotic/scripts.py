@@ -88,8 +88,8 @@ def launch_example_notebook():
         out = subprocess.Popen(['jupyter', 'notebook', '--version'],
                                stdout=subprocess.PIPE).communicate()[0]
     except FileNotFoundError as e:
-        logger.critical('Unable to verify Jupyter is installed using "jupyter '
-                        'notebook --version". Is it installed?')
+        logger.error('Unable to verify Jupyter is installed using "jupyter '
+                     'notebook --version". Is it installed?')
 
     if out:
         # run Jupyter on the example notebook
@@ -97,7 +97,7 @@ def launch_example_notebook():
             out = subprocess.Popen(['jupyter', 'notebook', path],
                                    stdout=subprocess.PIPE).communicate()[0]
         except FileNotFoundError as e:
-            logger.critical(f'Unable to locate the example notebook at {path}')
+            logger.error(f'Unable to locate the example notebook at {path}')
 
 def main():
     """

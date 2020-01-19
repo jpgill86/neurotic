@@ -108,7 +108,7 @@ class MainWindow(QT.QMainWindow):
             try:
                 self.metadata_selector.setCurrentRow(list(self.metadata_selector.all_metadata).index(initial_selection))
             except (TypeError, ValueError) as e:
-                logger.critical(f'Bad dataset key, will ignore: {e}')
+                logger.error(f'Bad dataset key, will ignore: {e}')
 
     def create_menus(self):
         """
@@ -228,7 +228,7 @@ class MainWindow(QT.QMainWindow):
         try:
             open_path_with_default_program(self.metadata_selector.file)
         except FileNotFoundError as e:
-            logger.critical(f'The metadata file was not found: {e}')
+            logger.error(f'The metadata file was not found: {e}')
             return
 
     def download_files(self):
@@ -261,9 +261,9 @@ class MainWindow(QT.QMainWindow):
         try:
             open_path_with_default_program(self.metadata_selector['data_dir'])
         except FileNotFoundError as e:
-            logger.critical('The directory for the selected dataset was not '
-                           'found locally, perhaps because it does not exist '
-                           f'yet: {e}')
+            logger.error('The directory for the selected dataset was not '
+                         'found locally, perhaps because it does not exist '
+                         f'yet: {e}')
 
     def launch(self):
         """
@@ -293,8 +293,12 @@ class MainWindow(QT.QMainWindow):
 
         except FileNotFoundError as e:
 
-            logger.critical('Some files were not found locally and may need '
-                           f'to be downloaded: {e}')
+            logger.error('Some files were not found locally and may need to '
+                         f'be downloaded: {e}')
+
+        except Exception:
+
+            logger.exception('Encountered a fatal error. Traceback will be written to log file.')
 
     def view_log_file(self):
         """
@@ -304,7 +308,7 @@ class MainWindow(QT.QMainWindow):
         try:
             open_path_with_default_program(log_file)
         except FileNotFoundError as e:
-            logger.critical(f'The log file was not found: {e}')
+            logger.error(f'The log file was not found: {e}')
             return
 
     def show_about(self):
@@ -444,7 +448,7 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
         try:
             MetadataSelector.load(self)
         except Exception as e:
-            logger.critical(f'Bad metadata file: {e}')
+            logger.error(f'Bad metadata file\n{e}')
 
         if self.all_metadata is not None:
 
