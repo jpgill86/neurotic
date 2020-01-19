@@ -341,7 +341,9 @@ Plot Parameters
 ---------------
 
 Use the ``plots`` parameter to specify which signal channels from ``data_file``
-you want plotted and how to scale them.
+you want plotted and how to scale them. Optionally, a color may be specified
+for channels using a single letter color code (e.g., ``'b'`` for blue or
+``'k'`` for black) or a hexadecimal color code (e.g., ``'1b9e77'``).
 
 Consider the following example, and notice the use of hyphens and indentation
 for each channel.
@@ -357,11 +359,13 @@ for each channel.
               ylabel: Buccal nerve 2 (BN2)
               units: uV
               ylim: [-150, 150]
+              color: r
 
             - channel: Intracellular
               ylabel: B3 neuron
               units: mV
               ylim: [-100, 50]
+              color: '666666'
 
             - channel: Force
               units: mN
@@ -615,7 +619,8 @@ The signal is then rectified (absolute value) and divided into non-overlapping
 bins of fixed duration. Finally, the integral is calculated within each bin.
 The result is a new time series that represents the overall activity of the
 original signal. RAUC time series are plotted separately from the original
-signals in a second tab.
+signals in a second tab. Colors are inherited from ``plots``, if they are
+provided there.
 
 The choice of baseline is controlled by the ``rauc_baseline`` metadata
 parameter, which may have the value ``None`` (default), ``'mean'``, or

@@ -388,7 +388,7 @@ def _defaults_for_key(key):
         'video_rate_correction': None,
 
         # list the channels in the order they should be plotted
-        # - e.g. [{'channel': 'Channel A', 'ylabel': 'My channel', 'ylim': [-120, 120], 'units': 'uV'}, ...]
+        # - e.g. [{'channel': 'Channel A', 'ylabel': 'My channel', 'ylim': [-120, 120], 'units': 'uV', 'color': 'ff0000'}, ...]
         'plots': None,
 
         # amount of time in seconds to plot initially

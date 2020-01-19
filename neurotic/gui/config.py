@@ -275,6 +275,12 @@ class EphyviewerConfigurator():
         ########################################################################
         # COLORS
 
+        # colors for signals given explicitly in plots, used for raw signals
+        # and RAUC
+        sig_colors = {}
+        if self.metadata['plots'] is not None:
+            sig_colors = {p['channel']: p['color'] for p in self.metadata['plots'] if 'color' in p}
+
         # colors for units given explicitly in amplitude_discriminators, used
         # for scatter markers, spike trains, and burst epochs
         unit_colors = {}
@@ -388,6 +394,15 @@ class EphyviewerConfigurator():
                 trace_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 trace_view.params_controller.on_automatic_color()
 
+            # set explicitly assigned signal colors
+            for name, color in sig_colors.items():
+                try:
+                    index = [p['channel'] for p in self.metadata['plots']].index(name)
+                    trace_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # sig name may not have been found in the trace list
+                    pass
+
             # adjust plot range, scaling, and positioning
             trace_view.params['ylim_max'] = 0.5
             trace_view.params['ylim_min'] = -trace_view.source.nb_channel + 0.5
@@ -433,6 +448,15 @@ class EphyviewerConfigurator():
                 trace_rauc_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
                 trace_rauc_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 trace_rauc_view.params_controller.on_automatic_color()
+
+            # set explicitly assigned signal colors
+            for name, color in sig_colors.items():
+                try:
+                    index = [p['channel'] for p in self.metadata['plots']].index(name)
+                    trace_rauc_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # sig name may not have been found in the rauc trace list
+                    pass
 
             # adjust plot range
             trace_rauc_view.params['ylim_max'] = 0.5
