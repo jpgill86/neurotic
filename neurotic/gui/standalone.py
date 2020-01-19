@@ -313,9 +313,18 @@ class MainWindow(QT.QMainWindow):
         if checked:
             logger.parent.setLevel(logging.DEBUG)
             logger.debug('Debug messages enabled')
+
+            # lower the threshold for PyAV messages printed to the console from
+            # critical to warning
+            logging.getLogger('libav').setLevel(logging.WARNING)
+
         else:
             logger.debug('Disabling debug messages')
             logger.parent.setLevel(default_log_level)
+
+            # raise the threshold for PyAV messages printed to the console from
+            # warning to critical
+            logging.getLogger('libav').setLevel(logging.CRITICAL)
 
     def view_log_file(self):
         """
