@@ -38,6 +38,8 @@ def parse_args(argv):
 
     parser.add_argument('-V', '--version', action='version',
                         version='neurotic {}'.format(__version__))
+    parser.add_argument('--debug', action='store_true', dest='debug',
+                        help='enable detailed log messages for debugging')
     parser.add_argument('--no-lazy', action='store_false', dest='lazy',
                         help='do not use fast loading (default: use fast ' \
                              'loading)')
@@ -60,6 +62,13 @@ def parse_args(argv):
                              'args will be ignored)')
 
     args = parser.parse_args(argv[1:])
+
+    if args.debug:
+        logger.parent.setLevel(logging.DEBUG)
+        if not args.launch_example_notebook:
+            # show only if Jupyter won't be launched, since the setting will
+            # not carry over into the kernel started by Jupyter
+            logger.debug('Debug messages enabled')
 
     return args
 

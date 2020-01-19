@@ -15,7 +15,7 @@ import pkg_resources
 import quantities as pq
 from ephyviewer import QT, QT_MODE
 
-from .. import __version__, log_file
+from .. import __version__, default_log_level, log_file
 from ..datasets import MetadataSelector, load_dataset
 from ..datasets.metadata import _selector_labels
 from ..elephant_tools import _rauc
@@ -197,6 +197,12 @@ class MainWindow(QT.QMainWindow):
 
         self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
 
+        self.do_toggle_debug_logging = QT.QAction('Show and log &debug messages', self)
+        self.do_toggle_debug_logging.setCheckable(True)
+        self.do_toggle_debug_logging.setChecked(logger.parent.level == logging.DEBUG)
+        self.do_toggle_debug_logging.triggered.connect(self.toggle_debug_logging)
+        self.help_menu.addAction(self.do_toggle_debug_logging)
+
         do_view_log_file = QT.QAction('View &log file', self)
         do_view_log_file.triggered.connect(self.view_log_file)
         self.help_menu.addAction(do_view_log_file)
@@ -299,6 +305,17 @@ class MainWindow(QT.QMainWindow):
         except Exception:
 
             logger.exception('Encountered a fatal error. Traceback will be written to log file.')
+
+    def toggle_debug_logging(self, checked):
+        """
+        Toggle log filtering level between its original level and debug mode
+        """
+        if checked:
+            logger.parent.setLevel(logging.DEBUG)
+            logger.debug('Debug messages enabled')
+        else:
+            logger.debug('Disabling debug messages')
+            logger.parent.setLevel(default_log_level)
 
     def view_log_file(self):
         """
