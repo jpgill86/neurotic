@@ -275,6 +275,8 @@ class EphyviewerConfigurator():
         ########################################################################
         # COLORS
 
+        # colors for units given explicitly in amplitude_discriminators, used
+        # for scatter markers, spike trains, and burst epochs
         unit_colors = {}
         if self.metadata['amplitude_discriminators'] is not None:
             unit_colors = {d['name']: d['color'] for d in self.metadata['amplitude_discriminators'] if 'color' in d}
@@ -354,8 +356,8 @@ class EphyviewerConfigurator():
                 # instead of passing colors into AnalogSignalSourceWithScatter
                 # constructor with scatter_colors, first let the constructor
                 # choose reasonable default colors (done above), and only then
-                # override colors for spike trains that have been explicitly
-                # set in amplitude_discriminators (done here)
+                # override colors for units that have been explicitly set in
+                # amplitude_discriminators (done here)
                 sources['signal'][-1].scatter_colors.update(unit_colors)
 
             # useOpenGL=True eliminates the extremely poor performance associated
@@ -490,7 +492,7 @@ class EphyviewerConfigurator():
                 spike_train_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 spike_train_view.params_controller.on_automatic_color()
 
-            # set explicitly assigned spike train colors
+            # set explicitly assigned unit colors
             for name, color in unit_colors.items():
                 try:
                     index = [st.name for st in seg.spiketrains].index(name)
@@ -514,6 +516,15 @@ class EphyviewerConfigurator():
                 epoch_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
                 epoch_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 epoch_view.params_controller.on_automatic_color()
+
+            # set explicitly assigned unit colors
+            for name, color in unit_colors.items():
+                try:
+                    index = [ep['name'] for ep in sources['epoch'][0].all].index(name + ' burst')
+                    epoch_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # unit burst name may not have been found in the epoch list
+                    pass
 
         ########################################################################
         # EPOCH ENCODER

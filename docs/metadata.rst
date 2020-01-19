@@ -564,7 +564,8 @@ burst detection algorithm that relies on firing rate thresholds can be run to
 detect periods of intense activity. Note that burst detectors are only applied
 if fast loading is off (``lazy=False``).
 
-Detected bursts are plotted as epochs.
+Detected bursts are plotted as epochs. Colors are inherited from
+``amplitude_discriminators``, if they are provided there.
 
 Burst detectors are specified in metadata like this:
 
