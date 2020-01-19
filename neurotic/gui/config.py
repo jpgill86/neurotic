@@ -273,6 +273,21 @@ class EphyviewerConfigurator():
         win.setAttribute(ephyviewer.QT.WA_DeleteOnClose, True)
 
         ########################################################################
+        # COLORS
+
+        # colors for signals given explicitly in plots, used for raw signals
+        # and RAUC
+        sig_colors = {}
+        if self.metadata['plots'] is not None:
+            sig_colors = {p['channel']: p['color'] for p in self.metadata['plots'] if 'color' in p}
+
+        # colors for units given explicitly in amplitude_discriminators, used
+        # for scatter markers, spike trains, and burst epochs
+        unit_colors = {}
+        if self.metadata['amplitude_discriminators'] is not None:
+            unit_colors = {d['name']: d['color'] for d in self.metadata['amplitude_discriminators'] if 'color' in d}
+
+        ########################################################################
         # TRACES WITH SCATTER PLOTS
 
         _set_defaults_for_plots(self.metadata, self.blk)
@@ -347,11 +362,8 @@ class EphyviewerConfigurator():
                 # instead of passing colors into AnalogSignalSourceWithScatter
                 # constructor with scatter_colors, first let the constructor
                 # choose reasonable default colors (done above), and only then
-                # override colors for spike trains that have been explicitly
-                # set in amplitude_discriminators (done here)
-                unit_colors = {}
-                if self.metadata['amplitude_discriminators'] is not None:
-                    unit_colors = {d['name']: d['color'] for d in self.metadata['amplitude_discriminators'] if 'color' in d}
+                # override colors for units that have been explicitly set in
+                # amplitude_discriminators (done here)
                 sources['signal'][-1].scatter_colors.update(unit_colors)
 
             # useOpenGL=True eliminates the extremely poor performance associated
@@ -381,6 +393,15 @@ class EphyviewerConfigurator():
                 trace_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
                 trace_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 trace_view.params_controller.on_automatic_color()
+
+            # set explicitly assigned signal colors
+            for name, color in sig_colors.items():
+                try:
+                    index = [p['channel'] for p in self.metadata['plots']].index(name)
+                    trace_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # sig name may not have been found in the trace list
+                    pass
 
             # adjust plot range, scaling, and positioning
             trace_view.params['ylim_max'] = 0.5
@@ -427,6 +448,15 @@ class EphyviewerConfigurator():
                 trace_rauc_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
                 trace_rauc_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 trace_rauc_view.params_controller.on_automatic_color()
+
+            # set explicitly assigned signal colors
+            for name, color in sig_colors.items():
+                try:
+                    index = [p['channel'] for p in self.metadata['plots']].index(name)
+                    trace_rauc_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # sig name may not have been found in the rauc trace list
+                    pass
 
             # adjust plot range
             trace_rauc_view.params['ylim_max'] = 0.5
@@ -486,17 +516,14 @@ class EphyviewerConfigurator():
                 spike_train_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 spike_train_view.params_controller.on_automatic_color()
 
-            # set explicitly assigned spike train colors
-            if self.metadata['amplitude_discriminators'] is not None:
-                for d in self.metadata['amplitude_discriminators']:
-                    if 'color' in d:
-                        try:
-                            index = [st.name for st in seg.spiketrains].index(d['name'])
-                            spike_train_view.by_channel_params['ch{}'.format(index), 'color'] = d['color']
-                        except ValueError:
-                            # the amplitude discriminator name may not have
-                            # been found in the spike train list
-                            pass
+            # set explicitly assigned unit colors
+            for name, color in unit_colors.items():
+                try:
+                    index = [st.name for st in seg.spiketrains].index(name)
+                    spike_train_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # unit name may not have been found in the spike train list
+                    pass
 
         ########################################################################
         # EPOCHS
@@ -513,6 +540,15 @@ class EphyviewerConfigurator():
                 epoch_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
                 epoch_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
                 epoch_view.params_controller.on_automatic_color()
+
+            # set explicitly assigned unit colors
+            for name, color in unit_colors.items():
+                try:
+                    index = [ep['name'] for ep in sources['epoch'][0].all].index(name + ' burst')
+                    epoch_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # unit burst name may not have been found in the epoch list
+                    pass
 
         ########################################################################
         # EPOCH ENCODER
