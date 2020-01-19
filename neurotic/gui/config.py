@@ -273,6 +273,13 @@ class EphyviewerConfigurator():
         win.setAttribute(ephyviewer.QT.WA_DeleteOnClose, True)
 
         ########################################################################
+        # COLORS
+
+        unit_colors = {}
+        if self.metadata['amplitude_discriminators'] is not None:
+            unit_colors = {d['name']: d['color'] for d in self.metadata['amplitude_discriminators'] if 'color' in d}
+
+        ########################################################################
         # TRACES WITH SCATTER PLOTS
 
         _set_defaults_for_plots(self.metadata, self.blk)
@@ -349,9 +356,6 @@ class EphyviewerConfigurator():
                 # choose reasonable default colors (done above), and only then
                 # override colors for spike trains that have been explicitly
                 # set in amplitude_discriminators (done here)
-                unit_colors = {}
-                if self.metadata['amplitude_discriminators'] is not None:
-                    unit_colors = {d['name']: d['color'] for d in self.metadata['amplitude_discriminators'] if 'color' in d}
                 sources['signal'][-1].scatter_colors.update(unit_colors)
 
             # useOpenGL=True eliminates the extremely poor performance associated
@@ -487,16 +491,13 @@ class EphyviewerConfigurator():
                 spike_train_view.params_controller.on_automatic_color()
 
             # set explicitly assigned spike train colors
-            if self.metadata['amplitude_discriminators'] is not None:
-                for d in self.metadata['amplitude_discriminators']:
-                    if 'color' in d:
-                        try:
-                            index = [st.name for st in seg.spiketrains].index(d['name'])
-                            spike_train_view.by_channel_params['ch{}'.format(index), 'color'] = d['color']
-                        except ValueError:
-                            # the amplitude discriminator name may not have
-                            # been found in the spike train list
-                            pass
+            for name, color in unit_colors.items():
+                try:
+                    index = [st.name for st in seg.spiketrains].index(name)
+                    spike_train_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                except ValueError:
+                    # unit name may not have been found in the spike train list
+                    pass
 
         ########################################################################
         # EPOCHS
