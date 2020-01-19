@@ -68,6 +68,8 @@ class CLITestCase(unittest.TestCase):
         args = neurotic.parse_args(argv)
         app = mkQApp()
         win = neurotic.win_from_args(args)
+        self.assertFalse(win.do_toggle_debug_logging.isChecked(),
+                         'debug logging enabled without --debug')
         self.assertTrue(win.lazy, 'lazy loading disabled without --no-lazy')
         self.assertFalse(win.support_increased_line_width,
                          'thick traces enabled without --thick-traces')
@@ -79,6 +81,15 @@ class CLITestCase(unittest.TestCase):
         self.assertEqual(win.metadata_selector._selection,
                          self.default_dataset,
                          'dataset was not set to default dataset')
+
+    def test_debug(self):
+        """Test that --debug enables logging of debug messages"""
+        argv = ['neurotic', '--debug']
+        args = neurotic.parse_args(argv)
+        app = mkQApp()
+        win = neurotic.win_from_args(args)
+        self.assertTrue(win.do_toggle_debug_logging.isChecked(),
+                        'debug logging disabled with --debug')
 
     def test_no_lazy(self):
         """Test that --no-lazy disables lazy loading"""
