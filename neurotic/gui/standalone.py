@@ -342,6 +342,7 @@ class MainWindow(QT.QMainWindow):
         Display the "About neurotic" message box.
         """
 
+        import platform
         import ephyviewer
         import neo
         import numpy
@@ -388,7 +389,10 @@ class MainWindow(QT.QMainWindow):
         <tr><td>numpy</td>              <td>{numpy.__version__}</td></tr>
         <tr><td>{QT_MODE.lower()}</td>  <td>{pyqt_version}</td></tr>
         <tr><td>pyqtgraph</td>          <td>{pyqtgraph.__version__}</td></tr>
+        <tr><td>python</td>             <td>{platform.python_version()}</td></tr>
         </table>
+
+        <p>Install path: <code>{os.path.dirname(os.path.dirname(__file__))}</code></p>
         """
 
         QT.QMessageBox.about(self, title, text)
