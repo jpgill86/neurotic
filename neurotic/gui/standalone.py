@@ -360,6 +360,7 @@ class MainWindow(QT.QMainWindow):
         urls['GitHub user'] = 'https://github.com/jpgill86'
         urls['PyPI'] = 'https://pypi.org/project/neurotic'
         urls['Release notes'] = 'https://neurotic.readthedocs.io/en/latest/releasenotes.html'
+        urls['Update'] = 'https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'
 
         text = f"""
         <h2>neurotic {__version__}</h2>
@@ -373,6 +374,8 @@ class MainWindow(QT.QMainWindow):
                    | <a href='{urls['PyPI']}'>PyPI</a>
                    | <a href='{urls['Docs']}'>Documentation</a>
                    | <a href='{urls['Release notes']}'>Release Notes</a></p>
+
+        <p><a href='{urls['Update']}'>How do I update <b>neurotic</b>?</a></p>
 
         <p>Please post any questions, problems, comments, <br/>
         or suggestions in the <a href='{urls['GitHub issues']}'>GitHub issue

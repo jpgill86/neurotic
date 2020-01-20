@@ -3,7 +3,7 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge|
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
@@ -100,8 +100,8 @@ Note that the latest release of one of **neurotic**'s dependencies, pyqtgraph
 dependency is installed via conda-forge (recommended method) (`details
 <https://github.com/jpgill86/neurotic/issues/129>`_).
 
-Recommended Method
-..................
+Recommended Method: conda-forge
+...............................
 
 conda_ users can install **neurotic** and all of its dependencies with one
 command::
@@ -110,8 +110,8 @@ command::
 
 On Windows, this will also create a Start Menu shortcut for launching the app.
 
-Alternate Method using pip
-..........................
+Alternate Method: pip
+.....................
 
 Installation of **neurotic** via ``pip`` will install nearly all of its
 dependencies automatically, with one exception. **neurotic** requires PyAV_,
@@ -132,6 +132,49 @@ Note that if you install the development version, you may also need the latest
 development version of ephyviewer_, which you can get using ::
 
     pip install -U git+https://github.com/NeuralEnsemble/ephyviewer.git
+
+Alternate Method: Standalone Installers
+.......................................
+
+**This will be the simplest and most convenient installation method for many
+users**, especially those uncomfortable with managing Python environments, but
+there are a couple caveats.
+
+For users who do not want to independently install Python or conda just to use
+**neurotic**, traditional program installers exist. These will install
+**neurotic** and everything it needs (including a fully contained Python
+environment) into a dedicated directory on your computer. On Windows, the
+installer will also create a Start Menu shortcut for launching the app.
+
+If available, these installers can be found on the `GitHub Releases`_ page,
+listed under "Assets". However, because the process of building installers is
+not yet automated, they may not be available for the latest releases.
+
+Installers are not generally recommended for users who already have a working
+Python environment and who are comfortable with ``conda``/``pip`` because the
+installers use more disk space and may be less straightforward to upgrade.
+Instead, the other methods described above are recommended.
+
+For developers, a recipe for building new installers using `conda constructor`_
+is maintained here: `constructor recipe`_.
+
+Updating neurotic
+.................
+
+If you installed **neurotic** from conda-forge, you can update it using ::
+
+    conda update -c conda-forge neurotic
+
+If you installed **neurotic** using ``pip``, use ::
+
+    pip install -U neurotic
+
+If you installed **neurotic** using a standalone installer, you can try ::
+
+    conda update -c conda-forge neurotic
+
+but uninstalling and reinstalling using a newer installer may work just as
+well.
 
 Getting Started
 ---------------
@@ -217,6 +260,10 @@ The command line interface accepts other arguments too:
     :target: `conda-forge feedstock`_
     :alt: conda-forge feedstock
 
+.. |Constructor badge| image:: https://img.shields.io/badge/constructor-recipe-blue.svg
+    :target: `constructor recipe`_
+    :alt: constructor recipe
+
 .. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
     :target: ReadTheDocs_
     :alt: Documentation status
@@ -243,6 +290,8 @@ The command line interface accepts other arguments too:
 
 .. _Anaconda Cloud: https://anaconda.org/conda-forge/neurotic
 .. _conda:          https://docs.conda.io/projects/conda/en/latest/user-guide/install/
+.. _conda constructor: https://github.com/conda/constructor
+.. _constructor recipe: https://github.com/jpgill86/neurotic-constructor
 .. _conda-forge CI: https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=8417&branchName=master
 .. _conda-forge feedstock: https://github.com/conda-forge/neurotic-feedstock
 .. _Configuring Metadata: https://neurotic.readthedocs.io/en/latest/metadata.html
@@ -251,6 +300,7 @@ The command line interface accepts other arguments too:
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
 .. _GIN:            https://gin.g-node.org
 .. _GitHub:         https://github.com/jpgill86/neurotic
+.. _GitHub Releases: https://github.com/jpgill86/neurotic/releases
 .. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
 .. _neo.io:         https://neo.readthedocs.io/en/latest/io.html#module-neo.io
