@@ -1087,9 +1087,10 @@ def instantaneous_rate(spiketrain, sampling_period, kernel='auto',
     r = scipy.signal.fftconvolve(time_vector,
                                  kernel(t_arr).rescale(pq.Hz).magnitude, 'full')
     if np.any(r < 0):
-        warnings.warn("Instantaneous firing rate approximation contains "
-                      "negative values, possibly caused due to machine "
-                      "precision errors.")
+        # warnings.warn("Instantaneous firing rate approximation contains "
+        #               "negative values, possibly caused due to machine "
+        #               "precision errors.")
+        r = r.clip(0, None)  # replace negative values with 0
 
     if not trim:
         r = r[kernel.median_index(t_arr):-(kernel(t_arr).size -
