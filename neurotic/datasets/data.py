@@ -14,7 +14,7 @@ import quantities as pq
 import neo
 
 from ..datasets.metadata import _abs_path
-from ..elephant_tools import _butter, _isi, _peak_detection
+from .. import _elephant_tools
 
 import logging
 logger = logging.getLogger(__name__)
@@ -500,7 +500,7 @@ def _apply_filters(metadata, blk):
                     high *= pq.Hz
                 if low:
                     low  *= pq.Hz
-                blk.segments[0].analogsignals[index] = _butter(
+                blk.segments[0].analogsignals[index] = _elephant_tools.butter(
                     signal = blk.segments[0].analogsignals[index],
                     highpass_freq = high,
                     lowpass_freq  = low,
@@ -555,8 +555,8 @@ def _detect_spikes(sig, discriminator, epochs):
     else:
         raise ValueError('amplitude discriminator must have two nonnegative thresholds or two nonpositive thresholds: {}'.format(discriminator))
 
-    spikes_crossing_min = _peak_detection(sig, pq.Quantity(min_threshold, discriminator['units']), sign, 'raw')
-    spikes_crossing_max = _peak_detection(sig, pq.Quantity(max_threshold, discriminator['units']), sign, 'raw')
+    spikes_crossing_min = _elephant_tools.peak_detection(sig, pq.Quantity(min_threshold, discriminator['units']), sign, 'raw')
+    spikes_crossing_max = _elephant_tools.peak_detection(sig, pq.Quantity(max_threshold, discriminator['units']), sign, 'raw')
     if sign == 'above':
         spikes_between_min_and_max = np.setdiff1d(spikes_crossing_min, spikes_crossing_max)
     elif sign == 'below':
@@ -644,7 +644,7 @@ def _find_bursts(st, start_freq, stop_freq):
     ``start_freq``, since otherwise bursts may not be detected.
     """
 
-    isi = _isi(st).rescale('s')
+    isi = _elephant_tools.isi(st).rescale('s')
     iff = 1/isi
 
     start_mask = iff > start_freq
