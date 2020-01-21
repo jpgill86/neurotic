@@ -15,10 +15,9 @@ import pkg_resources
 import quantities as pq
 from ephyviewer import QT, QT_MODE
 
-from .. import __version__, default_log_level, log_file
+from .. import __version__, _elephant_tools, default_log_level, log_file
 from ..datasets import MetadataSelector, load_dataset
 from ..datasets.metadata import _selector_labels
-from ..elephant_tools import _rauc
 from ..gui.config import EphyviewerConfigurator
 
 import logging
@@ -285,7 +284,7 @@ class MainWindow(QT.QMainWindow):
             rauc_sigs = []
             if not self.lazy:
                 for sig in blk.segments[0].analogsignals:
-                    rauc = _rauc(sig, baseline=metadata['rauc_baseline'], bin_duration=metadata['rauc_bin_duration']*pq.s)
+                    rauc = _elephant_tools.rauc(sig, baseline=metadata['rauc_baseline'], bin_duration=metadata['rauc_bin_duration']*pq.s)
                     rauc.name = sig.name + ' RAUC'
                     rauc_sigs.append(rauc)
 

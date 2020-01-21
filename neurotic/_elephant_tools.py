@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-The :mod:`neurotic.elephant_tools` module contains functions copied from the
+The :mod:`neurotic._elephant_tools` module contains functions copied from the
 elephant package, which are included for convenience and to eliminate
 dependency on that package.
 
 This module and the functions it contains are not intended to be part of
-neurotic's public API, so all function names begin with underscores. This
+neurotic's public API, so the module name begins with an underscore. This
 module may be removed at a future date.
 
 elephant is licensed under BSD-3-Clause:
@@ -43,8 +43,8 @@ import neo
 from neo import SpikeTrain
 
 
-def _butter(signal, highpass_freq=None, lowpass_freq=None, order=4,
-            filter_function='filtfilt', fs=1.0, axis=-1):
+def butter(signal, highpass_freq=None, lowpass_freq=None, order=4,
+           filter_function='filtfilt', fs=1.0, axis=-1):
     """
     Butterworth filtering function for neo.AnalogSignal. Filter type is
     determined according to how values of `highpass_freq` and `lowpass_freq`
@@ -164,7 +164,7 @@ def _butter(signal, highpass_freq=None, lowpass_freq=None, order=4,
     else:
         return filtered_data
 
-def _isi(spiketrain, axis=-1):
+def isi(spiketrain, axis=-1):
     """
     Return an array containing the inter-spike intervals of the SpikeTrain.
 
@@ -197,7 +197,7 @@ def _isi(spiketrain, axis=-1):
         intervals = np.diff(np.sort(spiketrain), axis=axis)
     return intervals
 
-def _peak_detection(signal, threshold=0.0 * mV, sign='above', format=None):
+def peak_detection(signal, threshold=0.0 * mV, sign='above', format=None):
     """
     Return the peak times for all events that cross threshold.
     Usually used for extracting spike times from a membrane potential.
@@ -278,7 +278,7 @@ def _peak_detection(signal, threshold=0.0 * mV, sign='above', format=None):
 
     return result_st
 
-def _rauc(signal, baseline=None, bin_duration=None, t_start=None, t_stop=None):
+def rauc(signal, baseline=None, bin_duration=None, t_start=None, t_stop=None):
     '''
     Calculate the rectified area under the curve (RAUC) for an AnalogSignal.
 
