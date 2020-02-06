@@ -127,10 +127,11 @@ def _download_with_progress_bar(url, local_file, show_progress=True, bytes_per_c
                         # knowing the file size allows progress to be displayed
                         file_size_in_bytes = int(dist.headers['Content-Length'])
                         num_chunks = int(np.ceil(file_size_in_bytes/bytes_per_chunk))
+                        total = num_chunks*bytes_per_chunk
                     else:
                         # progress can't be displayed, but other stats can be
-                        num_chunks = np.inf
-                    pbar = tqdm(total=num_chunks*bytes_per_chunk, unit='B', unit_scale=True)
+                        total = None
+                    pbar = tqdm(total=total, unit='B', unit_scale=True)
                 while True:
                     chunk = dist.read(bytes_per_chunk)
                     if chunk:
