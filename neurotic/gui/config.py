@@ -56,14 +56,13 @@ class EphyviewerConfigurator():
     and should be used if there is already a Qt app running.
     """
 
-    def __init__(self, metadata, blk, rauc_sigs = None, lazy = False):
+    def __init__(self, metadata, blk, lazy = False):
         """
         Initialize a new EphyviewerConfigurator.
         """
 
         self.metadata = metadata
         self.blk = blk
-        self.rauc_sigs = rauc_sigs
         self.lazy = lazy
 
         self.viewer_settings = {
@@ -100,10 +99,10 @@ class EphyviewerConfigurator():
         }
 
         # hide and disable viewers for which inputs are missing
-        if not self.rauc_sigs:
+        if not [sig.annotations['rauc_sig'] for sig in blk.segments[0].analogsignals if 'rauc_sig' in sig.annotations]:
             self.viewer_settings['traces_rauc']['show'] = False
             self.viewer_settings['traces_rauc']['disabled'] = True
-            self.viewer_settings['traces_rauc']['reason'] = 'Cannot enable because rauc_sigs is empty'
+            self.viewer_settings['traces_rauc']['reason'] = 'Cannot enable because there are no RAUC signals'
         if not self.blk.segments[0].spiketrains:
             self.viewer_settings['spike_trains']['show'] = False
             self.viewer_settings['spike_trains']['disabled'] = True
@@ -424,54 +423,58 @@ class EphyviewerConfigurator():
         ########################################################################
         # TRACES OF RAUC
 
-        if self.is_shown('traces_rauc') and self.rauc_sigs is not None:
+        if self.is_shown('traces_rauc'):
 
-            sig_rauc_source = ephyviewer.InMemoryAnalogSignalSource(
-                signals = np.concatenate([self.rauc_sigs[p['index']].as_array() for p in self.metadata['plots']], axis = 1),
-                sample_rate = self.rauc_sigs[0].sampling_rate, # assuming all AnalogSignals have the same sampling rate
-                t_start = self.rauc_sigs[0].t_start,           # assuming all AnalogSignals start at the same time
-                channel_names = [p['ylabel'] + ' RAUC' for p in self.metadata['plots']],
-            )
-            sources['signal_rauc'] = [sig_rauc_source]
+            rauc_sigs = [sig.annotations['rauc_sig'] for sig in sigs if 'rauc_sig' in sig.annotations]
 
-            trace_rauc_view = ephyviewer.TraceViewer(source = sources['signal_rauc'][0], name = 'signals rauc')
+            if rauc_sigs:
 
-            if 'signals' in win.viewers:
-                win.add_view(trace_rauc_view, tabify_with = 'signals')
-            else:
-                win.add_view(trace_rauc_view)
+                sig_rauc_source = ephyviewer.InMemoryAnalogSignalSource(
+                    signals = np.concatenate([rauc_sigs[p['index']].as_array() for p in self.metadata['plots']], axis = 1),
+                    sample_rate = rauc_sigs[0].sampling_rate, # assuming all AnalogSignals have the same sampling rate
+                    t_start = rauc_sigs[0].t_start,           # assuming all AnalogSignals start at the same time
+                    channel_names = [p['ylabel'] + ' RAUC' for p in self.metadata['plots']],
+                )
+                sources['signal_rauc'] = [sig_rauc_source]
 
-            trace_rauc_view.params['line_width'] = line_width
-            trace_rauc_view.params['display_labels'] = True
-            trace_rauc_view.params['display_offset'] = True
-            trace_rauc_view.params['antialias'] = True
+                trace_rauc_view = ephyviewer.TraceViewer(source = sources['signal_rauc'][0], name = 'signals rauc')
 
-            # set the theme
-            if theme != 'original':
-                trace_rauc_view.params['background_color'] = self.themes[theme]['background_color']
-                trace_rauc_view.params['vline_color'] = self.themes[theme]['vline_color']
-                trace_rauc_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
-                trace_rauc_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
-                trace_rauc_view.params_controller.on_automatic_color()
+                if 'signals' in win.viewers:
+                    win.add_view(trace_rauc_view, tabify_with = 'signals')
+                else:
+                    win.add_view(trace_rauc_view)
 
-            # set explicitly assigned signal colors
-            for name, color in sig_colors.items():
-                try:
-                    index = [p['channel'] for p in self.metadata['plots']].index(name)
-                    trace_rauc_view.by_channel_params['ch{}'.format(index), 'color'] = color
-                except ValueError:
-                    # sig name may not have been found in the rauc trace list
-                    pass
+                trace_rauc_view.params['line_width'] = line_width
+                trace_rauc_view.params['display_labels'] = True
+                trace_rauc_view.params['display_offset'] = True
+                trace_rauc_view.params['antialias'] = True
 
-            # adjust plot range
-            trace_rauc_view.params['ylim_max'] = 0.5
-            trace_rauc_view.params['ylim_min'] = -trace_rauc_view.source.nb_channel + 0.5
-            trace_rauc_view.params['scale_mode'] = 'by_channel'
-            for i, p in enumerate(self.metadata['plots']):
-                ylim_span = np.median(self.rauc_sigs[p['index']].magnitude) * 10
-                ylim_center = ylim_span / 2
-                trace_rauc_view.by_channel_params['ch{}'.format(i), 'gain'] = 1/ylim_span # rescale [ymin,ymax] across a unit
-                trace_rauc_view.by_channel_params['ch{}'.format(i), 'offset'] = -i - ylim_center/ylim_span # center [ymin,ymax] within the unit
+                # set the theme
+                if theme != 'original':
+                    trace_rauc_view.params['background_color'] = self.themes[theme]['background_color']
+                    trace_rauc_view.params['vline_color'] = self.themes[theme]['vline_color']
+                    trace_rauc_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
+                    trace_rauc_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
+                    trace_rauc_view.params_controller.on_automatic_color()
+
+                # set explicitly assigned signal colors
+                for name, color in sig_colors.items():
+                    try:
+                        index = [p['channel'] for p in self.metadata['plots']].index(name)
+                        trace_rauc_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                    except ValueError:
+                        # sig name may not have been found in the rauc trace list
+                        pass
+
+                # adjust plot range
+                trace_rauc_view.params['ylim_max'] = 0.5
+                trace_rauc_view.params['ylim_min'] = -trace_rauc_view.source.nb_channel + 0.5
+                trace_rauc_view.params['scale_mode'] = 'by_channel'
+                for i, p in enumerate(self.metadata['plots']):
+                    ylim_span = np.median(rauc_sigs[p['index']].magnitude) * 10
+                    ylim_center = ylim_span / 2
+                    trace_rauc_view.by_channel_params['ch{}'.format(i), 'gain'] = 1/ylim_span # rescale [ymin,ymax] across a unit
+                    trace_rauc_view.by_channel_params['ch{}'.format(i), 'offset'] = -i - ylim_center/ylim_span # center [ymin,ymax] within the unit
 
         ########################################################################
         # FREQUENCY (EXPERIMENTAL AND COMPUTATIONALLY EXPENSIVE!)

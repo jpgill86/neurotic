@@ -281,14 +281,13 @@ class MainWindow(QT.QMainWindow):
 
             blk = load_dataset(metadata, lazy=self.lazy)
 
-            rauc_sigs = []
             if not self.lazy:
                 for sig in blk.segments[0].analogsignals:
-                    rauc = _elephant_tools.rauc(sig, baseline=metadata['rauc_baseline'], bin_duration=metadata['rauc_bin_duration']*pq.s)
-                    rauc.name = sig.name + ' RAUC'
-                    rauc_sigs.append(rauc)
+                    rauc_sig = _elephant_tools.rauc(sig, baseline=metadata['rauc_baseline'], bin_duration=metadata['rauc_bin_duration']*pq.s)
+                    rauc_sig.name = sig.name + ' RAUC'
+                    sig.annotate(rauc_sig=rauc_sig, rauc_baseline=metadata['rauc_baseline'], rauc_bin_duration=metadata['rauc_bin_duration']*pq.s)
 
-            ephyviewer_config = EphyviewerConfigurator(metadata, blk, rauc_sigs, self.lazy)
+            ephyviewer_config = EphyviewerConfigurator(metadata, blk, self.lazy)
             ephyviewer_config.show_all()
 
             win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width, show_datetime=self.show_datetime)
