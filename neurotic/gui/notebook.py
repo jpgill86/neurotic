@@ -153,7 +153,7 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
     ephyviewer.
     """
 
-    def __init__(self, metadata, blk, rauc_sigs = None, lazy = False):
+    def __init__(self, metadata, blk, lazy = False):
         """
         Initialize a new EphyviewerConfiguratorWidget.
         """
@@ -165,7 +165,6 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
             self,
             metadata=metadata,
             blk=blk,
-            rauc_sigs=rauc_sigs,
             lazy=lazy)
 
         self.viewer_settings['traces'].update({       'icon': 'line-chart',   'description': 'Traces'})
