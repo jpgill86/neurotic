@@ -36,8 +36,10 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     ``epoch_encoder_file`` and spike trains loaded from ``tridesclous_file``
     are added to the Neo Block.
 
-    If ``lazy=False``, filters given in ``metadata`` are applied to the
-    signals and amplitude discriminators are run to detect spikes.
+    If ``lazy=False``, parameters given in ``metadata`` are used to apply
+    filters to the signals, to detect spikes using amplitude discriminators, to
+    detect bursts of spikes, and to calculate the rectified area under the
+    curve (RAUC) for each signal.
     """
 
     # read in the electrophysiology data
@@ -82,6 +84,22 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     # alphabetize epoch and event channels by name
     blk.segments[0].epochs.sort(key=lambda ep: ep.name)
     blk.segments[0].events.sort(key=lambda ev: ev.name)
+
+    # compute rectified area under the curve (RAUC) for each signal if not
+    # using lazy loading of signals
+    if not lazy:
+        for sig in blk.segments[0].analogsignals:
+            rauc_sig = _elephant_tools.rauc(
+                signal=sig,
+                baseline=metadata['rauc_baseline'],
+                bin_duration=metadata['rauc_bin_duration']*pq.s,
+            )
+            rauc_sig.name = sig.name + ' RAUC'
+            sig.annotate(
+                rauc_sig=rauc_sig,
+                rauc_baseline=metadata['rauc_baseline'],
+                rauc_bin_duration=metadata['rauc_bin_duration']*pq.s,
+            )
 
     return blk
 
@@ -610,7 +628,7 @@ def _run_burst_detectors(metadata, blk):
 
         spikeTrainNameToIndex = {st.name:i for i, st in enumerate(blk.segments[0].spiketrains)}
 
-        # detect bursts spikes using frequency thresholds
+        # detect bursts of spikes using frequency thresholds
         for detector in metadata['burst_detectors']:
 
             index = spikeTrainNameToIndex.get(detector['spiketrain'], None)

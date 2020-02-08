@@ -610,9 +610,8 @@ Rectified Area Under the Curve (RAUC)
 -------------------------------------
 
 One way to simplify a high-frequency signal is by plotted a time series of the
-rectified area under the curve (RAUC). Note that RAUCs are calculated
-automatically only in the standalone application and only if fast loading is
-off (``lazy=False``).
+rectified area under the curve (RAUC). Note that RAUCs are calculated only if
+fast loading is off (``lazy=False``).
 
 For each signal, the baseline (mean or median) is optionally subtracted off.
 The signal is then rectified (absolute value) and divided into non-overlapping
