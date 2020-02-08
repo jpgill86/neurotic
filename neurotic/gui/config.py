@@ -44,6 +44,7 @@ class EphyviewerConfigurator():
         * ``traces_rauc``
         * ``freqs``
         * ``spike_trains``
+        * ``traces_rates``
         * ``epochs``
         * ``epoch_encoder``
         * ``video``
@@ -70,6 +71,7 @@ class EphyviewerConfigurator():
             'traces_rauc':   {'show': False, 'disabled': False, 'reason': ''},
             'freqs':         {'show': False, 'disabled': True, 'reason': 'Disabled because feature is experimental and computationally expensive'},
             'spike_trains':  {'show': True, 'disabled': False, 'reason': ''},
+            'traces_rates':  {'show': True, 'disabled': False, 'reason': ''},
             'epochs':        {'show': True, 'disabled': False, 'reason': ''},
             'epoch_encoder': {'show': True, 'disabled': False, 'reason': ''},
             'video':         {'show': True, 'disabled': False, 'reason': ''},
@@ -107,6 +109,10 @@ class EphyviewerConfigurator():
             self.viewer_settings['spike_trains']['show'] = False
             self.viewer_settings['spike_trains']['disabled'] = True
             self.viewer_settings['spike_trains']['reason'] = 'Cannot enable because there are no spike trains'
+        if not [st.annotations['firing_rate_sig'] for st in blk.segments[0].spiketrains if 'firing_rate_sig' in st.annotations]:
+            self.viewer_settings['traces_rates']['show'] = False
+            self.viewer_settings['traces_rates']['disabled'] = True
+            self.viewer_settings['traces_rates']['reason'] = 'Cannot enable because there are no firing rate signals'
         if not [ep for ep in self.blk.segments[0].epochs if ep.size > 0 and '(from epoch encoder file)' not in ep.labels]:
             self.viewer_settings['epochs']['show'] = False
             self.viewer_settings['epochs']['disabled'] = True
@@ -532,6 +538,62 @@ class EphyviewerConfigurator():
                 except ValueError:
                     # unit name may not have been found in the spike train list
                     pass
+
+        ########################################################################
+        # TRACES OF FIRING RATES
+
+        if self.is_shown('traces_rates'):
+
+            firing_rate_sigs = [st.annotations['firing_rate_sig'] for st in seg.spiketrains if 'firing_rate_sig' in st.annotations]
+
+            if firing_rate_sigs:
+
+                sig_rates_source = ephyviewer.InMemoryAnalogSignalSource(
+                    signals = np.concatenate([sig.as_array() for sig in firing_rate_sigs], axis = 1),
+                    sample_rate = firing_rate_sigs[0].sampling_rate,    # assuming all AnalogSignals have the same sampling rate
+                    t_start = firing_rate_sigs[0].t_start.rescale('s'), # assuming all AnalogSignals start at the same time
+                    channel_names = [sig.name for sig in firing_rate_sigs],
+                )
+                sources['signal_rates'] = [sig_rates_source]
+
+                trace_rates_view = ephyviewer.TraceViewer(source = sources['signal_rates'][0], name = 'firing rates')
+
+                if 'spiketrains' in win.viewers:
+                    win.add_view(trace_rates_view, tabify_with = 'spiketrains')
+                else:
+                    win.add_view(trace_rates_view)
+
+                trace_rates_view.params['line_width'] = line_width
+                trace_rates_view.params['display_labels'] = True
+                trace_rates_view.params['display_offset'] = True
+                trace_rates_view.params['antialias'] = True
+
+                # set the theme
+                if theme != 'original':
+                    trace_rates_view.params['background_color'] = self.themes[theme]['background_color']
+                    trace_rates_view.params['vline_color'] = self.themes[theme]['vline_color']
+                    trace_rates_view.params['label_fill_color'] = self.themes[theme]['label_fill_color']
+                    trace_rates_view.params_controller.combo_cmap.setCurrentText(self.themes[theme]['cmap'])
+                    trace_rates_view.params_controller.on_automatic_color()
+
+                # set explicitly assigned firing rate sig colors
+                for name, color in unit_colors.items():
+                    try:
+                        index = [sig.name for sig in firing_rate_sigs].index(name)
+                        trace_rates_view.by_channel_params['ch{}'.format(index), 'color'] = color
+                    except ValueError:
+                        # unit name may not have been found in the firing rate sig list
+                        pass
+
+                # adjust plot range
+                trace_rates_view.params['ylim_max'] = 0.5
+                trace_rates_view.params['ylim_min'] = -trace_rates_view.source.nb_channel + 0.5
+                trace_rates_view.params['scale_mode'] = 'by_channel'
+                for i, sig in enumerate(firing_rate_sigs):
+                    ylim_span = 10
+                    ylim_center = ylim_span / 2
+                    trace_rates_view.by_channel_params['ch{}'.format(i), 'gain'] = 1/ylim_span # rescale [ymin,ymax] across a unit
+                    trace_rates_view.by_channel_params['ch{}'.format(i), 'offset'] = -i - ylim_center/ylim_span # center [ymin,ymax] within the unit
 
         ########################################################################
         # EPOCHS

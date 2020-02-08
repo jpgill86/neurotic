@@ -362,6 +362,12 @@ def _defaults_for_key(key):
         # - e.g. [[0], [1], [2], [3], [4]] to keep clusters 0-4 as they are and discard all others
         'tridesclous_merge': None,
 
+        # list of dicts giving name of a spiketrain, name of a kernel to be
+        # convolved with the spiketrain, and the sigma parameter of the kernel
+        # in seconds
+        # - e.g. [{'name': 'Unit X', 'kernel': 'CausalAlphaKernel', 'sigma': 0.5}, ...]
+        'firing_rates': None,
+
         # the video file
         # - path relative to data_dir and remote_data_dir
         'video_file': None,

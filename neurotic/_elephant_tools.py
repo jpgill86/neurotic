@@ -1,41 +1,48 @@
 # -*- coding: utf-8 -*-
 """
 The :mod:`neurotic._elephant_tools` module contains functions and classes
-copied from the elephant package, which are included for convenience and to
+copied from the elephant_ package, which are included for convenience and to
 eliminate dependency on that package. Original code that builds on this work
 (e.g., a new kernel) is also contained in this module.
 
-This module and the functions and classes it contains are not intended to be
-part of neurotic's public API, so the module name begins with an underscore.
-This module may be removed at a future date and replaced with dependence on the
-elephant package.
+.. warning::
 
-elephant is licensed under BSD-3-Clause:
+    This module and the functions and classes it contains are not intended to
+    be part of **neurotic**'s public API, so the module name begins with an
+    underscore. This module may be moved, renamed, or removed at a future date
+    and replaced with explicit dependence on the elephant_ package.
 
-Copyright (c) 2014-2019, Elephant authors and contributors All rights reserved.
+.. _elephant: https://elephant.readthedocs.io/en/latest
 
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-* list of conditions and the following disclaimer. Redistributions in binary
-* form must reproduce the above copyright notice, this list of conditions and
-* the following disclaimer in the documentation and/or other materials provided
-* with the distribution. Neither the names of the copyright holders nor the
-* names of the contributors may be used to endorse or promote products derived
-* from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.. autoclass:: CausalAlphaKernel
 """
+
+# elephant is licensed under BSD-3-Clause:
+#
+# Copyright (c) 2014-2019, Elephant authors and contributors All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+# * list of conditions and the following disclaimer. Redistributions in binary
+# * form must reproduce the above copyright notice, this list of conditions and
+# * the following disclaimer in the documentation and/or other materials provided
+# * with the distribution. Neither the names of the copyright holders nor the
+# * names of the contributors may be used to endorse or promote products derived
+# * from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 import warnings
 import numpy as np
@@ -556,13 +563,35 @@ class CausalAlphaKernel(AlphaKernel):
     such that convolution of the kernel with spike trains (as in
     :func:`elephant.statistics.instantaneous_rate`) results in alpha functions
     that begin rising at the spike time, not before. The entire area of the
-    kernel comes after the spike, rather than half before and half after, as in
-    :class:`AlphaKernel <elephant.kernels.AlphaKernel>`. Consequently,
+    kernel comes after the spike, rather than half before and half after, as
+    with :class:`AlphaKernel <elephant.kernels.AlphaKernel>`. Consequently,
     CausalAlphaKernel can be used in causal filters.
 
-    Derived from:
+    The equation used for CausalAlphaKernel is
+
+    .. math::
+        K(t) = \\left\\{\\begin{array}{ll} (1 / \\tau^2)
+        \\ t\\ \\exp{(-t / \\tau)}, & t > 0 \\\\
+        0, & t \\leq 0 \\end{array} \\right.
+
+    with :math:`\\tau = \\sigma / \\sqrt{2}`, where :math:`\\sigma` is the
+    parameter passed to the class initializer.
+
+    In neuroscience a popular application of kernels is in performing smoothing
+    operations via convolution. In this case, the kernel has the properties of
+    a probability density, i.e., it is positive and normalized to one. Popular
+    choices are the rectangular or Gaussian kernels.
+
+    Exponential and alpha kernels may also be used to represent the postynaptic
+    current / potentials in a linear (current-based) model.
+
+    sigma : Quantity scalar
+        Standard deviation of the kernel.
+    invert: bool, optional
+        If true, asymmetric kernels (e.g., exponential
+        or alpha kernels) are inverted along the time axis.
+        Default: False
     """
-    __doc__ += AlphaKernel.__doc__
 
     def median_index(self, t):
         """

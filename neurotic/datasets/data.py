@@ -38,8 +38,9 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
 
     If ``lazy=False``, parameters given in ``metadata`` are used to apply
     filters to the signals, to detect spikes using amplitude discriminators, to
-    detect bursts of spikes, and to calculate the rectified area under the
-    curve (RAUC) for each signal.
+    calculate smoothed firing rates from spike trains, to detect bursts of
+    spikes, and to calculate the rectified area under the curve (RAUC) for each
+    signal.
     """
 
     # read in the electrophysiology data
@@ -76,6 +77,11 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     sampling_period = blk.segments[0].analogsignals[0].sampling_period
     spikes_dataframe = _read_spikes_file(metadata, blk)
     blk.segments[0].spiketrains += _create_neo_spike_trains_from_dataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period)
+
+    # calculate smoothed firing rates from spike trains if not using lazy
+    # loading of signals
+    if not lazy:
+        blk = _compute_firing_rates(metadata, blk)
 
     # identify bursts from spike trains if not using lazy loading of signals
     if not lazy:
@@ -707,3 +713,60 @@ def _find_bursts(st, start_freq, stop_freq):
     )
 
     return bursts
+
+def _compute_firing_rates(metadata, blk):
+    """
+    Compute instantaneous firing rates using parameters given in ``metadata``
+    on spike trains in ``blk``.
+
+    The elephant package's :func:`instantaneous_rate
+    <elephant.statistics.instantaneous_rate>` function is used for calculating
+    firing rates. The :mod:`kernel <elephant.kernels>` classes from the
+    elephant package, as well as :class:`CausalAlphaKernel
+    <neurotic._elephant_tools.CausalAlphaKernel>`, may be used. The function
+    and kernel classes are sourced from :mod:`neurotic._elephant_tools`, rather
+    than the elephant package itself, to avoid having elephant as a package
+    dependency.
+    """
+
+    if metadata['firing_rates'] is not None:
+
+        t_start = blk.segments[0].t_start
+        t_stop = blk.segments[0].t_stop
+        sampling_period = blk.segments[0].analogsignals[0].sampling_period
+
+        for firing_rate in metadata['firing_rates']:
+
+            spiketrain = next((st for st in blk.segments[0].spiketrains if st.name == firing_rate['name']), None)
+            if spiketrain is None:
+
+                logger.warning('Skipping firing rate computation with name {} because spike train was not found!'.format(firing_rate['name']))
+
+            else:
+
+                kernel_cls = getattr(_elephant_tools, firing_rate['kernel'], None)
+
+                if kernel_cls is None or not issubclass(kernel_cls, _elephant_tools.Kernel):
+
+                    logger.warning('Skipping firing rate computation with name {} because kernel "{}" was not found!'.format(firing_rate['name'], firing_rate['kernel']))
+
+                else:
+
+                    kernel = kernel_cls(firing_rate['sigma']*pq.s)
+                    firing_rate_sig = _elephant_tools.instantaneous_rate(
+                        spiketrain=spiketrain,
+                        sampling_period=sampling_period,
+                        kernel=kernel,
+                        t_start=t_start,
+                        t_stop=t_stop,
+                    )
+                    firing_rate_sig.t_start = firing_rate_sig.t_start.rescale('s')
+                    firing_rate_sig.name = firing_rate['name']
+                    firing_rate_sig.annotations['t_stop'] = firing_rate_sig.annotations['t_stop'].rescale('s')
+                    spiketrain.annotate(
+                        firing_rate_sig=firing_rate_sig,
+                        firing_rate_kernel=firing_rate['kernel'],
+                        firing_rate_sigma=firing_rate['sigma']*pq.s,
+                    )
+
+    return blk

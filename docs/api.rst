@@ -36,3 +36,9 @@ as ``neurotic.MetadataSelector``.
   api/epochencoder
   api/notebook
   api/standalone
+
+.. toctree::
+  :maxdepth: 1
+  :caption: Other
+
+  api/_elephant_tools

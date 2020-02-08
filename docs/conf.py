@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'neurotic'
-copyright = '2019, Jeffrey Gill'
+copyright = '2020, Jeffrey Gill'
 author = 'Jeffrey Gill'
 
 import neurotic
@@ -212,6 +212,7 @@ extlinks = {
 intersphinx_mapping = {
     'python':       ('https://docs.python.org/3', None),
     'neo':          ('https://neo.readthedocs.io/en/latest', None),
+    'elephant':     ('https://elephant.readthedocs.io/en/latest', None),
     'ephyviewer':   ('https://ephyviewer.readthedocs.io/en/latest', None),
     'tridesclous':  ('https://tridesclous.readthedocs.io/en/latest', None),
 }
