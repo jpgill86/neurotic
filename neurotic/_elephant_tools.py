@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-The :mod:`neurotic._elephant_tools` module contains functions copied from the
-elephant package, which are included for convenience and to eliminate
-dependency on that package.
+The :mod:`neurotic._elephant_tools` module contains functions and classes
+copied from the elephant package, which are included for convenience and to
+eliminate dependency on that package. Original code that builds on this work
+(e.g., a new kernel) is also contained in this module.
 
-This module and the functions it contains are not intended to be part of
-neurotic's public API, so the module name begins with an underscore. This
-module may be removed at a future date.
+This module and the functions and classes it contains are not intended to be
+part of neurotic's public API, so the module name begins with an underscore.
+This module may be removed at a future date and replaced with dependence on the
+elephant package.
 
 elephant is licensed under BSD-3-Clause:
 
@@ -43,6 +45,9 @@ import quantities as pq
 from quantities import ms, mV, Hz, Quantity, dimensionless
 import neo
 from neo import SpikeTrain
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 ###############################################################################
@@ -541,6 +546,38 @@ class AlphaKernel(Kernel):
                 np.exp((
                     t * np.sqrt(2.) / self._sigma_scaled).magnitude) / t.units
         return kernel
+
+###############################################################################
+# kernels unique to neurotic
+
+class CausalAlphaKernel(AlphaKernel):
+    """
+    This modified version of :class:`elephant.kernels.AlphaKernel` shifts time
+    such that convolution of the kernel with spike trains (as in
+    :func:`elephant.statistics.instantaneous_rate`) results in alpha functions
+    that begin rising at the spike time, not before. The entire area of the
+    kernel comes after the spike, rather than half before and half after, as in
+    :class:`AlphaKernel <elephant.kernels.AlphaKernel>`. Consequently,
+    CausalAlphaKernel can be used in causal filters.
+
+    Derived from:
+    """
+    __doc__ += AlphaKernel.__doc__
+
+    def median_index(self, t):
+        """
+        In CausalAlphaKernel, "median_index" is a misnomer. Instead of
+        returning the index into t that gives half area above and half below
+        (median), it returns the index for the first non-negative time, which
+        always corresponds to the start of the rise phase of the alpha
+        function. This hack ensures that, when the kernel is convolved with a
+        spike train, the entire alpha function is located to the right of each
+        spike time.
+
+        Overrides the following:
+        """
+        return np.nonzero(t >= 0)[0].min()
+    median_index.__doc__ += AlphaKernel.median_index.__doc__
 
 ###############################################################################
 # elephant.signal_processing
