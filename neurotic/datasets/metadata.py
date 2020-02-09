@@ -319,6 +319,11 @@ def _defaults_for_key(key):
         # - e.g. for AsciiSignalIO, {'delimiter': ',', 'sampling_rate': 1000, 'units': 'mV'}
         'io_args': None,
 
+        # a real-world start time for the data_file, which overrides the value
+        # that may be stored in the data_file
+        # - e.g. '2020-01-01 13:14:15'
+        'rec_datetime': None,
+
         # digital filters to apply before analysis and plotting
         # 0 <= highpass <= lowpass < sample_rate/2
         # - e.g. [{'channel': 'Channel A', 'highpass': 0, 'lowpass': 50}, ...]

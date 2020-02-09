@@ -6,6 +6,7 @@ dataset from selected metadata.
 .. autofunction:: load_dataset
 """
 
+import datetime
 import inspect
 from packaging import version
 import numpy as np
@@ -45,6 +46,13 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
 
     # read in the electrophysiology data
     blk = _read_data_file(metadata, lazy, signal_group_mode)
+
+    # update the real-world start time of the data if provided
+    if metadata['rec_datetime'] is not None:
+        if isinstance(metadata['rec_datetime'], datetime.datetime):
+            blk.rec_datetime = metadata['rec_datetime']
+        else:
+            logger.warning('Ignoring rec_datetime because it is not a properly formatted datetime: {}'.format(metadata['rec_datetime']))
 
     # apply filters to signals if not using lazy loading of signals
     if not lazy:

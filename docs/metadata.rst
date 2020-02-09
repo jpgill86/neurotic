@@ -335,6 +335,25 @@ will be excised from playback so that the data and video remain synced.
 an AxoGraph file that contains stops and restarts (only if ``video_jumps`` is
 not already specified).
 
+.. _config-metadata-datetime:
+
+Real-World Date and Time
+------------------------
+
+The GUI can optionally display the real-world date and time. This feature is
+accurate only if the recording is continuous (no interruptions or pauses during
+recording) and the start time of the recording is known. Some data file formats
+may store the start time of the recording, in which case **neurotic** will use
+that information automatically. However, if the start time is missing or
+inaccurate, it can be specified in the metadata like this:
+
+.. code-block:: yaml
+
+    my favorite dataset:
+        data_file: data.axgx
+        rec_datetime: 2020-01-01 13:14:15
+        # etc
+
 .. _config-metadata-plots:
 
 Plot Parameters
