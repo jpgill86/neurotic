@@ -171,6 +171,7 @@ class EphyviewerConfiguratorWidget(EphyviewerConfigurator):
         self.viewer_settings['traces_rauc'].update({  'icon': 'area-chart',   'description': 'RAUC'})
         self.viewer_settings['freqs'].update({        'icon': 'wifi',         'description': 'Frequencies'})
         self.viewer_settings['spike_trains'].update({ 'icon': 'barcode',      'description': 'Spike Trains'})
+        self.viewer_settings['traces_rates'].update({ 'icon': 'line-chart',   'description': 'Firing Rates'})
         self.viewer_settings['epochs'].update({       'icon': 'align-left',   'description': 'Read-Only Epochs'})
         self.viewer_settings['epoch_encoder'].update({'icon': 'align-left',   'description': 'Epoch Encoder'})
         self.viewer_settings['video'].update({        'icon': 'youtube-play', 'description': 'Video'})

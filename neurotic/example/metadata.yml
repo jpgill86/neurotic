@@ -65,6 +65,20 @@ example dataset:
           amplitude: [85, 200]
           color: 'e6ab02'
 
+    firing_rates:  # used only if fast loading is off (lazy=False)
+
+        - name: B3
+          kernel: CausalAlphaKernel
+          sigma: 1.0
+
+        - name: B38
+          kernel: CausalAlphaKernel
+          sigma: 1.0
+
+        - name: B4/B5
+          kernel: CausalAlphaKernel
+          sigma: 1.0
+
     burst_detectors:  # used only if fast loading is off (lazy=False)
 
         - spiketrain: B3
