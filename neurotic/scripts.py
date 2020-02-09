@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 """
+The :mod:`neurotic.scripts` module handles starting the app from the command
+line. It also provides a convenience function for quickly launching the app
+using minimal metadata, and another for starting a Jupyter server with an
+example notebook.
 
+.. autofunction:: quick_launch
+
+.. autofunction:: launch_example_notebook
 """
 
 import sys
@@ -11,6 +18,8 @@ import pkg_resources
 from ephyviewer import mkQApp
 
 from . import __version__
+from .datasets.data import load_dataset
+from .gui.config import EphyviewerConfigurator
 from .gui.standalone import MainWindow
 
 import logging
@@ -90,7 +99,7 @@ def win_from_args(args):
 
 def launch_example_notebook():
     """
-
+    Start a Jupyter server and open the example notebook.
     """
 
     path = pkg_resources.resource_filename('neurotic',
@@ -128,3 +137,29 @@ def main():
         win.show()
         logger.info('Ready')
         app.exec_()
+
+def quick_launch(metadata, lazy=True):
+    """
+    Load data, configure the GUI, and launch the app with one convenient
+    function.
+
+    This function allows **neurotic** to be used easily in interactive sessions
+    and scripts. For example:
+
+    >>> import neurotic
+    >>> metadata = {'data_file': 'data.axgx'}
+    >>> neurotic.quick_launch(metadata)
+
+    This function is equivalent to the following:
+
+    >>> blk = load_dataset(metadata, lazy=lazy)
+    >>> ephyviewer_config = EphyviewerConfigurator(metadata, blk, lazy=lazy)
+    >>> ephyviewer_config.show_all()
+    >>> ephyviewer_config.launch_ephyviewer()
+    """
+
+    # make sure this matches the docstring after making changes
+    blk = load_dataset(metadata, lazy=lazy)
+    ephyviewer_config = EphyviewerConfigurator(metadata, blk, lazy=lazy)
+    ephyviewer_config.show_all()
+    ephyviewer_config.launch_ephyviewer()

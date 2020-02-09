@@ -422,17 +422,17 @@ def _abs_path(metadata, file):
     """
     Convert the relative path of file to an absolute path using data_dir
     """
-    if metadata[file] is None:
+    if metadata.get(file, None) is None:
         return None
     else:
-        return os.path.normpath(os.path.join(metadata['data_dir'], metadata[file]))
+        return os.path.normpath(os.path.join(metadata.get('data_dir', '.'), metadata[file]))
 
 
 def _abs_url(metadata, file):
     """
     Convert the relative path of file to a full URL using remote_data_dir
     """
-    if metadata[file] is None or metadata['remote_data_dir'] is None:
+    if metadata.get(file, None) is None or metadata.get('remote_data_dir', None) is None:
         return None
     else:
         file_path = metadata[file].replace(os.sep, '/')
@@ -461,11 +461,11 @@ def _download_file(metadata, file, **kwargs):
     arguments.
     """
 
-    if not _is_url(metadata['remote_data_dir']):
+    if not _is_url(metadata.get('remote_data_dir', None)):
         logger.error('metadata[remote_data_dir] is not a full URL')
         return
 
-    if metadata[file]:
+    if metadata.get(file, None):
 
         # create directories if necessary
         if not os.path.exists(os.path.dirname(_abs_path(metadata, file))):
@@ -483,7 +483,7 @@ def _download_all_data_files(metadata, **kwargs):
     arguments.
     """
 
-    if not _is_url(metadata['remote_data_dir']):
+    if not _is_url(metadata.get('remote_data_dir', None)):
         logger.error('metadata[remote_data_dir] is not a full URL')
         return
 
@@ -512,7 +512,7 @@ def _selector_labels(all_metadata):
     # no video_file
     has_video_offset = {}
     for key, metadata in all_metadata.items():
-        if metadata['video_offset'] is None and metadata['video_file'] is not None:
+        if metadata.get('video_offset', None) is None and metadata.get('video_file', None) is not None:
             has_video_offset[key] = '!'
         else:
             has_video_offset[key] = ' '

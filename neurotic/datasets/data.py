@@ -48,7 +48,7 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     blk = _read_data_file(metadata, lazy, signal_group_mode)
 
     # update the real-world start time of the data if provided
-    if metadata['rec_datetime'] is not None:
+    if metadata.get('rec_datetime', None) is not None:
         if isinstance(metadata['rec_datetime'], datetime.datetime):
             blk.rec_datetime = metadata['rec_datetime']
         else:
@@ -105,14 +105,14 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
         for sig in blk.segments[0].analogsignals:
             rauc_sig = _elephant_tools.rauc(
                 signal=sig,
-                baseline=metadata['rauc_baseline'],
-                bin_duration=metadata['rauc_bin_duration']*pq.s,
+                baseline=metadata.get('rauc_baseline', None),
+                bin_duration=metadata.get('rauc_bin_duration', 0.1)*pq.s,
             )
             rauc_sig.name = sig.name + ' RAUC'
             sig.annotate(
                 rauc_sig=rauc_sig,
-                rauc_baseline=metadata['rauc_baseline'],
-                rauc_bin_duration=metadata['rauc_bin_duration']*pq.s,
+                rauc_baseline=metadata.get('rauc_baseline', None),
+                rauc_bin_duration=metadata.get('rauc_bin_duration', 0.1)*pq.s,
             )
 
     return blk
@@ -128,7 +128,7 @@ def _get_io(metadata):
     """
 
     # prepare arguments for instantiating a Neo IO class
-    if metadata['io_args'] is not None:
+    if metadata.get('io_args', None) is not None:
         io_args = metadata['io_args'].copy()
         if 'sampling_rate' in io_args:
             # AsciiSignalIO's sampling_rate must be a Quantity
@@ -136,7 +136,7 @@ def _get_io(metadata):
     else:
         io_args = {}
 
-    if metadata['io_class'] is None:
+    if metadata.get('io_class', None) is None:
         try:
             # detect the class automatically using the file extension
             io = neo.io.get_io(_abs_path(metadata, 'data_file'), **io_args)
@@ -259,7 +259,7 @@ def _read_annotations_file(metadata):
     return a dataframe.
     """
 
-    if metadata['annotations_file'] is None:
+    if metadata.get('annotations_file', None) is None:
 
         return None
 
@@ -325,7 +325,7 @@ def _read_epoch_encoder_file(metadata):
     dataframe.
     """
 
-    if metadata['epoch_encoder_file'] is None:
+    if metadata.get('epoch_encoder_file', None) is None:
 
         return None
 
@@ -396,7 +396,7 @@ def _read_spikes_file(metadata, blk):
     dataframe.
     """
 
-    if metadata['tridesclous_file'] is None or metadata['tridesclous_channels'] is None:
+    if metadata.get('tridesclous_file', None) is None or metadata.get('tridesclous_channels', None) is None:
 
         return None
 
@@ -408,7 +408,7 @@ def _read_spikes_file(metadata, blk):
         # drop clusters with negative labels
         df = df[df['label'] >= 0]
 
-        if metadata['tridesclous_merge']:
+        if metadata.get('tridesclous_merge', None):
             # merge some clusters and drop all others
             new_labels = []
             for clusters_to_merge in metadata['tridesclous_merge']:
@@ -513,7 +513,7 @@ def _apply_filters(metadata, blk):
     Apply filters specified in ``metadata`` to the signals in ``blk``.
     """
 
-    if metadata['filters'] is not None:
+    if metadata.get('filters', None) is not None:
 
         signalNameToIndex = {sig.name:i for i, sig in enumerate(blk.segments[0].analogsignals)}
 
@@ -548,7 +548,7 @@ def _run_amplitude_discriminators(metadata, blk):
 
     spiketrain_list = []
 
-    if metadata['amplitude_discriminators'] is not None:
+    if metadata.get('amplitude_discriminators', None) is not None:
 
         signalNameToIndex = {sig.name:i for i, sig in enumerate(blk.segments[0].analogsignals)}
         epochs = blk.segments[0].epochs
@@ -638,7 +638,7 @@ def _run_burst_detectors(metadata, blk):
 
     burst_list = []
 
-    if metadata['burst_detectors'] is not None:
+    if metadata.get('burst_detectors', None) is not None:
 
         spikeTrainNameToIndex = {st.name:i for i, st in enumerate(blk.segments[0].spiketrains)}
 
@@ -737,7 +737,7 @@ def _compute_firing_rates(metadata, blk):
     dependency.
     """
 
-    if metadata['firing_rates'] is not None:
+    if metadata.get('firing_rates', None) is not None:
 
         t_start = blk.segments[0].t_start
         t_stop = blk.segments[0].t_stop

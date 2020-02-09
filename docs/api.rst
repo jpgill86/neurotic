@@ -6,6 +6,16 @@ API Reference Guide
 In addition to using **neurotic** as a standalone app, you can also leverage
 its API in your own code.
 
+.. note::
+
+    **TL;DR**: The easiest way to use **neurotic** in an interactive session or
+    script is by invoking :func:`neurotic.quick_launch()
+    <neurotic.scripts.quick_launch>`. For example:
+
+    >>> import neurotic
+    >>> metadata = {'data_file': 'data.axgx'}
+    >>> neurotic.quick_launch(metadata)
+
 The core of the API consists of two classes and one function:
 
 * :class:`neurotic.datasets.metadata.MetadataSelector`: Read metadata files, download datasets
@@ -41,4 +51,5 @@ as ``neurotic.MetadataSelector``.
   :maxdepth: 1
   :caption: Other
 
+  api/scripts
   api/_elephant_tools

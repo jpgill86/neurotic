@@ -124,21 +124,21 @@ class EphyviewerConfigurator():
                 self.viewer_settings['event_list']['show'] = False
                 self.viewer_settings['event_list']['disabled'] = True
                 self.viewer_settings['event_list']['reason'] = 'Cannot enable because there are no read-only epochs or events'
-        if not self.metadata['epoch_encoder_file']:
+        if not self.metadata.get('epoch_encoder_file', None):
             self.viewer_settings['epoch_encoder']['show'] = False
             self.viewer_settings['epoch_encoder']['disabled'] = True
             self.viewer_settings['epoch_encoder']['reason'] = 'Cannot enable because epoch_encoder_file is not set'
-        if not self.metadata['video_file']:
+        if not self.metadata.get('video_file', None):
             self.viewer_settings['video']['show'] = False
             self.viewer_settings['video']['disabled'] = True
             self.viewer_settings['video']['reason'] = 'Cannot enable because video_file is not set'
 
         # warn about potential video sync problems
-        if metadata['video_file'] is not None and metadata['video_offset'] is None:
+        if metadata.get('video_file', None) is not None and metadata.get('video_offset', None) is None:
             logger.warning('Your video will likely be out of sync with your '
                            'data because video_offset is unspecified! '
                            'Consider adding it to your metadata.')
-        if metadata['video_file'] is not None and metadata['video_jumps'] is None:
+        if metadata.get('video_file', None) is not None and metadata.get('video_jumps', None) is None:
             approx_video_jumps = _estimate_video_jump_times(blk)
             if approx_video_jumps:
                 approx_video_jumps_recommendation = '    video_jumps:\n' + \
@@ -276,7 +276,7 @@ class EphyviewerConfigurator():
             datetime0 = datetime0,
             datetime_format = datetime_format,
         )
-        win.setWindowTitle(self.metadata['key'])
+        win.setWindowTitle(self.metadata.get('key', 'neurotic'))
         win.setWindowIcon(ephyviewer.QT.QIcon(':/neurotic-logo-150.png'))
 
         # delete on close so that memory and file resources are released
@@ -288,13 +288,13 @@ class EphyviewerConfigurator():
         # colors for signals given explicitly in plots, used for raw signals
         # and RAUC
         sig_colors = {}
-        if self.metadata['plots'] is not None:
+        if self.metadata.get('plots', None) is not None:
             sig_colors = {p['channel']: p['color'] for p in self.metadata['plots'] if 'color' in p}
 
         # colors for units given explicitly in amplitude_discriminators, used
         # for scatter markers, spike trains, and burst epochs
         unit_colors = {}
-        if self.metadata['amplitude_discriminators'] is not None:
+        if self.metadata.get('amplitude_discriminators', None) is not None:
             unit_colors = {d['name']: d['color'] for d in self.metadata['amplitude_discriminators'] if 'color' in d}
 
         ########################################################################
@@ -623,7 +623,7 @@ class EphyviewerConfigurator():
         ########################################################################
         # EPOCH ENCODER
 
-        if self.is_shown('epoch_encoder') and self.metadata['epoch_encoder_file'] is not None:
+        if self.is_shown('epoch_encoder') and self.metadata.get('epoch_encoder_file', None) is not None:
 
             possible_labels = self.metadata['epoch_encoder_possible_labels']
 
@@ -654,7 +654,7 @@ class EphyviewerConfigurator():
         ########################################################################
         # VIDEO
 
-        if self.is_shown('video') and self.metadata['video_file'] is not None:
+        if self.is_shown('video') and self.metadata.get('video_file', None) is not None:
 
             video_source = ephyviewer.MultiVideoFileSource(video_filenames = [_abs_path(self.metadata, 'video_file')])
 
@@ -664,16 +664,16 @@ class EphyviewerConfigurator():
             video_source.t_starts[0] = 0
 
             # apply the video_offset
-            if self.metadata['video_offset'] is not None:
+            if self.metadata.get('video_offset', None) is not None:
                 video_source.t_starts[0] += self.metadata['video_offset']
                 video_source.t_stops[0]  += self.metadata['video_offset']
 
             # correct for videos that report frame rates that are too fast or
             # too slow compared to the clock on the data acquisition system
-            if self.metadata['video_rate_correction'] is not None:
+            if self.metadata.get('video_rate_correction', None) is not None:
                 video_source.rates[0] *= self.metadata['video_rate_correction']
 
-            if self.metadata['video_jumps'] is not None:
+            if self.metadata.get('video_jumps', None) is not None:
 
                 # create an unmodified video_times vector with evenly spaced times
                 video_times = np.arange(video_source.nb_frames[0])/video_source.rates[0] + video_source.t_starts[0]
@@ -734,7 +734,7 @@ class EphyviewerConfigurator():
                 widget.setCurrentIndex(0)
 
         # set amount of time shown initially
-        win.set_xsize(self.metadata['t_width']) # seconds
+        win.set_xsize(self.metadata.get('t_width', 40)) # seconds
 
         return win
 
@@ -747,7 +747,7 @@ def _set_defaults_for_plots(metadata, blk):
     sigs = blk.segments[0].analogsignals
     signalNameToIndex = {sig.name:i for i, sig in enumerate(sigs)}
 
-    if metadata['plots'] is None:
+    if metadata.get('plots', None) is None:
         metadata['plots'] = [{'channel': sig.name} for sig in sigs if _default_keep_signal(sig)]
 
     plots = []
