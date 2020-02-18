@@ -89,3 +89,5 @@ example dataset:
 
         - spiketrain: B4/B5
           thresholds: [3, 3] # Hz
+
+    rauc_bin_duration: 0.1 # seconds, used only if fast loading is off (lazy=False)
