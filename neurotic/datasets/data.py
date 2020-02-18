@@ -101,18 +101,18 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
 
     # compute rectified area under the curve (RAUC) for each signal if not
     # using lazy loading of signals
-    if not lazy:
+    if not lazy and metadata.get('rauc_bin_duration', None) is not None:
         for sig in blk.segments[0].analogsignals:
             rauc_sig = _elephant_tools.rauc(
                 signal=sig,
                 baseline=metadata.get('rauc_baseline', None),
-                bin_duration=metadata.get('rauc_bin_duration', 0.1)*pq.s,
+                bin_duration=metadata['rauc_bin_duration']*pq.s,
             )
             rauc_sig.name = sig.name + ' RAUC'
             sig.annotate(
                 rauc_sig=rauc_sig,
                 rauc_baseline=metadata.get('rauc_baseline', None),
-                rauc_bin_duration=metadata.get('rauc_bin_duration', 0.1)*pq.s,
+                rauc_bin_duration=metadata['rauc_bin_duration']*pq.s,
             )
 
     return blk

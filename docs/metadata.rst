@@ -695,8 +695,9 @@ provided there.
 The choice of baseline is controlled by the ``rauc_baseline`` metadata
 parameter, which may have the value ``None`` (default), ``'mean'``, or
 ``'median'``. The size of the bins determines how smooth the RAUC time series
-is and is set by ``rauc_bin_duration``, given in seconds. The default bin
-duration is 0.1 seconds.
+is and is set by ``rauc_bin_duration``, given in seconds. If
+``rauc_bin_duration`` is not specified (default ``None``), RAUC time series
+will not be calculated.
 
 .. _config-metadata-example:
 

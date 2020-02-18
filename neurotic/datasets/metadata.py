@@ -412,7 +412,7 @@ def _defaults_for_key(key):
 
         # width of bins in seconds used for calculating rectified area under
         # the curve (RAUC) for signals
-        'rauc_bin_duration': 0.1,
+        'rauc_bin_duration': None,
     }
 
     return defaults
