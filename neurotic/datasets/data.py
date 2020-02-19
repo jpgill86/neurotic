@@ -21,7 +21,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False):
+def load_dataset(metadata, blk=None, lazy=False, signal_group_mode='split-all', filter_events_from_epochs=False):
     """
     Load a dataset.
 
@@ -32,7 +32,8 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     The ``data_file`` in ``metadata`` is read into a Neo :class:`Block
     <neo.core.Block>` using an automatically detected :mod:`neo.io` class
     if ``lazy=False`` or a :mod:`neo.rawio` class if ``lazy=True``. If
-    ``data_file`` is unspecified, an empty Neo Block is created instead.
+    ``data_file`` is unspecified, an empty Neo Block is created instead. If a
+    Neo Block is passed as ``blk``, ``data_file`` is ignored.
 
     Epochs and events loaded from ``annotations_file`` and
     ``epoch_encoder_file`` and spike trains loaded from ``tridesclous_file``
@@ -45,14 +46,19 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     signal.
     """
 
-    if metadata.get('data_file', None) is not None:
-        # read in the electrophysiology data
-        blk = _read_data_file(metadata, lazy, signal_group_mode)
+    if blk is None:
+        if metadata.get('data_file', None) is not None:
+            # read in the electrophysiology data
+            blk = _read_data_file(metadata, lazy, signal_group_mode)
+        else:
+            # create an empty Block
+            blk = neo.Block()
+            seg = neo.Segment()
+            blk.segments.append(seg)
     else:
-        # create an empty Block
-        blk = neo.Block()
-        seg = neo.Segment()
-        blk.segments.append(seg)
+        # a Block was provided
+        if not isinstance(blk, neo.Block):
+            raise TypeError('blk must be a neo.Block')
 
     # update the real-world start time of the data if provided
     if metadata.get('rec_datetime', None) is not None:
@@ -107,8 +113,8 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
         blk.segments[0].epochs += _run_burst_detectors(metadata, blk)
 
     # alphabetize epoch and event channels by name
-    blk.segments[0].epochs.sort(key=lambda ep: ep.name)
-    blk.segments[0].events.sort(key=lambda ev: ev.name)
+    blk.segments[0].epochs.sort(key=lambda ep: ep.name or '')
+    blk.segments[0].events.sort(key=lambda ev: ev.name or '')
 
     # compute rectified area under the curve (RAUC) for each signal if not
     # using lazy loading of signals

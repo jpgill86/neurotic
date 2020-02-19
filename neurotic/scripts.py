@@ -138,28 +138,31 @@ def main():
         logger.info('Ready')
         app.exec_()
 
-def quick_launch(metadata, lazy=True):
+def quick_launch(metadata={}, blk=None, lazy=True):
     """
     Load data, configure the GUI, and launch the app with one convenient
     function.
 
     This function allows **neurotic** to be used easily in interactive sessions
-    and scripts. For example:
+    and scripts. For example, dictionaries can be passed as metadata:
 
-    >>> import neurotic
     >>> metadata = {'data_file': 'data.axgx'}
-    >>> neurotic.quick_launch(metadata)
+    >>> neurotic.quick_launch(metadata=metadata)
+
+    An existing Neo :class:`Block <neo.core.Block>` can be passed directly:
+
+    >>> neurotic.quick_launch(blk=my_neo_block)
 
     This function is equivalent to the following:
 
-    >>> blk = load_dataset(metadata, lazy=lazy)
+    >>> blk = load_dataset(metadata, blk, lazy=lazy)
     >>> ephyviewer_config = EphyviewerConfigurator(metadata, blk, lazy=lazy)
     >>> ephyviewer_config.show_all()
     >>> ephyviewer_config.launch_ephyviewer()
     """
 
     # make sure this matches the docstring after making changes
-    blk = load_dataset(metadata, lazy=lazy)
+    blk = load_dataset(metadata, blk, lazy=lazy)
     ephyviewer_config = EphyviewerConfigurator(metadata, blk, lazy=lazy)
     ephyviewer_config.show_all()
     ephyviewer_config.launch_ephyviewer()
