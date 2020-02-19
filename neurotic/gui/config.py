@@ -15,7 +15,6 @@ import quantities as pq
 import neo
 import ephyviewer
 
-from ..datasets.data import _get_io
 from ..datasets.metadata import _abs_path
 from ..gui.epochencoder import NeuroticWritableEpochSource
 
@@ -304,13 +303,20 @@ class EphyviewerConfigurator():
 
         if self.is_shown('traces'):
 
-            # get a Neo IO object appropriate for the data file type
-            io = _get_io(self.metadata)
+            lazy_load_signals = False
+            if self.lazy:
+                # check whether blk contains a rawio, which would have been put
+                # there by _read_data_file if lazy=True and if Neo has a RawIO
+                # that supports the file format
+                if hasattr(self.blk, 'rawio') and isinstance(self.blk.rawio, neo.rawio.baserawio.BaseRawIO):
+                    io = self.blk.rawio
+                    if io.support_lazy:
+                        lazy_load_signals = True
 
-            if self.lazy and io.support_lazy:
+            if lazy_load_signals:
 
                 # Intan-specific tricks
-                if type(io) is neo.io.IntanIO:
+                if isinstance(io, neo.io.IntanIO):
                     # dirty trick for getting ungrouped channels into a single source
                     io.header['signal_channels']['group_id'] = 0
 
@@ -326,7 +332,7 @@ class EphyviewerConfigurator():
                     ylabel = p['ylabel']
 
                     # Intan-specific tricks
-                    if type(io) is neo.io.IntanIO:
+                    if isinstance(io, neo.io.IntanIO):
                         # append custom channel names stored in data file to ylabels
                         if custom_channel_names[p['channel']] != ylabel:
                             ylabel += ' ({})'.format(custom_channel_names[p['channel']])

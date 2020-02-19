@@ -189,6 +189,10 @@ def _read_data_file(metadata, lazy=False, signal_group_mode='split-all'):
         # some IOs do not have signal_group_mode
         blk = io.read_block(lazy=lazy)
 
+    if lazy and isinstance(io, neo.rawio.baserawio.BaseRawIO):
+        # store the rawio for use with AnalogSignalFromNeoRawIOSource
+        blk.rawio = io
+
     # load all objects except analog signals
     if lazy:
 
