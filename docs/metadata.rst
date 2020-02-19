@@ -57,8 +57,7 @@ used.
 
 Paths to individual files within the dataset are provided using keys listed
 below. These paths should be given relative to ``data_dir``. If ``data_dir`` is
-flat (no subdirectories), these should be simply the file names. Only
-``data_file`` is required.
+flat (no subdirectories), these should be simply the file names.
 
 ======================  ========================================================
 Key                     Description

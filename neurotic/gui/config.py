@@ -15,7 +15,6 @@ import quantities as pq
 import neo
 import ephyviewer
 
-from ..datasets.data import _get_io
 from ..datasets.metadata import _abs_path
 from ..gui.epochencoder import NeuroticWritableEpochSource
 
@@ -101,6 +100,10 @@ class EphyviewerConfigurator():
         }
 
         # hide and disable viewers for which inputs are missing
+        if not self.blk.segments[0].analogsignals:
+            self.viewer_settings['traces']['show'] = False
+            self.viewer_settings['traces']['disabled'] = True
+            self.viewer_settings['traces']['reason'] = 'Cannot enable because there are no signals'
         if not [sig.annotations['rauc_sig'] for sig in blk.segments[0].analogsignals if 'rauc_sig' in sig.annotations]:
             self.viewer_settings['traces_rauc']['show'] = False
             self.viewer_settings['traces_rauc']['disabled'] = True
@@ -304,13 +307,20 @@ class EphyviewerConfigurator():
 
         if self.is_shown('traces'):
 
-            # get a Neo IO object appropriate for the data file type
-            io = _get_io(self.metadata)
+            lazy_load_signals = False
+            if self.lazy:
+                # check whether blk contains a rawio, which would have been put
+                # there by _read_data_file if lazy=True and if Neo has a RawIO
+                # that supports the file format
+                if hasattr(self.blk, 'rawio') and isinstance(self.blk.rawio, neo.rawio.baserawio.BaseRawIO):
+                    io = self.blk.rawio
+                    if io.support_lazy:
+                        lazy_load_signals = True
 
-            if self.lazy and io.support_lazy:
+            if lazy_load_signals:
 
                 # Intan-specific tricks
-                if type(io) is neo.io.IntanIO:
+                if isinstance(io, neo.io.IntanIO):
                     # dirty trick for getting ungrouped channels into a single source
                     io.header['signal_channels']['group_id'] = 0
 
@@ -326,7 +336,7 @@ class EphyviewerConfigurator():
                     ylabel = p['ylabel']
 
                     # Intan-specific tricks
-                    if type(io) is neo.io.IntanIO:
+                    if isinstance(io, neo.io.IntanIO):
                         # append custom channel names stored in data file to ylabels
                         if custom_channel_names[p['channel']] != ylabel:
                             ylabel += ' ({})'.format(custom_channel_names[p['channel']])
@@ -625,7 +635,7 @@ class EphyviewerConfigurator():
 
         if self.is_shown('epoch_encoder') and self.metadata.get('epoch_encoder_file', None) is not None:
 
-            possible_labels = self.metadata['epoch_encoder_possible_labels']
+            possible_labels = self.metadata.get('epoch_encoder_possible_labels', [])
 
             # append labels found in the epoch encoder file but not in the
             # epoch_encoder_possible_labels list, preserving the original
@@ -635,21 +645,29 @@ class EphyviewerConfigurator():
                 if label not in possible_labels:
                     possible_labels.append(label)
 
-            writable_epoch_source = NeuroticWritableEpochSource(
-                filename = _abs_path(self.metadata, 'epoch_encoder_file'),
-                possible_labels = possible_labels,
-            )
+            if not possible_labels:
 
-            epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'epoch encoder')
-            epoch_encoder.params['exclusive_mode'] = False
-            win.add_view(epoch_encoder)
+                # an empty epoch encoder file and an empty list of possible
+                # labels were provided
+                logger.warning('Ignoring epoch_encoder_file because epoch_encoder_possible_labels was unspecified')
 
-            # set the theme
-            if theme != 'original':
-                epoch_encoder.params['background_color'] = self.themes[theme]['background_color']
-                epoch_encoder.params['vline_color'] = self.themes[theme]['vline_color']
-                epoch_encoder.params['label_fill_color'] = self.themes[theme]['label_fill_color']
-                # TODO add support for combo_cmap
+            else:
+
+                writable_epoch_source = NeuroticWritableEpochSource(
+                    filename = _abs_path(self.metadata, 'epoch_encoder_file'),
+                    possible_labels = possible_labels,
+                )
+
+                epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'epoch encoder')
+                epoch_encoder.params['exclusive_mode'] = False
+                win.add_view(epoch_encoder)
+
+                # set the theme
+                if theme != 'original':
+                    epoch_encoder.params['background_color'] = self.themes[theme]['background_color']
+                    epoch_encoder.params['vline_color'] = self.themes[theme]['vline_color']
+                    epoch_encoder.params['label_fill_color'] = self.themes[theme]['label_fill_color']
+                    # TODO add support for combo_cmap
 
         ########################################################################
         # VIDEO
