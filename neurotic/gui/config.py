@@ -362,8 +362,8 @@ class EphyviewerConfigurator():
 
                 sources['signal'].append(ephyviewer.AnalogSignalSourceWithScatter(
                     signals = np.concatenate([sigs[p['index']].magnitude for p in self.metadata['plots']], axis = 1),
-                    sample_rate = sigs[0].sampling_rate, # assuming all AnalogSignals have the same sampling rate
-                    t_start = sigs[0].t_start,           # assuming all AnalogSignals start at the same time
+                    sample_rate = sigs[0].sampling_rate.rescale('Hz'), # assuming all AnalogSignals have the same sampling rate
+                    t_start = sigs[0].t_start.rescale('s'),            # assuming all AnalogSignals start at the same time
                     channel_names = [p['ylabel'] for p in self.metadata['plots']],
                     scatter_indexes = spike_indices,
                     scatter_channels = spike_channels,
@@ -437,8 +437,8 @@ class EphyviewerConfigurator():
 
                 sig_rauc_source = ephyviewer.InMemoryAnalogSignalSource(
                     signals = np.concatenate([rauc_sigs[p['index']].as_array() for p in self.metadata['plots']], axis = 1),
-                    sample_rate = rauc_sigs[0].sampling_rate, # assuming all AnalogSignals have the same sampling rate
-                    t_start = rauc_sigs[0].t_start,           # assuming all AnalogSignals start at the same time
+                    sample_rate = rauc_sigs[0].sampling_rate.rescale('Hz'), # assuming all AnalogSignals have the same sampling rate
+                    t_start = rauc_sigs[0].t_start.rescale('s'),            # assuming all AnalogSignals start at the same time
                     channel_names = [p['ylabel'] + ' RAUC' for p in self.metadata['plots']],
                 )
                 sources['signal_rauc'] = [sig_rauc_source]
@@ -550,8 +550,8 @@ class EphyviewerConfigurator():
 
                 sig_rates_source = ephyviewer.InMemoryAnalogSignalSource(
                     signals = np.concatenate([sig.as_array() for sig in firing_rate_sigs], axis = 1),
-                    sample_rate = firing_rate_sigs[0].sampling_rate,    # assuming all AnalogSignals have the same sampling rate
-                    t_start = firing_rate_sigs[0].t_start.rescale('s'), # assuming all AnalogSignals start at the same time
+                    sample_rate = firing_rate_sigs[0].sampling_rate.rescale('Hz'), # assuming all AnalogSignals have the same sampling rate
+                    t_start = firing_rate_sigs[0].t_start.rescale('s'),            # assuming all AnalogSignals start at the same time
                     channel_names = [sig.name for sig in firing_rate_sigs],
                 )
                 sources['signal_rates'] = [sig_rates_source]
