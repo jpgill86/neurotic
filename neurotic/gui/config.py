@@ -100,6 +100,10 @@ class EphyviewerConfigurator():
         }
 
         # hide and disable viewers for which inputs are missing
+        if not self.blk.segments[0].analogsignals:
+            self.viewer_settings['traces']['show'] = False
+            self.viewer_settings['traces']['disabled'] = True
+            self.viewer_settings['traces']['reason'] = 'Cannot enable because there are no signals'
         if not [sig.annotations['rauc_sig'] for sig in blk.segments[0].analogsignals if 'rauc_sig' in sig.annotations]:
             self.viewer_settings['traces_rauc']['show'] = False
             self.viewer_settings['traces_rauc']['disabled'] = True
@@ -652,18 +656,18 @@ class EphyviewerConfigurator():
                 writable_epoch_source = NeuroticWritableEpochSource(
                     filename = _abs_path(self.metadata, 'epoch_encoder_file'),
                     possible_labels = possible_labels,
-            )
+                )
 
-            epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'epoch encoder')
-            epoch_encoder.params['exclusive_mode'] = False
-            win.add_view(epoch_encoder)
+                epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'epoch encoder')
+                epoch_encoder.params['exclusive_mode'] = False
+                win.add_view(epoch_encoder)
 
-            # set the theme
-            if theme != 'original':
-                epoch_encoder.params['background_color'] = self.themes[theme]['background_color']
-                epoch_encoder.params['vline_color'] = self.themes[theme]['vline_color']
-                epoch_encoder.params['label_fill_color'] = self.themes[theme]['label_fill_color']
-                # TODO add support for combo_cmap
+                # set the theme
+                if theme != 'original':
+                    epoch_encoder.params['background_color'] = self.themes[theme]['background_color']
+                    epoch_encoder.params['vline_color'] = self.themes[theme]['vline_color']
+                    epoch_encoder.params['label_fill_color'] = self.themes[theme]['label_fill_color']
+                    # TODO add support for combo_cmap
 
         ########################################################################
         # VIDEO

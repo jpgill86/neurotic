@@ -31,7 +31,8 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
 
     The ``data_file`` in ``metadata`` is read into a Neo :class:`Block
     <neo.core.Block>` using an automatically detected :mod:`neo.io` class
-    if ``lazy=False`` or a :mod:`neo.rawio` class if ``lazy=True``.
+    if ``lazy=False`` or a :mod:`neo.rawio` class if ``lazy=True``. If
+    ``data_file`` is unspecified, an empty Neo Block is created instead.
 
     Epochs and events loaded from ``annotations_file`` and
     ``epoch_encoder_file`` and spike trains loaded from ``tridesclous_file``
@@ -44,8 +45,14 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
     signal.
     """
 
-    # read in the electrophysiology data
-    blk = _read_data_file(metadata, lazy, signal_group_mode)
+    if metadata.get('data_file', None) is not None:
+        # read in the electrophysiology data
+        blk = _read_data_file(metadata, lazy, signal_group_mode)
+    else:
+        # create an empty Block
+        blk = neo.Block()
+        seg = neo.Segment()
+        blk.segments.append(seg)
 
     # update the real-world start time of the data if provided
     if metadata.get('rec_datetime', None) is not None:
@@ -80,11 +87,15 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
         blk.segments[0].spiketrains += _run_amplitude_discriminators(metadata, blk)
 
     # read in spikes identified by spike sorting using tridesclous
-    t_start = blk.segments[0].analogsignals[0].t_start
-    t_stop = blk.segments[0].analogsignals[0].t_stop
-    sampling_period = blk.segments[0].analogsignals[0].sampling_period
     spikes_dataframe = _read_spikes_file(metadata, blk)
-    blk.segments[0].spiketrains += _create_neo_spike_trains_from_dataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period)
+    if spikes_dataframe is not None:
+        if blk.segments[0].analogsignals:
+            t_start = blk.segments[0].analogsignals[0].t_start                 # assuming all AnalogSignals start at the same time
+            t_stop = blk.segments[0].analogsignals[0].t_stop                   # assuming all AnalogSignals start at the same time
+            sampling_period = blk.segments[0].analogsignals[0].sampling_period # assuming all AnalogSignals have the same sampling rate
+            blk.segments[0].spiketrains += _create_neo_spike_trains_from_dataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period)
+        else:
+            logger.warning('Ignoring tridesclous_file because the sampling rate and start time could not be inferred from analog signals')
 
     # calculate smoothed firing rates from spike trains if not using lazy
     # loading of signals
