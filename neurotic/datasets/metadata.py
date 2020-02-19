@@ -338,7 +338,7 @@ def _defaults_for_key(key):
         'epoch_encoder_file': None,
 
         # list of labels for epoch encoder
-        'epoch_encoder_possible_labels': ['Type 1', 'Type 2', 'Type 3'],
+        'epoch_encoder_possible_labels': [],
 
         # list of dicts giving name, channel, units, amplitude window, epoch window, color for each unit
         # - e.g. [{'name': 'Unit X', 'channel': 'Channel A', 'units': 'uV', 'amplitude': [75, 150], 'epoch': 'Type 1', 'color': 'ff0000'}, ...]

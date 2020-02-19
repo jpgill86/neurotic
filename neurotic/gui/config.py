@@ -631,7 +631,7 @@ class EphyviewerConfigurator():
 
         if self.is_shown('epoch_encoder') and self.metadata.get('epoch_encoder_file', None) is not None:
 
-            possible_labels = self.metadata['epoch_encoder_possible_labels']
+            possible_labels = self.metadata.get('epoch_encoder_possible_labels', [])
 
             # append labels found in the epoch encoder file but not in the
             # epoch_encoder_possible_labels list, preserving the original
@@ -641,9 +641,17 @@ class EphyviewerConfigurator():
                 if label not in possible_labels:
                     possible_labels.append(label)
 
-            writable_epoch_source = NeuroticWritableEpochSource(
-                filename = _abs_path(self.metadata, 'epoch_encoder_file'),
-                possible_labels = possible_labels,
+            if not possible_labels:
+
+                # an empty epoch encoder file and an empty list of possible
+                # labels were provided
+                logger.warning('Ignoring epoch_encoder_file because epoch_encoder_possible_labels was unspecified')
+
+            else:
+
+                writable_epoch_source = NeuroticWritableEpochSource(
+                    filename = _abs_path(self.metadata, 'epoch_encoder_file'),
+                    possible_labels = possible_labels,
             )
 
             epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'epoch encoder')
