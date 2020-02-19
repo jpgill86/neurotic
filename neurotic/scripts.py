@@ -2,8 +2,8 @@
 """
 The :mod:`neurotic.scripts` module handles starting the app from the command
 line. It also provides a convenience function for quickly launching the app
-using minimal metadata, and another for starting a Jupyter server with an
-example notebook.
+using minimal metadata or an existing Neo :class:`Block <neo.core.Block>`, and
+another for starting a Jupyter server with an example notebook.
 
 .. autofunction:: quick_launch
 
