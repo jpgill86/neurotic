@@ -12,9 +12,12 @@ its API in your own code.
     script is by invoking :func:`neurotic.quick_launch()
     <neurotic.scripts.quick_launch>`. For example:
 
-    >>> import neurotic
     >>> metadata = {'data_file': 'data.axgx'}
-    >>> neurotic.quick_launch(metadata)
+    >>> neurotic.quick_launch(metadata=metadata)
+
+    or
+
+    >>> neurotic.quick_launch(blk=my_neo_block)
 
 The core of the API consists of two classes and one function:
 
