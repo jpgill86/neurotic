@@ -11,6 +11,7 @@ import gc
 import platform
 import subprocess
 import pkg_resources
+from packaging import version
 
 import quantities as pq
 from ephyviewer import QT, QT_MODE
@@ -35,6 +36,25 @@ def open_path_with_default_program(path):
         subprocess.Popen(["open", path])
     else:
         subprocess.Popen(["xdg-open", path])
+
+def open_url(url):
+    """
+    Open a URL in a browser.
+    """
+
+    QT.QDesktopServices.openUrl(QT.QUrl(url))
+
+def get_versioned_docs_url():
+    """
+    Get the URL for the docs that best fits the package version.
+    """
+
+    url = 'https://neurotic.readthedocs.io/en/'
+    if version.parse(__version__).is_devrelease:
+        url += 'latest'
+    else:
+        url += version.parse(__version__).base_version
+    return url
 
 class MainWindow(QT.QMainWindow):
     """
@@ -206,6 +226,20 @@ class MainWindow(QT.QMainWindow):
         do_view_log_file.triggered.connect(self.view_log_file)
         self.help_menu.addAction(do_view_log_file)
 
+        self.help_menu.addSeparator()
+
+        do_open_docs = self.help_menu.addAction('Documentation')
+        do_open_docs.triggered.connect(lambda: open_url(get_versioned_docs_url()))
+
+        do_open_release_notes = self.help_menu.addAction('Release notes')
+        do_open_release_notes.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/releasenotes.html'))
+
+        do_open_update_docs = self.help_menu.addAction('How to update')
+        do_open_update_docs.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'))
+
+        do_open_issues = self.help_menu.addAction('Report issues')
+        do_open_issues.triggered.connect(lambda: open_url('https://github.com/jpgill86/neurotic/issues'))
+
         do_show_about = QT.QAction('&About neurotic', self)
         do_show_about.triggered.connect(self.show_about)
         self.help_menu.addAction(do_show_about)
@@ -347,13 +381,9 @@ class MainWindow(QT.QMainWindow):
         title = 'About neurotic'
 
         urls = {}
-        urls['Docs'] = 'https://neurotic.readthedocs.io/en/latest'
         urls['GitHub'] = 'https://github.com/jpgill86/neurotic'
-        urls['GitHub issues'] = 'https://github.com/jpgill86/neurotic/issues'
         urls['GitHub user'] = 'https://github.com/jpgill86'
         urls['PyPI'] = 'https://pypi.org/project/neurotic'
-        urls['Release notes'] = 'https://neurotic.readthedocs.io/en/latest/releasenotes.html'
-        urls['Update'] = 'https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'
 
         text = f"""
         <h2>neurotic {__version__}</h2>
@@ -364,15 +394,7 @@ class MainWindow(QT.QMainWindow):
         <p>Author: Jeffrey Gill (<a href='{urls['GitHub user']}'>@jpgill86</a>)</p>
 
         <p>Websites: <a href='{urls['GitHub']}'>GitHub</a>
-                   | <a href='{urls['PyPI']}'>PyPI</a>
-                   | <a href='{urls['Docs']}'>Documentation</a>
-                   | <a href='{urls['Release notes']}'>Release Notes</a></p>
-
-        <p><a href='{urls['Update']}'>How do I update <b>neurotic</b>?</a></p>
-
-        <p>Please post any questions, problems, comments, <br/>
-        or suggestions in the <a href='{urls['GitHub issues']}'>GitHub issue
-        tracker</a>.</p>
+                   | <a href='{urls['PyPI']}'>PyPI</a></p>
 
         <p>Installed dependencies:</p>
         <table width='80%' align='center'>
