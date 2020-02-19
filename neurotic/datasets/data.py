@@ -107,8 +107,8 @@ def load_dataset(metadata, lazy=False, signal_group_mode='split-all', filter_eve
         blk.segments[0].epochs += _run_burst_detectors(metadata, blk)
 
     # alphabetize epoch and event channels by name
-    blk.segments[0].epochs.sort(key=lambda ep: ep.name)
-    blk.segments[0].events.sort(key=lambda ev: ev.name)
+    blk.segments[0].epochs.sort(key=lambda ep: ep.name or '')
+    blk.segments[0].events.sort(key=lambda ev: ev.name or '')
 
     # compute rectified area under the curve (RAUC) for each signal if not
     # using lazy loading of signals
