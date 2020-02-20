@@ -7,6 +7,7 @@ pandas
 pyqt5
 pyyaml
 quantities
+requests
 scipy
 setuptools
 tqdm

@@ -9,6 +9,7 @@ app.
 import os
 import gc
 import platform
+import requests
 import subprocess
 import pkg_resources
 from packaging import version
@@ -234,6 +235,9 @@ class MainWindow(QT.QMainWindow):
         do_open_release_notes = self.help_menu.addAction('Release notes')
         do_open_release_notes.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/releasenotes.html'))
 
+        do_show_check_for_updates = self.help_menu.addAction('Check for updates')
+        do_show_check_for_updates.triggered.connect(self.show_check_for_updates)
+
         do_open_update_docs = self.help_menu.addAction('How to update')
         do_open_update_docs.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'))
 
@@ -362,6 +366,60 @@ class MainWindow(QT.QMainWindow):
         except FileNotFoundError as e:
             logger.error(f'The log file was not found: {e}')
             return
+
+    def show_check_for_updates(self):
+        """
+        Check for new releases and display results in a message box.
+        """
+
+        urls = {}
+        urls['query-latest-release'] = 'https://api.github.com/repos/jpgill86/neurotic/releases/latest'
+        urls['updating'] = 'https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'
+        urls['releases'] = 'https://github.com/jpgill86/neurotic/releases'
+
+        try:
+            # query GitHub for the latest release
+            r = requests.get(urls['query-latest-release'])
+            latest = r.json()['tag_name']
+
+            if version.parse(latest) > version.parse(__version__):
+                text = f"""
+                <h2>A new version is available</h2>
+
+                <p><table>
+                <tr><td>Installed version:</td>  <td>{__version__}</td></tr>
+                <tr><td>Latest version:</td>     <td>{latest}</td></tr>
+                </table></p>
+
+                <p><a href='{urls['updating']}'>How do I update <b>neurotic</b>?</a></p>
+                """
+            else:
+                text = f"""
+                <h2>neurotic is up to date</h2>
+
+                <p><table>
+                <tr><td>Installed version:</td>  <td>{__version__}</td></tr>
+                <tr><td>Latest version:</td>     <td>{latest}</td></tr>
+                </table></p>
+                """
+        except:
+            # something went wrong with the query
+            text = f"""
+            <h2>Could not detect latest version</h2>
+
+            <p><table>
+            <tr><td>Installed version:</td>  <td>{__version__}</td></tr>
+            <tr><td>Latest version:</td>     <td>unknown</td></tr>
+            </table></p>
+
+            <p><a href='{urls['releases']}'>Check for latest version manually</a></p>
+
+            <p><a href='{urls['updating']}'>How do I update <b>neurotic</b>?</a></p>
+            """
+
+        title = 'Check for updates'
+
+        QT.QMessageBox.about(self, title, text)
 
     def show_about(self):
         """
