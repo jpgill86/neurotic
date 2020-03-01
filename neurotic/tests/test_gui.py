@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Tests for Qt
+Tests for the GUI
 """
 
 import unittest
@@ -12,10 +12,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class QtTestCase(unittest.TestCase):
+class GUITestCase(unittest.TestCase):
 
     def test_mkQApp(self):
-        """ Test that mkQApp returns a QApplication """
+        """Test that mkQApp returns a QApplication"""
         app = mkQApp()
         self.assertIsInstance(app, QT.QApplication)
 
