@@ -403,8 +403,22 @@ ranges, except for channels that match these patterns: "Analog Input #*" and
 "Clock". Channels with these names can be plotted if given explicitly by
 ``plots``.
 
+.. _config-metadata-time-range:
+
+Time Range
+----------
+
 The amount of time initially visible can be specified in seconds with
 ``t_width``.
+
+The position of the vertical line, which represents the current time in each
+plot, can be specified as a fraction of the plot range with ``past_fraction``.
+A value of 0 places the vertical line at the left edge of each plot;
+consequently, everything plotted is "in the future", occurring after the
+current time. A value of 1 places the vertical line at the right edge of each
+plot; consequently, everything plotted is "in the past", coming before the
+current time. The default value of 0.3 causes the first 30% of the plot range
+to display "the past" and the last 70% to display "the future".
 
 .. _config-metadata-epoch-encoder:
 

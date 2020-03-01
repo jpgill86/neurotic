@@ -405,6 +405,11 @@ def _defaults_for_key(key):
         # amount of time in seconds to plot initially
         't_width': 40,
 
+        # proportion of the plot range, between 0 and 1, to the left of the
+        # current time (in the "past"), indicated by the position of the
+        # vertical line
+        'past_fraction': 0.3,
+
         # factor to subtract from each signal before rectification when
         # calculating rectified area under the curve (RAUC)
         # - can be None, 'mean', or 'median'
