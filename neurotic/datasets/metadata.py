@@ -106,6 +106,16 @@ class MetadataSelector():
             self._selection = selection
 
     @property
+    def keys(self):
+        """
+        The available metadata keys.
+        """
+        if self.all_metadata is None:
+            return None
+        else:
+            return list(self.all_metadata.keys())
+
+    @property
     def selected_metadata(self):
         """
         The access point for the selected metadata set.
@@ -148,22 +158,40 @@ class MetadataSelector():
         _download_all_data_files(self.selected_metadata, **kwargs)
 
     def __iter__(self, *args):
-        return self.selected_metadata.__iter__(*args)
+        if self.selected_metadata is None:
+            logger.error('No metadata set is selected. Use the select() method first.')
+        else:
+            return self.selected_metadata.__iter__(*args)
 
     def __getitem__(self, *args):
-        return self.selected_metadata.__getitem__(*args)
+        if self.selected_metadata is None:
+            logger.error('No metadata set is selected. Use the select() method first.')
+        else:
+            return self.selected_metadata.__getitem__(*args)
 
     def __setitem__(self, *args):
-        return self.selected_metadata.__setitem__(*args)
+        if self.selected_metadata is None:
+            logger.error('No metadata set is selected. Use the select() method first.')
+        else:
+            return self.selected_metadata.__setitem__(*args)
 
     def __delitem__(self, *args):
-        return self.selected_metadata.__delitem__(*args)
+        if self.selected_metadata is None:
+            logger.error('No metadata set is selected. Use the select() method first.')
+        else:
+            return self.selected_metadata.__delitem__(*args)
 
     def get(self, *args):
-        return self.selected_metadata.get(*args)
+        if self.selected_metadata is None:
+            logger.error('No metadata set is selected. Use the select() method first.')
+        else:
+            return self.selected_metadata.get(*args)
 
     def setdefault(self, *args):
-        return self.selected_metadata.setdefault(*args)
+        if self.selected_metadata is None:
+            logger.error('No metadata set is selected. Use the select() method first.')
+        else:
+            return self.selected_metadata.setdefault(*args)
 
 
 def _load_metadata(file = 'metadata.yml', local_data_root = None, remote_data_root = None):
