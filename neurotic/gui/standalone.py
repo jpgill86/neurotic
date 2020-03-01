@@ -136,118 +136,106 @@ class MainWindow(QT.QMainWindow):
         Construct the menus of the app.
         """
 
-        self.file_menu = self.menuBar().addMenu(self.tr('&File'))
+        file_menu = self.menuBar().addMenu(self.tr('&File'))
 
-        do_open_metadata = QT.QAction('&Open metadata', self, shortcut = 'Ctrl+O')
+        do_open_metadata = file_menu.addAction('&Open metadata')
+        do_open_metadata.setShortcut('Ctrl+O')
+        do_open_metadata.setStatusTip('Open a YAML file containing dataset '
+                                      'configurations')
         do_open_metadata.triggered.connect(self.open_metadata)
-        self.file_menu.addAction(do_open_metadata)
 
-        do_edit_metadata = QT.QAction('&Edit metadata', self, shortcut = 'Ctrl+E')
+        do_edit_metadata = file_menu.addAction('&Edit metadata')
+        do_edit_metadata.setStatusTip('Tip: Remember to reload metadata after '
+                                      'saving changes')
+        do_edit_metadata.setShortcut('Ctrl+E')
         do_edit_metadata.triggered.connect(self.edit_metadata)
-        self.file_menu.addAction(do_edit_metadata)
 
-        do_reload_metadata = QT.QAction('&Reload metadata', self, shortcut = 'Ctrl+R')
+        do_reload_metadata = file_menu.addAction('&Reload metadata')
+        do_reload_metadata.setStatusTip('Reload the metadata file that is '
+                                        'currently open (use after making '
+                                        'changes)')
+        do_reload_metadata.setShortcut('Ctrl+R')
         do_reload_metadata.triggered.connect(self.metadata_selector.load)
-        self.file_menu.addAction(do_reload_metadata)
 
-        self.do_download_data = QT.QAction('&Download data', self, shortcut = 'Ctrl+D')
+        file_menu.addSeparator()
+
+        self.do_download_data = file_menu.addAction('&Download data')
+        self.do_download_data.setShortcut('Ctrl+D')
         self.do_download_data.triggered.connect(self.download_files)
-        self.file_menu.addAction(self.do_download_data)
 
-        self.do_open_directory = QT.QAction('Open data &folder', self, shortcut = 'Ctrl+F')
-        self.do_open_directory.triggered.connect(self.open_directory)
-        self.file_menu.addAction(self.do_open_directory)
+        do_open_directory = file_menu.addAction('Open data &folder')
+        do_open_directory.setShortcut('Ctrl+F')
+        do_open_directory.triggered.connect(self.open_directory)
 
-        do_launch = QT.QAction('&Launch', self, shortcut = 'Return')
+        do_launch = file_menu.addAction('&Launch')
+        do_launch.setShortcut('Return')
         do_launch.triggered.connect(self.launch)
-        self.file_menu.addAction(do_launch)
 
-        self.options_menu = self.menuBar().addMenu(self.tr('&Options'))
+        options_menu = self.menuBar().addMenu(self.tr('&Options'))
 
-        do_toggle_lazy = QT.QAction('&Fast loading (disables filters, spike and burst detection, firing rates, RAUC)', self)
+        do_toggle_lazy = options_menu.addAction('&Fast loading')
+        do_toggle_lazy.setStatusTip('Reduces load time and memory usage, disables expensive features like spike detection')
         do_toggle_lazy.setCheckable(True)
         do_toggle_lazy.setChecked(self.lazy)
         do_toggle_lazy.triggered.connect(self.toggle_lazy)
-        self.options_menu.addAction(do_toggle_lazy)
 
-        do_toggle_support_increased_line_width = QT.QAction('&Thick traces (worse performance)', self)
-        do_toggle_support_increased_line_width.setCheckable(True)
-        do_toggle_support_increased_line_width.setChecked(self.support_increased_line_width)
-        do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
-        self.options_menu.addAction(do_toggle_support_increased_line_width)
-
-        do_toggle_show_datetime = QT.QAction('&Display date and time (potentially inaccurate)', self)
+        do_toggle_show_datetime = options_menu.addAction('&Display date and time')
+        do_toggle_show_datetime.setStatusTip('May be inaccurate for some data files unless manually set with rec_datetime')
         do_toggle_show_datetime.setCheckable(True)
         do_toggle_show_datetime.setChecked(self.show_datetime)
         do_toggle_show_datetime.triggered.connect(self.toggle_show_datetime)
-        self.options_menu.addAction(do_toggle_show_datetime)
 
-        self.theme_menu = self.menuBar().addMenu(self.tr('&Theme'))
-        self.theme_group = QT.QActionGroup(self.theme_menu)
+        appearance_menu = self.menuBar().addMenu(self.tr('&Appearance'))
 
-        do_select_light_theme = self.theme_menu.addAction('&Light theme')
-        do_select_light_theme.setCheckable(True)
-        do_select_light_theme.triggered.connect(self.select_light_theme)
-        self.theme_group.addAction(do_select_light_theme)
-
-        do_select_dark_theme = self.theme_menu.addAction('&Dark theme')
-        do_select_dark_theme.setCheckable(True)
-        do_select_dark_theme.triggered.connect(self.select_dark_theme)
-        self.theme_group.addAction(do_select_dark_theme)
-
-        do_select_original_theme = self.theme_menu.addAction('&Original theme')
-        do_select_original_theme.setCheckable(True)
-        do_select_original_theme.triggered.connect(self.select_original_theme)
-        self.theme_group.addAction(do_select_original_theme)
-
-        do_select_printer_friendly_theme = self.theme_menu.addAction('&Printer-friendly theme')
-        do_select_printer_friendly_theme.setCheckable(True)
-        do_select_printer_friendly_theme.triggered.connect(self.select_printer_friendly_theme)
-        self.theme_group.addAction(do_select_printer_friendly_theme)
-
-        if self.theme == 'light':
-            do_select_light_theme.setChecked(True)
-        elif self.theme == 'dark':
-            do_select_dark_theme.setChecked(True)
-        elif self.theme == 'original':
-            do_select_original_theme.setChecked(True)
-        elif self.theme == 'printer-friendly':
-            do_select_printer_friendly_theme.setChecked(True)
+        theme_group = QT.QActionGroup(appearance_menu)
+        theme_actions = {}
+        for theme in ['light', 'dark', 'original', 'printer-friendly']:
+            theme_actions[theme] = appearance_menu.addAction(f'&{theme.capitalize()} theme')
+            theme_actions[theme].setCheckable(True)
+            theme_actions[theme].triggered.connect(lambda checked, theme=theme: self.set_theme(theme))
+            theme_group.addAction(theme_actions[theme])
+        if self.theme in theme_actions:
+            theme_actions[self.theme].setChecked(True)
         else:
             raise ValueError('theme "{}" is unrecognized'.format(self.theme))
 
-        self.help_menu = self.menuBar().addMenu(self.tr('&Help'))
+        appearance_menu.addSeparator()
 
-        self.do_toggle_debug_logging = QT.QAction('Show and log &debug messages', self)
+        do_toggle_support_increased_line_width = appearance_menu.addAction('&Thick traces')
+        do_toggle_support_increased_line_width.setStatusTip('Thickens signal traces at the cost of reduced performance')
+        do_toggle_support_increased_line_width.setCheckable(True)
+        do_toggle_support_increased_line_width.setChecked(self.support_increased_line_width)
+        do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
+
+        help_menu = self.menuBar().addMenu(self.tr('&Help'))
+
+        self.do_toggle_debug_logging = help_menu.addAction('Show and log &debug messages')
         self.do_toggle_debug_logging.setCheckable(True)
         self.do_toggle_debug_logging.setChecked(logger.parent.level == logging.DEBUG)
         self.do_toggle_debug_logging.triggered.connect(self.toggle_debug_logging)
-        self.help_menu.addAction(self.do_toggle_debug_logging)
 
-        do_view_log_file = QT.QAction('View &log file', self)
+        do_view_log_file = help_menu.addAction('View &log file')
         do_view_log_file.triggered.connect(self.view_log_file)
-        self.help_menu.addAction(do_view_log_file)
 
-        self.help_menu.addSeparator()
+        help_menu.addSeparator()
 
-        do_open_docs = self.help_menu.addAction('Documentation')
+        do_open_docs = help_menu.addAction('Documentation')
         do_open_docs.triggered.connect(lambda: open_url(get_versioned_docs_url()))
 
-        do_open_release_notes = self.help_menu.addAction('Release notes')
+        do_open_release_notes = help_menu.addAction('Release notes')
         do_open_release_notes.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/releasenotes.html'))
 
-        do_show_check_for_updates = self.help_menu.addAction('Check for updates')
+        do_show_check_for_updates = help_menu.addAction('Check for updates')
         do_show_check_for_updates.triggered.connect(self.show_check_for_updates)
 
-        do_open_update_docs = self.help_menu.addAction('How to update')
+        do_open_update_docs = help_menu.addAction('How to update')
         do_open_update_docs.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'))
 
-        do_open_issues = self.help_menu.addAction('Report issues')
+        do_open_issues = help_menu.addAction('Report issues')
         do_open_issues.triggered.connect(lambda: open_url('https://github.com/jpgill86/neurotic/issues'))
 
-        do_show_about = QT.QAction('&About neurotic', self)
+        do_show_about = help_menu.addAction('&About neurotic')
         do_show_about.triggered.connect(self.show_about)
-        self.help_menu.addAction(do_show_about)
 
     def open_metadata(self):
         """
@@ -284,7 +272,8 @@ class MainWindow(QT.QMainWindow):
         self.request_download.emit()
         self.do_download_data.setText('&Download in progress!')
         self.do_download_data.setEnabled(False)
-        self.statusBar().clearMessage()
+        self.statusBar().showMessage('Starting downloads (see console window)',
+                                     msecs=5000)
 
     def on_download_finished(self):
         """
@@ -310,6 +299,8 @@ class MainWindow(QT.QMainWindow):
             logger.error('The directory for the selected dataset was not '
                          'found locally, perhaps because it does not exist '
                          f'yet: {e}')
+            self.statusBar().showMessage('Folder not found locally (need to '
+                                         'download?)', msecs=5000)
 
     def launch(self):
         """
@@ -334,10 +325,16 @@ class MainWindow(QT.QMainWindow):
 
             logger.error('Some files were not found locally and may need to '
                          f'be downloaded: {e}')
+            self.statusBar().showMessage('Launch failed because some files '
+                                         'are missing (need to download?)',
+                                         msecs=5000)
 
         except Exception:
 
-            logger.exception('Encountered a fatal error. Traceback will be written to log file.')
+            logger.exception('Encountered a fatal error. Traceback will be '
+                             'written to log file.')
+            self.statusBar().showMessage('Launch failed (see console for '
+                                         'details)', msecs=5000)
 
     def toggle_debug_logging(self, checked):
         """
@@ -475,23 +472,14 @@ class MainWindow(QT.QMainWindow):
     def toggle_lazy(self, checked):
         self.lazy = checked
 
-    def toggle_support_increased_line_width(self, checked):
-        self.support_increased_line_width = checked
-
     def toggle_show_datetime(self, checked):
         self.show_datetime = checked
 
-    def select_light_theme(self):
-        self.theme = 'light'
+    def set_theme(self, theme):
+        self.theme = theme
 
-    def select_dark_theme(self):
-        self.theme = 'dark'
-
-    def select_original_theme(self):
-        self.theme = 'original'
-
-    def select_printer_friendly_theme(self):
-        self.theme = 'printer-friendly'
+    def toggle_support_increased_line_width(self, checked):
+        self.support_increased_line_width = checked
 
     def free_resources(self, i):
         """
