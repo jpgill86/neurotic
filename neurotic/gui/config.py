@@ -305,7 +305,7 @@ class EphyviewerConfigurator():
 
         _set_defaults_for_plots(self.metadata, self.blk)
 
-        if self.is_shown('traces'):
+        if self.is_shown('traces') and self.metadata['plots']:
 
             lazy_load_signals = False
             if self.lazy:
