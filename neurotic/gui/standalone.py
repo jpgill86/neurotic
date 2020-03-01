@@ -140,15 +140,24 @@ class MainWindow(QT.QMainWindow):
 
         do_open_metadata = file_menu.addAction('&Open metadata')
         do_open_metadata.setShortcut('Ctrl+O')
+        do_open_metadata.setStatusTip('Open a YAML file containing dataset '
+                                      'configurations')
         do_open_metadata.triggered.connect(self.open_metadata)
 
         do_edit_metadata = file_menu.addAction('&Edit metadata')
+        do_edit_metadata.setStatusTip('Tip: Remember to reload metadata after '
+                                      'saving changes')
         do_edit_metadata.setShortcut('Ctrl+E')
         do_edit_metadata.triggered.connect(self.edit_metadata)
 
         do_reload_metadata = file_menu.addAction('&Reload metadata')
+        do_reload_metadata.setStatusTip('Reload the metadata file that is '
+                                        'currently open (use after making '
+                                        'changes)')
         do_reload_metadata.setShortcut('Ctrl+R')
         do_reload_metadata.triggered.connect(self.metadata_selector.load)
+
+        file_menu.addSeparator()
 
         self.do_download_data = file_menu.addAction('&Download data')
         self.do_download_data.setShortcut('Ctrl+D')
@@ -164,12 +173,14 @@ class MainWindow(QT.QMainWindow):
 
         options_menu = self.menuBar().addMenu(self.tr('&Options'))
 
-        do_toggle_lazy = options_menu.addAction('&Fast loading (disables filters, spike and burst detection, firing rates, RAUC)')
+        do_toggle_lazy = options_menu.addAction('&Fast loading')
+        do_toggle_lazy.setStatusTip('Reduces load time and memory usage, disables expensive features like spike detection')
         do_toggle_lazy.setCheckable(True)
         do_toggle_lazy.setChecked(self.lazy)
         do_toggle_lazy.triggered.connect(self.toggle_lazy)
 
-        do_toggle_show_datetime = options_menu.addAction('&Display date and time (potentially inaccurate)')
+        do_toggle_show_datetime = options_menu.addAction('&Display date and time')
+        do_toggle_show_datetime.setStatusTip('May be inaccurate for some data files unless manually set with rec_datetime')
         do_toggle_show_datetime.setCheckable(True)
         do_toggle_show_datetime.setChecked(self.show_datetime)
         do_toggle_show_datetime.triggered.connect(self.toggle_show_datetime)
@@ -190,7 +201,8 @@ class MainWindow(QT.QMainWindow):
 
         appearance_menu.addSeparator()
 
-        do_toggle_support_increased_line_width = appearance_menu.addAction('&Thick traces (worse performance)')
+        do_toggle_support_increased_line_width = appearance_menu.addAction('&Thick traces')
+        do_toggle_support_increased_line_width.setStatusTip('Thickens signal traces at the cost of reduced performance')
         do_toggle_support_increased_line_width.setCheckable(True)
         do_toggle_support_increased_line_width.setChecked(self.support_increased_line_width)
         do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
@@ -260,7 +272,8 @@ class MainWindow(QT.QMainWindow):
         self.request_download.emit()
         self.do_download_data.setText('&Download in progress!')
         self.do_download_data.setEnabled(False)
-        self.statusBar().clearMessage()
+        self.statusBar().showMessage('Starting downloads (see console window)',
+                                     msecs=5000)
 
     def on_download_finished(self):
         """
@@ -286,6 +299,8 @@ class MainWindow(QT.QMainWindow):
             logger.error('The directory for the selected dataset was not '
                          'found locally, perhaps because it does not exist '
                          f'yet: {e}')
+            self.statusBar().showMessage('Folder not found locally (need to '
+                                         'download?)', msecs=5000)
 
     def launch(self):
         """
@@ -310,10 +325,16 @@ class MainWindow(QT.QMainWindow):
 
             logger.error('Some files were not found locally and may need to '
                          f'be downloaded: {e}')
+            self.statusBar().showMessage('Launch failed because some files '
+                                         'are missing (need to download?)',
+                                         msecs=5000)
 
         except Exception:
 
-            logger.exception('Encountered a fatal error. Traceback will be written to log file.')
+            logger.exception('Encountered a fatal error. Traceback will be '
+                             'written to log file.')
+            self.statusBar().showMessage('Launch failed (see console for '
+                                         'details)', msecs=5000)
 
     def toggle_debug_logging(self, checked):
         """
