@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
   <qresource>
     <file alias="neurotic-logo-150.png">img/neurotic-logo-150.png</file>
+    <file alias="neurotic-logo-300.png">img/neurotic-logo-300.png</file>
   </qresource>
 </RCC>

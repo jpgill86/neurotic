@@ -15,7 +15,7 @@ import argparse
 import subprocess
 import pkg_resources
 
-from ephyviewer import mkQApp
+from ephyviewer import QT, mkQApp
 
 from . import __version__
 from .datasets.data import load_dataset
@@ -138,8 +138,11 @@ def main():
     else:
         logger.info('Loading user interface')
         app = mkQApp()
+        splash = QT.QSplashScreen(QT.QPixmap(':/neurotic-logo-300.png'))
+        splash.show()
         win = win_from_args(args)
         win.show()
+        splash.finish(win)
         logger.info('Ready')
         app.exec_()
 
