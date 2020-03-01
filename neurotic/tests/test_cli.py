@@ -75,6 +75,8 @@ class CLITestCase(unittest.TestCase):
                          'thick traces enabled without --thick-traces')
         self.assertFalse(win.show_datetime,
                          'datetime enabled without --show-datetime')
+        self.assertEqual(win.ui_scale, 'small',
+                         'ui_scale changed without --ui-scale')
         self.assertEqual(win.theme, 'light', 'theme changed without --theme')
         self.assertEqual(win.metadata_selector.file, self.default_file,
                          'file was not set to default')
@@ -116,6 +118,30 @@ class CLITestCase(unittest.TestCase):
         win = neurotic.win_from_args(args)
         self.assertTrue(win.show_datetime,
                         'datetime not displayed with --show-datetime')
+
+    def test_ui_scale(self):
+        """Test that --ui-scale changes the ui_scale"""
+        app = mkQApp()
+
+        argv = ['neurotic', '--ui-scale', 'tiny']
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
+        self.assertEqual(win.ui_scale, 'tiny', 'unexpected scale')
+
+        argv = ['neurotic', '--ui-scale', 'small']
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
+        self.assertEqual(win.ui_scale, 'small', 'unexpected scale')
+
+        argv = ['neurotic', '--ui-scale', 'large']
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
+        self.assertEqual(win.ui_scale, 'large', 'unexpected scale')
+
+        argv = ['neurotic', '--ui-scale', 'huge']
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
+        self.assertEqual(win.ui_scale, 'huge', 'unexpected scale')
 
     def test_theme(self):
         """Test that --theme changes the theme"""

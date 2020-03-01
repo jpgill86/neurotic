@@ -60,6 +60,11 @@ def parse_args(argv):
                         help='display the real-world date and time, which ' \
                              'may be inaccurate depending on file type and ' \
                              'acquisition software (default: do not display)')
+    parser.add_argument('--ui-scale', dest='ui_scale',
+                        choices=['tiny', 'small', 'large', 'huge'],
+                        default='small', help='the scale of user interface ' \
+                                              'elements, such as text ' \
+                                              '(default: small)')
     parser.add_argument('--theme', choices=['light', 'dark', 'original',
                                             'printer-friendly'],
                         default='light', help='a color theme for the GUI ' \
@@ -92,7 +97,7 @@ def win_from_args(args):
     """
 
     win = MainWindow(file=args.file, initial_selection=args.dataset,
-                     lazy=args.lazy, theme=args.theme,
+                     lazy=args.lazy, theme=args.theme, ui_scale=args.ui_scale,
                      support_increased_line_width=args.thick,
                      show_datetime=args.datetime)
     return win
