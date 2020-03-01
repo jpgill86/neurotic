@@ -181,9 +181,9 @@ class MainWindow(QT.QMainWindow):
         do_open_directory.setShortcut('Ctrl+F')
         do_open_directory.triggered.connect(self.open_directory)
 
-        do_launch = file_menu.addAction('&Launch')
-        do_launch.setShortcut('Return')
-        do_launch.triggered.connect(self.start_launch)
+        self.do_launch = file_menu.addAction('&Launch')
+        self.do_launch.setShortcut('Return')
+        self.do_launch.triggered.connect(self.start_launch)
 
         options_menu = self.menuBar().addMenu(self.tr('&Options'))
 
@@ -335,6 +335,9 @@ class MainWindow(QT.QMainWindow):
         Load data for the selected dataset in a separate thread.
         """
 
+        self.do_launch.setText('&Launch in progress!')
+        self.do_launch.setEnabled(False)
+        self.metadata_selector.setEnabled(False)
         self.load_dataset_thread.start()
         self.request_load_dataset.emit()
 
@@ -378,6 +381,12 @@ class MainWindow(QT.QMainWindow):
                              'written to log file.')
             self.statusBar().showMessage('Launch failed (see console for '
                                          'details)', msecs=5000)
+
+        finally:
+
+            self.do_launch.setText('&Launch')
+            self.do_launch.setEnabled(True)
+            self.metadata_selector.setEnabled(True)
 
     def toggle_debug_logging(self, checked):
         """
