@@ -75,6 +75,7 @@ class MainWindow(QT.QMainWindow):
 
         self.setWindowTitle('neurotic')
         self.resize(600, 300)
+        self.statusBar()
 
         # lazy loading using Neo RawIO
         self.lazy = lazy
@@ -283,6 +284,7 @@ class MainWindow(QT.QMainWindow):
         self.request_download.emit()
         self.do_download_data.setText('&Download in progress!')
         self.do_download_data.setEnabled(False)
+        self.statusBar().clearMessage()
 
     def on_download_finished(self):
         """
@@ -294,6 +296,7 @@ class MainWindow(QT.QMainWindow):
         self.metadata_selector.load()
         self.do_download_data.setText('&Download data')
         self.do_download_data.setEnabled(True)
+        self.statusBar().showMessage('Downloads complete', msecs=5000)
 
     def open_directory(self):
         """
