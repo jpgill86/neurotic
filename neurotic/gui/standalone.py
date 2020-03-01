@@ -15,6 +15,7 @@ import pkg_resources
 from packaging import version
 
 import quantities as pq
+import neo
 from ephyviewer import QT, QT_MODE
 
 from .. import __version__, _elephant_tools, default_log_level, log_file
@@ -63,6 +64,7 @@ class MainWindow(QT.QMainWindow):
     """
 
     request_download = QT.pyqtSignal()
+    request_load_dataset = QT.pyqtSignal()
 
     def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', ui_scale='small', support_increased_line_width=False, show_datetime=False):
         """
@@ -112,6 +114,15 @@ class MainWindow(QT.QMainWindow):
         self.download_worker.moveToThread(self.download_thread)
         self.request_download.connect(self.download_worker.download)
         self.download_worker.download_finished.connect(self.on_download_finished)
+
+        # create a worker thread for loading datasets
+        self.load_dataset_thread = QT.QThread()
+        self.load_dataset_worker = _LoadDatasetWorker(self)
+        self.load_dataset_worker.moveToThread(self.load_dataset_thread)
+        self.request_load_dataset.connect(self.load_dataset_worker.load_dataset)
+        self.load_dataset_worker.load_dataset_finished.connect(self.on_load_dataset_finished)
+        self.load_dataset_worker.show_status_msg.connect(self.statusBar().showMessage)
+        self.blk = None
 
         # construct the menus
         self.create_menus()
@@ -172,7 +183,7 @@ class MainWindow(QT.QMainWindow):
 
         do_launch = file_menu.addAction('&Launch')
         do_launch.setShortcut('Return')
-        do_launch.triggered.connect(self.launch)
+        do_launch.triggered.connect(self.start_launch)
 
         options_menu = self.menuBar().addMenu(self.tr('&Options'))
 
@@ -319,21 +330,36 @@ class MainWindow(QT.QMainWindow):
             self.statusBar().showMessage('Folder not found locally (need to '
                                          'download?)', msecs=5000)
 
-    def launch(self):
+    def start_launch(self):
         """
-        Load data for the selected dataset and launch the ephyviewer window.
+        Load data for the selected dataset in a separate thread.
         """
 
-        metadata = self.metadata_selector.selected_metadata
+        self.load_dataset_thread.start()
+        self.request_load_dataset.emit()
+
+    def on_load_dataset_finished(self):
+        """
+        Launch the ephyviewer window after loading the dataset.
+        """
+
+        self.load_dataset_thread.quit()
 
         try:
 
-            blk = load_dataset(metadata, lazy=self.lazy)
+            if self.blk is None:
+                pass
 
-            ephyviewer_config = EphyviewerConfigurator(metadata, blk, self.lazy)
-            ephyviewer_config.show_all()
+            elif not isinstance(self.blk, neo.Block):
+                raise ValueError('blk must be a Neo Block but instead is '
+                                 f'{self.blk}')
 
-            win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, ui_scale=self.ui_scale, support_increased_line_width=self.support_increased_line_width, show_datetime=self.show_datetime)
+            else:
+                metadata = self.metadata_selector.selected_metadata
+                ephyviewer_config = EphyviewerConfigurator(metadata, self.blk, self.lazy)
+                ephyviewer_config.show_all()
+
+                win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, ui_scale=self.ui_scale, support_increased_line_width=self.support_increased_line_width, show_datetime=self.show_datetime)
             self.windows.append(win)
             win.destroyed.connect(lambda qobject, i=len(self.windows)-1: self.free_resources(i))
             win.show()
@@ -445,7 +471,6 @@ class MainWindow(QT.QMainWindow):
 
         import platform
         import ephyviewer
-        import neo
         import numpy
         import pyqtgraph
         try:
@@ -517,8 +542,10 @@ class MainWindow(QT.QMainWindow):
         the issue, see https://github.com/NeuralEnsemble/python-neo/issues/684.
         """
 
-        # first remove the last remaining reference to the closed window
+        # first remove the last remaining references to the closed window and
+        # Neo Block
         self.windows[i] = None
+        self.blk = None
 
         # run garbage collection
         gc.collect()
@@ -541,7 +568,7 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
         self.setStyleSheet('font: 9pt Courier;')
 
         self.currentRowChanged.connect(self._on_select)
-        self.itemDoubleClicked.connect(self.parent().launch)
+        self.itemDoubleClicked.connect(self.parent().start_launch)
 
     def _on_select(self, currentRow):
         """
@@ -606,3 +633,53 @@ class _DownloadWorker(QT.QObject):
 
         self.mainwindow.metadata_selector.download_all_data_files()
         self.download_finished.emit()
+
+
+class _LoadDatasetWorker(QT.QObject):
+    """
+    A thread worker for loading data sets.
+    """
+
+    load_dataset_finished = QT.pyqtSignal()
+    show_status_msg = QT.pyqtSignal(str, int)
+
+    def __init__(self, mainwindow):
+        """
+        Initialize a new _LoadDatasetWorker.
+        """
+
+        QT.QObject.__init__(self)
+
+        self.mainwindow = mainwindow
+
+    def load_dataset(self):
+        """
+        Load the selected dataset.
+        """
+
+        metadata = self.mainwindow.metadata_selector.selected_metadata
+        lazy = self.mainwindow.lazy
+
+        try:
+
+            self.mainwindow.blk = load_dataset(metadata, lazy=lazy)
+
+        except FileNotFoundError as e:
+
+            logger.error('Some files were not found locally and may need to '
+                         f'be downloaded: {e}')
+            self.show_status_msg.emit('Launch failed because some files are '
+                                     'missing (need to download?)', 5000)
+            self.mainwindow.blk = None
+
+        except Exception:
+
+            logger.exception('Encountered a fatal error. Traceback will be '
+                             'written to log file.')
+            self.show_status_msg.emit('Launch failed (see console for '
+                                      'details)', 5000)
+            self.mainwindow.blk = None
+
+        finally:
+
+            self.load_dataset_finished.emit()
