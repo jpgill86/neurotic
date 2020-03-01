@@ -64,7 +64,7 @@ class MainWindow(QT.QMainWindow):
 
     request_download = QT.pyqtSignal()
 
-    def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', support_increased_line_width=False, show_datetime=False):
+    def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', ui_scale='small', support_increased_line_width=False, show_datetime=False):
         """
         Initialize a new MainWindow.
         """
@@ -82,6 +82,9 @@ class MainWindow(QT.QMainWindow):
 
         # available themes are 'light', 'dark', and 'original'
         self.theme = theme
+
+        # available sizes are 'tiny', 'small', 'large', and 'huge'
+        self.ui_scale = ui_scale
 
         # support_increased_line_width=True eliminates the extremely poor
         # performance associated with TraceViewer's line_width > 1.0, but it
@@ -186,6 +189,20 @@ class MainWindow(QT.QMainWindow):
         do_toggle_show_datetime.triggered.connect(self.toggle_show_datetime)
 
         appearance_menu = self.menuBar().addMenu(self.tr('&Appearance'))
+
+        ui_scale_group = QT.QActionGroup(appearance_menu)
+        ui_scale_actions = {}
+        for size in ['tiny', 'small', 'large', 'huge']:
+            ui_scale_actions[size] = appearance_menu.addAction(f'&{size.capitalize()} scale')
+            ui_scale_actions[size].setCheckable(True)
+            ui_scale_actions[size].triggered.connect(lambda checked, size=size: self.set_ui_scale(size))
+            ui_scale_group.addAction(ui_scale_actions[size])
+        if self.ui_scale in ui_scale_actions:
+            ui_scale_actions[self.ui_scale].setChecked(True)
+        else:
+            raise ValueError('ui scale "{}" is unrecognized'.format(self.ui_scale))
+
+        appearance_menu.addSeparator()
 
         theme_group = QT.QActionGroup(appearance_menu)
         theme_actions = {}
@@ -316,7 +333,7 @@ class MainWindow(QT.QMainWindow):
             ephyviewer_config = EphyviewerConfigurator(metadata, blk, self.lazy)
             ephyviewer_config.show_all()
 
-            win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, support_increased_line_width=self.support_increased_line_width, show_datetime=self.show_datetime)
+            win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, ui_scale=self.ui_scale, support_increased_line_width=self.support_increased_line_width, show_datetime=self.show_datetime)
             self.windows.append(win)
             win.destroyed.connect(lambda qobject, i=len(self.windows)-1: self.free_resources(i))
             win.show()
@@ -474,6 +491,9 @@ class MainWindow(QT.QMainWindow):
 
     def toggle_show_datetime(self, checked):
         self.show_datetime = checked
+
+    def set_ui_scale(self, size):
+        self.ui_scale = size
 
     def set_theme(self, theme):
         self.theme = theme
