@@ -108,7 +108,7 @@ class MainWindow(QT.QMainWindow):
 
         # create a worker thread for downloading data
         self.download_thread = QT.QThread()
-        self.download_worker = _DownloadWorker(self.metadata_selector)
+        self.download_worker = _DownloadWorker(self)
         self.download_worker.moveToThread(self.download_thread)
         self.request_download.connect(self.download_worker.download)
         self.download_worker.download_finished.connect(self.on_download_finished)
@@ -590,19 +590,19 @@ class _DownloadWorker(QT.QObject):
 
     download_finished = QT.pyqtSignal()
 
-    def __init__(self, metadata_selector):
+    def __init__(self, mainwindow):
         """
         Initialize a new _DownloadWorker.
         """
 
         QT.QObject.__init__(self)
 
-        self.metadata_selector = metadata_selector
+        self.mainwindow = mainwindow
 
     def download(self):
         """
         Download all files and emit a signal when complete.
         """
 
-        self.metadata_selector.download_all_data_files()
+        self.mainwindow.metadata_selector.download_all_data_files()
         self.download_finished.emit()
