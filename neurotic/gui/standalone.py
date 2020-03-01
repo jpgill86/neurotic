@@ -99,7 +99,7 @@ class MainWindow(QT.QMainWindow):
         self.windows = []
 
         # metadata selector
-        self.metadata_selector = _MetadataSelectorQt()
+        self.metadata_selector = _MetadataSelectorQt(self)
         self.setCentralWidget(self.metadata_selector)
 
         # create a worker thread for downloading data
@@ -518,18 +518,19 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
     A QListWidget that displays the state of a MetadataSelector.
     """
 
-    def __init__(self):
+    def __init__(self, parent):
         """
         Initialize a new _MetadataSelectorQt.
         """
 
         MetadataSelector.__init__(self)
-        QT.QListWidget.__init__(self)
+        QT.QListWidget.__init__(self, parent=parent)
 
         self.setSelectionMode(QT.QListWidget.SingleSelection)
         self.setStyleSheet('font: 9pt Courier;')
 
         self.currentRowChanged.connect(self._on_select)
+        self.itemDoubleClicked.connect(self.parent().launch)
 
     def _on_select(self, currentRow):
         """
