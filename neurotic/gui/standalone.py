@@ -106,7 +106,20 @@ class MainWindow(QT.QMainWindow):
 
         # metadata selector
         self.metadata_selector = _MetadataSelectorQt(self)
-        self.setCentralWidget(self.metadata_selector)
+
+        # loading label
+        loading_label = QT.QLabel('Launching, please wait...')
+        loading_label.setFrameStyle(QT.QFrame.Panel | QT.QFrame.Sunken)
+        loading_label.setAlignment(QT.Qt.AlignCenter)
+        loading_label.setStyleSheet('font: 14pt')
+
+        # initially stack the metadata selector above the loading label
+        self.stacked_layout = QT.QStackedLayout()
+        self.stacked_layout.addWidget(self.metadata_selector)  # index 0
+        self.stacked_layout.addWidget(loading_label)           # index 1
+        central_widget = QT.QWidget()
+        central_widget.setLayout(self.stacked_layout)
+        self.setCentralWidget(central_widget)
 
         # create a worker thread for downloading data
         self.download_thread = QT.QThread()
@@ -338,6 +351,7 @@ class MainWindow(QT.QMainWindow):
         self.do_launch.setText('&Launch in progress!')
         self.do_launch.setEnabled(False)
         self.metadata_selector.setEnabled(False)
+        self.stacked_layout.setCurrentIndex(1)  # show loading label
         self.load_dataset_thread.start()
         self.request_load_dataset.emit()
 
@@ -363,9 +377,9 @@ class MainWindow(QT.QMainWindow):
                 ephyviewer_config.show_all()
 
                 win = ephyviewer_config.create_ephyviewer_window(theme=self.theme, ui_scale=self.ui_scale, support_increased_line_width=self.support_increased_line_width, show_datetime=self.show_datetime)
-            self.windows.append(win)
-            win.destroyed.connect(lambda qobject, i=len(self.windows)-1: self.free_resources(i))
-            win.show()
+                self.windows.append(win)
+                win.destroyed.connect(lambda qobject, i=len(self.windows)-1: self.free_resources(i))
+                win.show()
 
         except FileNotFoundError as e:
 
@@ -387,6 +401,7 @@ class MainWindow(QT.QMainWindow):
             self.do_launch.setText('&Launch')
             self.do_launch.setEnabled(True)
             self.metadata_selector.setEnabled(True)
+            self.stacked_layout.setCurrentIndex(0)  # show metadata selector
 
     def toggle_debug_logging(self, checked):
         """
