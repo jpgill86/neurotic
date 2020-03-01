@@ -157,6 +157,8 @@ class MainWindow(QT.QMainWindow):
                 self.metadata_selector.setCurrentRow(list(self.metadata_selector.all_metadata).index(initial_selection))
             except (TypeError, ValueError) as e:
                 logger.error(f'Bad dataset key, will ignore: {e}')
+                self.statusBar().showMessage('ERROR: Bad dataset key, will '
+                                             'ignore', msecs=5000)
 
     def create_menus(self):
         """
@@ -302,6 +304,8 @@ class MainWindow(QT.QMainWindow):
             open_path_with_default_program(self.metadata_selector.file)
         except FileNotFoundError as e:
             logger.error(f'The metadata file was not found: {e}')
+            self.statusBar().showMessage('ERROR: The metadata file could not '
+                                         'be found', msecs=5000)
             return
 
     def download_files(self):
@@ -340,8 +344,8 @@ class MainWindow(QT.QMainWindow):
             logger.error('The directory for the selected dataset was not '
                          'found locally, perhaps because it does not exist '
                          f'yet: {e}')
-            self.statusBar().showMessage('Folder not found locally (need to '
-                                         'download?)', msecs=5000)
+            self.statusBar().showMessage('ERROR: Folder not found locally '
+                                         '(need to download?)', msecs=5000)
 
     def start_launch(self):
         """
@@ -385,16 +389,16 @@ class MainWindow(QT.QMainWindow):
 
             logger.error('Some files were not found locally and may need to '
                          f'be downloaded: {e}')
-            self.statusBar().showMessage('Launch failed because some files '
-                                         'are missing (need to download?)',
-                                         msecs=5000)
+            self.statusBar().showMessage('ERROR: Launch failed because some '
+                                         'files are missing (need to '
+                                         'download?)', msecs=5000)
 
         except Exception:
 
             logger.exception('Encountered a fatal error. Traceback will be '
                              'written to log file.')
-            self.statusBar().showMessage('Launch failed (see console for '
-                                         'details)', msecs=5000)
+            self.statusBar().showMessage('ERROR: Launch failed (see console '
+                                         'for details)', msecs=5000)
 
         finally:
 
@@ -432,6 +436,8 @@ class MainWindow(QT.QMainWindow):
             open_path_with_default_program(log_file)
         except FileNotFoundError as e:
             logger.error(f'The log file was not found: {e}')
+            self.statusBar().showMessage('ERROR: The log file could not be '
+                                         'found', msecs=5000)
             return
 
     def show_check_for_updates(self):
@@ -580,19 +586,21 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
     A QListWidget that displays the state of a MetadataSelector.
     """
 
-    def __init__(self, parent):
+    def __init__(self, mainwindow):
         """
         Initialize a new _MetadataSelectorQt.
         """
 
         MetadataSelector.__init__(self)
-        QT.QListWidget.__init__(self, parent=parent)
+        QT.QListWidget.__init__(self, parent=mainwindow)
+
+        self.mainwindow = mainwindow
 
         self.setSelectionMode(QT.QListWidget.SingleSelection)
         self.setStyleSheet('font: 9pt Courier;')
 
         self.currentRowChanged.connect(self._on_select)
-        self.itemDoubleClicked.connect(self.parent().start_launch)
+        self.itemDoubleClicked.connect(self.mainwindow.start_launch)
 
     def _on_select(self, currentRow):
         """
@@ -617,6 +625,9 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
             MetadataSelector.load(self)
         except Exception as e:
             logger.error(f'Bad metadata file\n{e}')
+            self.mainwindow.statusBar().showMessage('ERROR: Bad metadata file '
+                                                    '(see console for '
+                                                    'details)', msecs=5000)
 
         if self.all_metadata is not None:
 
@@ -692,15 +703,16 @@ class _LoadDatasetWorker(QT.QObject):
 
             logger.error('Some files were not found locally and may need to '
                          f'be downloaded: {e}')
-            self.show_status_msg.emit('Launch failed because some files are '
-                                     'missing (need to download?)', 5000)
+            self.show_status_msg.emit('ERROR: Launch failed because some '
+                                      'files are missing (need to download?)',
+                                      5000)
             self.mainwindow.blk = None
 
         except Exception:
 
             logger.exception('Encountered a fatal error. Traceback will be '
                              'written to log file.')
-            self.show_status_msg.emit('Launch failed (see console for '
+            self.show_status_msg.emit('ERROR: Launch failed (see console for '
                                       'details)', 5000)
             self.mainwindow.blk = None
 
