@@ -1,6 +1,13 @@
 neurotic_config:
     remote_data_root: https://gin.g-node.org/jpgill86/neurotic-data/raw/master/tests
 
+empty-plots:
+    data_dir: events-and-epochs
+    remote_data_dir: events-and-epochs
+    data_file: events_and_epochs.axgx
+
+    plots: []
+
 video-jumps-unset:
     data_dir: events-and-epochs
     remote_data_dir: events-and-epochs
