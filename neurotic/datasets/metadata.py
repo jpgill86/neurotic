@@ -489,6 +489,7 @@ def _download_all_data_files(metadata, **kwargs):
 
     for file in [k for k in metadata if k.endswith('_file')]:
         _download_file(metadata, file, **kwargs)
+    logger.info('Downloads complete')
 
 
 def _selector_labels(all_metadata):
