@@ -400,6 +400,7 @@ class EphyviewerConfigurator():
 
             win.add_view(trace_view)
 
+            trace_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
             trace_view.params['auto_scale_factor'] = 0.02
             trace_view.params['scatter_size'] = 5
             trace_view.params['line_width'] = line_width
@@ -460,6 +461,7 @@ class EphyviewerConfigurator():
                 else:
                     win.add_view(trace_rauc_view)
 
+                trace_rauc_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
                 trace_rauc_view.params['line_width'] = line_width
                 trace_rauc_view.params['display_labels'] = True
                 trace_rauc_view.params['display_offset'] = True
@@ -499,6 +501,7 @@ class EphyviewerConfigurator():
 
             freq_view = ephyviewer.TimeFreqViewer(source = trace_view.source, name = 'timefreqs')
 
+            freq_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
             freq_view.params['scale_mode'] = 'by_channel'
             freq_view.params['nb_column'] = 1
             freq_view.params['colormap'] = 'gray'
@@ -549,6 +552,8 @@ class EphyviewerConfigurator():
                     # unit name may not have been found in the spike train list
                     pass
 
+            spike_train_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
+
         ########################################################################
         # TRACES OF FIRING RATES
 
@@ -573,6 +578,7 @@ class EphyviewerConfigurator():
                 else:
                     win.add_view(trace_rates_view)
 
+                trace_rates_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
                 trace_rates_view.params['line_width'] = line_width
                 trace_rates_view.params['display_labels'] = True
                 trace_rates_view.params['display_offset'] = True
@@ -630,6 +636,8 @@ class EphyviewerConfigurator():
                     # unit burst name may not have been found in the epoch list
                     pass
 
+            epoch_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
+
         ########################################################################
         # EPOCH ENCODER
 
@@ -668,6 +676,8 @@ class EphyviewerConfigurator():
                     epoch_encoder.params['vline_color'] = self.themes[theme]['vline_color']
                     epoch_encoder.params['label_fill_color'] = self.themes[theme]['label_fill_color']
                     # TODO add support for combo_cmap
+
+                epoch_encoder.params['xratio'] = self.metadata.get('past_fraction', 0.3)
 
         ########################################################################
         # VIDEO
