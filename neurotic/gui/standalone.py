@@ -260,16 +260,10 @@ class MainWindow(QT.QMainWindow):
         do_view_log_file = help_menu.addAction('View &log file')
         do_view_log_file.triggered.connect(self.view_log_file)
 
+        do_open_issues = help_menu.addAction('Report issues')
+        do_open_issues.triggered.connect(lambda: open_url('https://github.com/jpgill86/neurotic/issues'))
+
         help_menu.addSeparator()
-
-        do_open_docs = help_menu.addAction('Documentation')
-        do_open_docs.triggered.connect(lambda: open_url(get_versioned_docs_url()))
-
-        do_open_ui_guide = help_menu.addAction('User interface guide')
-        do_open_ui_guide.triggered.connect(lambda: open_url('https://ephyviewer.readthedocs.io/en/latest/interface.html'))
-
-        do_open_release_notes = help_menu.addAction('Release notes')
-        do_open_release_notes.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/releasenotes.html'))
 
         do_show_check_for_updates = help_menu.addAction('Check for updates')
         do_show_check_for_updates.triggered.connect(self.show_check_for_updates)
@@ -277,8 +271,16 @@ class MainWindow(QT.QMainWindow):
         do_open_update_docs = help_menu.addAction('How to update')
         do_open_update_docs.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/update.html'))
 
-        do_open_issues = help_menu.addAction('Report issues')
-        do_open_issues.triggered.connect(lambda: open_url('https://github.com/jpgill86/neurotic/issues'))
+        do_open_release_notes = help_menu.addAction('Release notes')
+        do_open_release_notes.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/releasenotes.html'))
+
+        help_menu.addSeparator()
+
+        do_open_docs = help_menu.addAction('Documentation')
+        do_open_docs.triggered.connect(lambda: open_url(get_versioned_docs_url()))
+
+        do_open_ui_guide = help_menu.addAction('User interface guide')
+        do_open_ui_guide.triggered.connect(lambda: open_url('https://ephyviewer.readthedocs.io/en/latest/interface.html'))
 
         do_show_about = help_menu.addAction('&About neurotic')
         do_show_about.triggered.connect(self.show_about)
@@ -460,7 +462,7 @@ class MainWindow(QT.QMainWindow):
 
         urls = {}
         urls['query-latest-release'] = 'https://api.github.com/repos/jpgill86/neurotic/releases/latest'
-        urls['updating'] = 'https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'
+        urls['updating'] = 'https://neurotic.readthedocs.io/en/latest/update.html'
         urls['releases'] = 'https://github.com/jpgill86/neurotic/releases'
 
         try:
