@@ -265,6 +265,9 @@ class MainWindow(QT.QMainWindow):
         do_open_docs = help_menu.addAction('Documentation')
         do_open_docs.triggered.connect(lambda: open_url(get_versioned_docs_url()))
 
+        do_open_ui_guide = help_menu.addAction('User interface guide')
+        do_open_ui_guide.triggered.connect(lambda: open_url('https://ephyviewer.readthedocs.io/en/latest/interface.html'))
+
         do_open_release_notes = help_menu.addAction('Release notes')
         do_open_release_notes.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/releasenotes.html'))
 
