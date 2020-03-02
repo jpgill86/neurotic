@@ -90,8 +90,8 @@ Data stores can be password protected and **neurotic** will prompt you for a
 user name and password. This makes it easy to share the **neurotic** experience
 with your colleagues! 🤪
 
-Installation
-------------
+Installing neurotic
+-------------------
 
 **neurotic** requires Python 3.6 or later.
 
@@ -100,8 +100,30 @@ Note that the latest release of one of **neurotic**'s dependencies, pyqtgraph
 dependency is installed via conda-forge (recommended method) (`details
 <https://github.com/jpgill86/neurotic/issues/129>`_).
 
-Recommended Method: conda-forge
-...............................
+Standalone Installers (recommended for beginners)
+.................................................
+
+Downloadable installers make installing **neurotic** easy for beginners. When
+available, they can be downloaded from the GitHub Releases page:
+
+    `👉 Download installers here (listed under "Assets") 👈`__
+
+    __ `GitHub Releases`_
+
+These installers are intended for users who do not want to independently
+install Python or conda just to use **neurotic**. They will install
+**neurotic** and everything it needs (including a fully contained Python
+environment) into a dedicated directory on your computer. On Windows, the
+installer will also create a Start Menu shortcut for launching the app.
+
+Because the process of building installers is not automated, installers may not
+be available for the latest releases for all platforms.
+
+For developers, a recipe for building new installers using `conda constructor`_
+is maintained here: `constructor recipe`_.
+
+Alternate Method: conda (recommended for Pythonistas)
+.....................................................
 
 conda_ users can install **neurotic** and all of its dependencies with one
 command::
@@ -120,11 +142,60 @@ The easiest way to install PyAV is using conda_::
 
     conda install -c conda-forge av
 
-Install the latest release version of **neurotic** from PyPI_ using ::
+Install **neurotic** from PyPI_ using ::
+
+    pip install neurotic
+
+Updating neurotic
+-----------------
+
+The recommended method of updating **neurotic** depends on the original method
+of installation.
+
+If you are unsure what method you used, updating using ``conda`` or ``pip`` is
+likely to work. Standalone installers may be safe too, though this could lead
+to having multiple version installed simultaneously.
+
+Updating with Standalone Installers
+...................................
+
+If you previously installed **neurotic** using a standalone installer, you may
+install a newer version using another installer, either into a different
+directory or by first uninstalling the old version. Installers can be
+downloaded from the GitHub Releases page:
+
+    `👉 Download installers here (listed under "Assets") 👈`__
+
+    __ `GitHub Releases`_
+
+Alternatively, if a new installer is not currently available for your platform,
+or if you would just like a much faster method, you may use the command line
+tools provided by the installer (via the "Anaconda Prompt" on Windows, or the
+Terminal on macOS and Linux)::
+
+    conda update -c conda-forge neurotic
+
+Updating with conda
+...................
+
+If you installed **neurotic** with `conda`_, you can update to the latest
+release using ::
+
+    conda update -c conda-forge neurotic
+
+Updating with pip
+.................
+
+If you installed **neurotic** using ``pip``, you can update to the latest
+release available on PyPI_ using ::
 
     pip install -U neurotic
 
-or install the latest development version from GitHub_ using ::
+Development Version
+...................
+
+If you are interested in trying new, unreleased features of **neurotic**, you
+may install the latest development version from GitHub_ using ::
 
     pip install -U git+https://github.com/jpgill86/neurotic.git
 
@@ -132,49 +203,6 @@ Note that if you install the development version, you may also need the latest
 development version of ephyviewer_, which you can get using ::
 
     pip install -U git+https://github.com/NeuralEnsemble/ephyviewer.git
-
-Alternate Method: Standalone Installers
-.......................................
-
-**This will be the simplest and most convenient installation method for many
-users**, especially those uncomfortable with managing Python environments, but
-there are a couple caveats.
-
-For users who do not want to independently install Python or conda just to use
-**neurotic**, traditional program installers exist. These will install
-**neurotic** and everything it needs (including a fully contained Python
-environment) into a dedicated directory on your computer. On Windows, the
-installer will also create a Start Menu shortcut for launching the app.
-
-If available, these installers can be found on the `GitHub Releases`_ page,
-listed under "Assets". However, because the process of building installers is
-not yet automated, they may not be available for the latest releases.
-
-Installers are not generally recommended for users who already have a working
-Python environment and who are comfortable with ``conda``/``pip`` because the
-installers use more disk space and may be less straightforward to upgrade.
-Instead, the other methods described above are recommended.
-
-For developers, a recipe for building new installers using `conda constructor`_
-is maintained here: `constructor recipe`_.
-
-Updating neurotic
-.................
-
-If you installed **neurotic** from conda-forge, you can update it using ::
-
-    conda update -c conda-forge neurotic
-
-If you installed **neurotic** using ``pip``, use ::
-
-    pip install -U neurotic
-
-If you installed **neurotic** using a standalone installer, you can try ::
-
-    conda update -c conda-forge neurotic
-
-but uninstalling and reinstalling using a newer installer may work just as
-well.
 
 Getting Started
 ---------------
