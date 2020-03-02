@@ -226,8 +226,8 @@ To inspect the metadata file associated with the example or to make changes to
 it, click "Edit metadata". See `Configuring Metadata`_ for details about the
 format.
 
-If you prefer Jupyter notebooks, you can launch an example notebook instead for
-experimenting with **neurotic**'s API::
+If you prefer Jupyter notebooks, you can launch an example notebook instead,
+which includes a tutorial for using **neurotic**'s API::
 
     neurotic --launch-example-notebook
 
