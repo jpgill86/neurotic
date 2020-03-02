@@ -462,7 +462,7 @@ class MainWindow(QT.QMainWindow):
 
         urls = {}
         urls['query-latest-release'] = 'https://api.github.com/repos/jpgill86/neurotic/releases/latest'
-        urls['updating'] = 'https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'
+        urls['updating'] = 'https://neurotic.readthedocs.io/en/latest/update.html'
         urls['releases'] = 'https://github.com/jpgill86/neurotic/releases'
 
         try:
