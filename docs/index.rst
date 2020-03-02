@@ -23,6 +23,7 @@ at the same datasets!
 
    overview
    install
+   update
    gettingstarted
    metadata
    api

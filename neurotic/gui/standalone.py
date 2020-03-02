@@ -272,7 +272,7 @@ class MainWindow(QT.QMainWindow):
         do_show_check_for_updates.triggered.connect(self.show_check_for_updates)
 
         do_open_update_docs = help_menu.addAction('How to update')
-        do_open_update_docs.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/install.html#updating-neurotic'))
+        do_open_update_docs.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/update.html'))
 
         do_open_issues = help_menu.addAction('Report issues')
         do_open_issues.triggered.connect(lambda: open_url('https://github.com/jpgill86/neurotic/issues'))
