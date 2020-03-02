@@ -302,7 +302,17 @@ class MainWindow(QT.QMainWindow):
 
         try:
             open_path_with_default_program(self.metadata_selector.file)
+
+            title = 'Reload metadata?'
+            text = 'The metadata file must be reloaded if you made changes. ' \
+                   'Do you want to reload now?'
+            button = QT.QMessageBox.question(self, title, text,
+                                             defaultButton=QT.QMessageBox.Yes)
+            if button == QT.QMessageBox.Yes:
+                self.metadata_selector.load()
+
         except FileNotFoundError as e:
+
             logger.error(f'The metadata file was not found: {e}')
             self.statusBar().showMessage('ERROR: The metadata file could not '
                                          'be found', msecs=5000)
