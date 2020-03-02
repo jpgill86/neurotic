@@ -153,10 +153,16 @@ class EphyviewerConfigurator():
             self.viewer_settings['epoch_encoder']['show'] = False
             self.viewer_settings['epoch_encoder']['disabled'] = True
             self.viewer_settings['epoch_encoder']['reason'] = 'Cannot enable because epoch_encoder_file is not set'
+        if not ephyviewer.HAVE_AV:
+            self.viewer_settings['video']['show'] = False
+            self.viewer_settings['video']['disabled'] = True
+            self.viewer_settings['video']['reason'] = 'Cannot enable because PyAV is not installed'
         if not self.metadata.get('video_file', None):
             self.viewer_settings['video']['show'] = False
             self.viewer_settings['video']['disabled'] = True
             self.viewer_settings['video']['reason'] = 'Cannot enable because video_file is not set'
+        if not ephyviewer.HAVE_AV and self.metadata.get('video_file', None):
+            logger.warning('Ignoring video_file because PyAV is not installed')
 
         # warn about potential video sync problems
         if metadata.get('video_file', None) is not None and metadata.get('video_offset', None) is None:
