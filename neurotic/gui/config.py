@@ -421,7 +421,7 @@ class EphyviewerConfigurator():
                 useOpenGL = None
                 line_width = 1.0
 
-            trace_view = ephyviewer.TraceViewer(source = sources['signal'][0], name = 'signals', useOpenGL = useOpenGL)
+            trace_view = ephyviewer.TraceViewer(source = sources['signal'][0], name = 'Signals', useOpenGL = useOpenGL)
 
             win.add_view(trace_view)
 
@@ -480,10 +480,10 @@ class EphyviewerConfigurator():
                 )
                 sources['signal_rauc'] = [sig_rauc_source]
 
-                trace_rauc_view = ephyviewer.TraceViewer(source = sources['signal_rauc'][0], name = 'signals rauc')
+                trace_rauc_view = ephyviewer.TraceViewer(source = sources['signal_rauc'][0], name = 'Integrated signals (RAUC)')
 
-                if 'signals' in win.viewers:
-                    win.add_view(trace_rauc_view, tabify_with = 'signals')
+                if 'Signals' in win.viewers:
+                    win.add_view(trace_rauc_view, tabify_with = 'Signals')
                 else:
                     win.add_view(trace_rauc_view)
 
@@ -526,7 +526,7 @@ class EphyviewerConfigurator():
 
         if self.is_shown('freqs'):
 
-            freq_view = ephyviewer.TimeFreqViewer(source = trace_view.source, name = 'timefreqs')
+            freq_view = ephyviewer.TimeFreqViewer(source = trace_view.source, name = 'Time-Frequency')
 
             freq_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
             freq_view.params['scale_mode'] = 'by_channel'
@@ -547,10 +547,10 @@ class EphyviewerConfigurator():
             freq_view.by_channel_params['ch2', 'clim'] = 5
             freq_view.by_channel_params['ch3', 'clim'] = 10
 
-            if 'signals' in win.viewers:
-                win.add_view(freq_view, tabify_with = 'signals')
-            elif 'signals rauc' in win.viewers:
-                win.add_view(freq_view, tabify_with = 'signals rauc')
+            if 'Signals' in win.viewers:
+                win.add_view(freq_view, tabify_with = 'Signals')
+            elif 'Integrated signals (RAUC)' in win.viewers:
+                win.add_view(freq_view, tabify_with = 'Integrated signals (RAUC)')
             else:
                 win.add_view(freq_view)
 
@@ -559,7 +559,7 @@ class EphyviewerConfigurator():
 
         if self.is_shown('spike_trains') and sources['spike'][0].nb_channel > 0:
 
-            spike_train_view = ephyviewer.SpikeTrainViewer(source = sources['spike'][0], name = 'spiketrains')
+            spike_train_view = ephyviewer.SpikeTrainViewer(source = sources['spike'][0], name = 'Spike trains')
             win.add_view(spike_train_view)
 
             # set the theme
@@ -599,10 +599,10 @@ class EphyviewerConfigurator():
                 )
                 sources['signal_rates'] = [sig_rates_source]
 
-                trace_rates_view = ephyviewer.TraceViewer(source = sources['signal_rates'][0], name = 'firing rates')
+                trace_rates_view = ephyviewer.TraceViewer(source = sources['signal_rates'][0], name = 'Firing rates')
 
-                if 'spiketrains' in win.viewers:
-                    win.add_view(trace_rates_view, tabify_with = 'spiketrains')
+                if 'Spike trains' in win.viewers:
+                    win.add_view(trace_rates_view, tabify_with = 'Spike trains')
                 else:
                     win.add_view(trace_rates_view)
 
@@ -645,7 +645,7 @@ class EphyviewerConfigurator():
 
         if self.is_shown('epochs') and sources['epoch'][0].nb_channel > 0:
 
-            epoch_view = ephyviewer.EpochViewer(source = sources['epoch'][0], name = 'epochs')
+            epoch_view = ephyviewer.EpochViewer(source = sources['epoch'][0], name = 'Epochs')
             win.add_view(epoch_view)
 
             # set the theme
@@ -696,7 +696,7 @@ class EphyviewerConfigurator():
                     possible_labels = possible_labels,
                 )
 
-                epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'epoch encoder')
+                epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'Epoch encoder')
                 epoch_encoder.params['exclusive_mode'] = False
                 win.add_view(epoch_encoder)
 
@@ -754,7 +754,7 @@ class EphyviewerConfigurator():
             video_source._t_start = max(min(video_source.t_starts), 0)
             video_source._t_stop  = max(video_source.t_stops)
 
-            video_view = ephyviewer.VideoViewer(source = video_source, name = 'video')
+            video_view = ephyviewer.VideoViewer(source = video_source, name = 'Video')
             if theme != 'original':
                 video_view.graphiclayout.setBackground(self.themes[theme]['background_color'])
             win.add_view(video_view, location = 'bottom', orientation = 'horizontal')
@@ -764,9 +764,9 @@ class EphyviewerConfigurator():
 
         if self.is_shown('event_list') and sources['event'][0].nb_channel > 0:
 
-            event_list = ephyviewer.EventList(source = sources['event'][0], name = 'events')
-            if 'video' in win.viewers:
-                win.add_view(event_list, split_with = 'video')
+            event_list = ephyviewer.EventList(source = sources['event'][0], name = 'Events')
+            if 'Video' in win.viewers:
+                win.add_view(event_list, split_with = 'Video')
             else:
                 win.add_view(event_list, location = 'bottom', orientation = 'horizontal')
 
@@ -776,11 +776,11 @@ class EphyviewerConfigurator():
         annotations_dataframe = _neo_epoch_to_dataframe(seg.epochs, exclude_epoch_encoder_epochs=True)
         if self.is_shown('data_frame') and len(annotations_dataframe) > 0:
 
-            data_frame_view = ephyviewer.DataFrameView(source = annotations_dataframe, name = 'table')
-            if 'events' in win.viewers:
-                win.add_view(data_frame_view, tabify_with = 'events')
-            elif 'video' in win.viewers:
-                win.add_view(data_frame_view, split_with = 'video')
+            data_frame_view = ephyviewer.DataFrameView(source = annotations_dataframe, name = 'Table')
+            if 'Events' in win.viewers:
+                win.add_view(data_frame_view, tabify_with = 'Events')
+            elif 'Video' in win.viewers:
+                win.add_view(data_frame_view, split_with = 'Video')
             else:
                 win.add_view(data_frame_view, location = 'bottom', orientation = 'horizontal')
 
