@@ -135,16 +135,16 @@ On Windows, this will also create a Start Menu shortcut for launching the app.
 Alternate Method: pip
 .....................
 
-Installation of **neurotic** via ``pip`` will install nearly all of its
-dependencies automatically, with one exception. **neurotic** requires PyAV_,
-which is not easily installed with ``pip`` on some systems, especially Windows.
-The easiest way to install PyAV is using conda_::
-
-    conda install -c conda-forge av
-
 Install **neurotic** from PyPI_ using ::
 
     pip install neurotic
+
+Note that installation via ``pip`` skips one dependency: PyAV_, which is
+required for displaying videos, and without which **neurotic** will ignore
+videos. PyAV is not easily installed with ``pip`` on some systems, especially
+Windows. The easiest way to separately install PyAV is using conda_::
+
+    conda install -c conda-forge av
 
 Updating neurotic
 -----------------
