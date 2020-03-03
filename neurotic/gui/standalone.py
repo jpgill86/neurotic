@@ -165,7 +165,10 @@ class MainWindow(QT.QMainWindow):
         Construct the menus of the app.
         """
 
-        file_menu = self.menuBar().addMenu(self.tr('&File'))
+        menu_bar = self.menuBar()
+        menu_bar.setNativeMenuBar(False)  # disable for macOS, see GH-239
+
+        file_menu = menu_bar.addMenu(self.tr('&File'))
 
         do_open_metadata = file_menu.addAction('&Open metadata')
         do_open_metadata.setShortcut('Ctrl+O')
@@ -200,7 +203,7 @@ class MainWindow(QT.QMainWindow):
         self.do_launch.setShortcut('Return')
         self.do_launch.triggered.connect(self.start_launch)
 
-        options_menu = self.menuBar().addMenu(self.tr('&Options'))
+        options_menu = menu_bar.addMenu(self.tr('&Options'))
 
         do_toggle_lazy = options_menu.addAction('&Fast loading')
         do_toggle_lazy.setStatusTip('Reduces load time and memory usage, disables expensive features like spike detection')
@@ -214,7 +217,7 @@ class MainWindow(QT.QMainWindow):
         do_toggle_show_datetime.setChecked(self.show_datetime)
         do_toggle_show_datetime.triggered.connect(self.toggle_show_datetime)
 
-        appearance_menu = self.menuBar().addMenu(self.tr('&Appearance'))
+        appearance_menu = menu_bar.addMenu(self.tr('&Appearance'))
 
         ui_scale_group = QT.QActionGroup(appearance_menu)
         ui_scale_actions = {}
@@ -250,7 +253,7 @@ class MainWindow(QT.QMainWindow):
         do_toggle_support_increased_line_width.setChecked(self.support_increased_line_width)
         do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
 
-        help_menu = self.menuBar().addMenu(self.tr('&Help'))
+        help_menu = menu_bar.addMenu(self.tr('&Help'))
 
         self.do_toggle_debug_logging = help_menu.addAction('Show and log &debug messages')
         self.do_toggle_debug_logging.setCheckable(True)
