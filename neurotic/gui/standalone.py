@@ -112,7 +112,9 @@ class MainWindow(QT.QMainWindow):
         loading_label = QT.QLabel('Launching, please wait...')
         loading_label.setFrameStyle(QT.QFrame.Panel | QT.QFrame.Sunken)
         loading_label.setAlignment(QT.Qt.AlignCenter)
-        loading_label.setStyleSheet('font: 14pt')
+        font = loading_label.font()
+        font.setPointSize(self.default_font_size+4)
+        loading_label.setFont(font)
 
         # initially stack the metadata selector above the loading label
         self.stacked_layout = QT.QStackedLayout()
