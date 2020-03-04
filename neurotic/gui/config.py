@@ -99,26 +99,13 @@ class EphyviewerConfigurator():
             'label_fill_color': '#DDDDDDDD', # transparent light gray
         }
 
-        self.ui_scales = {}
-        self.ui_scales['tiny'] = {
-            'app_font_size': 6,
-            'channel_label_size': 6,
-            'scatter_size': 3,
-        }
-        self.ui_scales['small'] = {
-            'app_font_size': 8,
-            'channel_label_size': 8,
-            'scatter_size': 5,
-        }
-        self.ui_scales['large'] = {
-            'app_font_size': 12,
-            'channel_label_size': 14,
-            'scatter_size': 10,
-        }
-        self.ui_scales['huge'] = {
-            'app_font_size': 14,
-            'channel_label_size': 16,
-            'scatter_size': 15,
+        self.default_font_size = ephyviewer.QT.QFont().pointSize()
+        self.ui_scales = {
+            'tiny':   {'app_font_size': self.default_font_size-4, 'channel_label_size': self.default_font_size-4, 'scatter_size':  4},
+            'small':  {'app_font_size': self.default_font_size-2, 'channel_label_size': self.default_font_size-2, 'scatter_size':  6},
+            'medium': {'app_font_size': self.default_font_size,   'channel_label_size': self.default_font_size,   'scatter_size':  8},
+            'large':  {'app_font_size': self.default_font_size+2, 'channel_label_size': self.default_font_size+2, 'scatter_size': 10},
+            'huge':   {'app_font_size': self.default_font_size+4, 'channel_label_size': self.default_font_size+4, 'scatter_size': 12},
         }
 
         # hide and disable viewers for which inputs are missing
@@ -314,7 +301,9 @@ class EphyviewerConfigurator():
         win.setAttribute(ephyviewer.QT.WA_DeleteOnClose, True)
 
         # set the font size for most text
-        win.setStyleSheet(f"font: {self.ui_scales[ui_scale]['app_font_size']}pt")
+        font = win.font()
+        font.setPointSize(self.ui_scales[ui_scale]['app_font_size'])
+        win.setFont(font)
 
         ########################################################################
         # COLORS

@@ -61,10 +61,10 @@ def parse_args(argv):
                              'may be inaccurate depending on file type and ' \
                              'acquisition software (default: do not display)')
     parser.add_argument('--ui-scale', dest='ui_scale',
-                        choices=['tiny', 'small', 'large', 'huge'],
-                        default='small', help='the scale of user interface ' \
-                                              'elements, such as text ' \
-                                              '(default: small)')
+                        choices=['tiny', 'small', 'medium', 'large', 'huge'],
+                        default='medium', help='the scale of user interface ' \
+                                               'elements, such as text ' \
+                                               '(default: medium)')
     parser.add_argument('--theme', choices=['light', 'dark', 'original',
                                             'printer-friendly'],
                         default='light', help='a color theme for the GUI ' \

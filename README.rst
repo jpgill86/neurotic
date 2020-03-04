@@ -236,7 +236,7 @@ The command line interface accepts other arguments too:
 .. code-block::
 
     usage: neurotic [-h] [-V] [--debug] [--no-lazy] [--thick-traces]
-                    [--show-datetime] [--ui-scale {tiny,small,large,huge}]
+                    [--show-datetime] [--ui-scale {tiny,small,medium,large,huge}]
                     [--theme {light,dark,original,printer-friendly}]
                     [--launch-example-notebook]
                     [file] [dataset]
@@ -262,9 +262,9 @@ The command line interface accepts other arguments too:
       --show-datetime       display the real-world date and time, which may be
                             inaccurate depending on file type and acquisition
                             software (default: do not display)
-      --ui-scale {tiny,small,large,huge}
+      --ui-scale {tiny,small,medium,large,huge}
                             the scale of user interface elements, such as text
-                            (default: small)
+                            (default: medium)
       --theme {light,dark,original,printer-friendly}
                             a color theme for the GUI (default: light)
       --launch-example-notebook
