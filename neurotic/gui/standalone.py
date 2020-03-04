@@ -21,7 +21,7 @@ from ephyviewer import QT, QT_MODE
 from .. import __version__, _elephant_tools, default_log_level, log_file
 from ..datasets import MetadataSelector, load_dataset
 from ..datasets.metadata import _selector_labels
-from ..gui.config import EphyviewerConfigurator
+from ..gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
 
 import logging
 logger = logging.getLogger(__name__)
@@ -82,10 +82,14 @@ class MainWindow(QT.QMainWindow):
         # lazy loading using Neo RawIO
         self.lazy = lazy
 
-        # available themes are 'light', 'dark', 'original', and 'printer-friendly'
+        if theme not in available_themes:
+            logger.error(f'theme "{theme}" is unrecognized')
+            raise ValueError(f'theme "{theme}" is unrecognized')
         self.theme = theme
 
-        # available sizes are 'tiny', 'small', 'medium', 'large', and 'huge'
+        if ui_scale not in available_ui_scales:
+            logger.error(f'ui scale "{ui_scale}" is unrecognized')
+            raise ValueError(f'ui scale "{ui_scale}" is unrecognized')
         self.ui_scale = ui_scale
         self.default_font_size = QT.QFont().pointSize()
 
@@ -224,30 +228,24 @@ class MainWindow(QT.QMainWindow):
 
         ui_scale_group = QT.QActionGroup(appearance_menu)
         ui_scale_actions = {}
-        for size in ['tiny', 'small', 'medium', 'large', 'huge']:
+        for size in available_ui_scales:
             ui_scale_actions[size] = appearance_menu.addAction(f'&{size.capitalize()} scale')
             ui_scale_actions[size].setCheckable(True)
             ui_scale_actions[size].triggered.connect(lambda checked, size=size: self.set_ui_scale(size))
             ui_scale_group.addAction(ui_scale_actions[size])
-        if self.ui_scale in ui_scale_actions:
-            ui_scale_actions[self.ui_scale].setChecked(True)
-            self.set_ui_scale(self.ui_scale)
-        else:
-            raise ValueError('ui scale "{}" is unrecognized'.format(self.ui_scale))
+        ui_scale_actions[self.ui_scale].setChecked(True)
+        self.set_ui_scale(self.ui_scale)  # adjust the UI scale now
 
         appearance_menu.addSeparator()
 
         theme_group = QT.QActionGroup(appearance_menu)
         theme_actions = {}
-        for theme in ['light', 'dark', 'original', 'printer-friendly']:
+        for theme in available_themes:
             theme_actions[theme] = appearance_menu.addAction(f'&{theme.capitalize()} theme')
             theme_actions[theme].setCheckable(True)
             theme_actions[theme].triggered.connect(lambda checked, theme=theme: self.set_theme(theme))
             theme_group.addAction(theme_actions[theme])
-        if self.theme in theme_actions:
-            theme_actions[self.theme].setChecked(True)
-        else:
-            raise ValueError('theme "{}" is unrecognized'.format(self.theme))
+        theme_actions[self.theme].setChecked(True)
 
         appearance_menu.addSeparator()
 

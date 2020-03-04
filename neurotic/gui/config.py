@@ -30,6 +30,10 @@ logging.getLogger('libav').setLevel(logging.CRITICAL)
 pq.mN = pq.UnitQuantity('millinewton', pq.N/1e3, symbol = 'mN');  # define millinewton
 
 
+available_themes = ['light', 'dark', 'original', 'printer-friendly']
+available_ui_scales = ['tiny', 'small', 'medium', 'large', 'huge']
+
+
 class EphyviewerConfigurator():
     """
     A class for launching ephyviewer for a dataset with configurable viewers.

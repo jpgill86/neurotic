@@ -19,7 +19,7 @@ from ephyviewer import QT, mkQApp
 
 from . import __version__
 from .datasets.data import load_dataset
-from .gui.config import EphyviewerConfigurator
+from .gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
 from .gui.standalone import MainWindow
 
 import logging
@@ -61,14 +61,11 @@ def parse_args(argv):
                              'may be inaccurate depending on file type and ' \
                              'acquisition software (default: do not display)')
     parser.add_argument('--ui-scale', dest='ui_scale',
-                        choices=['tiny', 'small', 'medium', 'large', 'huge'],
-                        default='medium', help='the scale of user interface ' \
-                                               'elements, such as text ' \
-                                               '(default: medium)')
-    parser.add_argument('--theme', choices=['light', 'dark', 'original',
-                                            'printer-friendly'],
-                        default='light', help='a color theme for the GUI ' \
-                                              '(default: light)')
+                        choices=available_ui_scales, default='medium',
+                        help='the scale of user interface elements, such as ' \
+                             'text (default: medium)')
+    parser.add_argument('--theme', choices=available_themes, default='light',
+                        help='a color theme for the GUI (default: light)')
 
     parser.add_argument('--launch-example-notebook', action='store_true',
                         help='launch Jupyter with an example notebook ' \
