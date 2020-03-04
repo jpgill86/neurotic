@@ -576,8 +576,8 @@ class MainWindow(QT.QMainWindow):
             'tiny':   self.default_font_size-4,
             'small':  self.default_font_size-2,
             'medium': self.default_font_size,
-            'large':  self.default_font_size+2,
-            'huge':   self.default_font_size+4,
+            'large':  self.default_font_size+4,
+            'huge':   self.default_font_size+8,
         }
         font = self.font()
         font.setPointSize(font_size[size])

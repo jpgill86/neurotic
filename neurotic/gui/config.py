@@ -104,8 +104,8 @@ class EphyviewerConfigurator():
             'tiny':   {'app_font_size': self.default_font_size-4, 'channel_label_size': self.default_font_size-4, 'scatter_size':  4},
             'small':  {'app_font_size': self.default_font_size-2, 'channel_label_size': self.default_font_size-2, 'scatter_size':  6},
             'medium': {'app_font_size': self.default_font_size,   'channel_label_size': self.default_font_size,   'scatter_size':  8},
-            'large':  {'app_font_size': self.default_font_size+2, 'channel_label_size': self.default_font_size+2, 'scatter_size': 10},
-            'huge':   {'app_font_size': self.default_font_size+4, 'channel_label_size': self.default_font_size+4, 'scatter_size': 12},
+            'large':  {'app_font_size': self.default_font_size+4, 'channel_label_size': self.default_font_size+4, 'scatter_size': 10},
+            'huge':   {'app_font_size': self.default_font_size+8, 'channel_label_size': self.default_font_size+8, 'scatter_size': 12},
         }
 
         # hide and disable viewers for which inputs are missing
