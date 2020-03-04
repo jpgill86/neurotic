@@ -72,7 +72,7 @@ here <https://github.com/jpgill86/neurotic/blob/master/neurotic/example/example-
 * Add API tutorial to example Jupyter notebook
   (:pr:`234`, :pr:`236`)
 
-* Add shell commands to example Jupyter notebook for installing neurotic
+* Add shell commands to example Jupyter notebook for installing **neurotic**
   (:pr:`185`)
 
 Other changes
