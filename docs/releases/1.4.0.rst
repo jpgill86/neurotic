@@ -1,0 +1,127 @@
+.. _v1.4.0:
+
+neurotic 1.4.0
+==============
+
+2020-03-04
+
+New features
+------------
+
+* Add computation of smoothed firing rates for spike trains
+  (:pr:`189`)
+
+* Add ``quick_launch`` function for easier scripting and interactive sessions
+  (:pr:`191`, :pr:`196`)
+
+* Add ``blk`` param to ``load_dataset`` for using existing Neo Block
+  (:pr:`196`)
+
+* Add ``rec_datetime`` metadata parameter for setting real-world start time
+  (:pr:`190`)
+
+* Add ``past_fraction`` metadata parameter for controlling the placement of the
+  vertical line marking the current time
+  (:pr:`220`)
+
+* Add color options for signal plots to metadata
+  (:pr:`177`)
+
+* Add options for scaling the user interface
+  (:pr:`222`, :pr:`241`, :pr:`242`)
+
+* Add launch via double click in standalone app
+  (:pr:`218`)
+
+Help & feedback
+---------------
+
+* Display loading indicator when launching in the standalone app
+  (:pr:`223`)
+
+* Prompt the user to reload metadata after using the menu to edit metadata
+  (:pr:`226`)
+
+* Show "Downloads complete" in app status bar and in log
+  (:pr:`219`)
+
+* Add menu action status tips to standalone app
+  (:pr:`221`, :pr:`240`)
+
+* Add "Check for updates" to help menu
+  (:pr:`201`)
+
+* Add Help menu actions for opening common URLs
+  (:pr:`198`, :pr:`230`)
+
+* Add Python version and **neurotic** install path to About window
+  (:pr:`181`)
+
+* Display common error messages to status bar in standalone app
+  (:pr:`225`)
+
+* Display a splash screen when first starting the standalone app
+  (:pr:`224`)
+
+Jupyter tutorial
+----------------
+
+Start the tutorial using ``neurotic --launch-example-notebook`` or `view it
+here <https://github.com/jpgill86/neurotic/blob/master/neurotic/example/example-notebook.ipynb>`_.
+
+* Add API tutorial to example Jupyter notebook
+  (:pr:`234`, :pr:`236`)
+
+* Add shell commands to example Jupyter notebook for installing neurotic
+  (:pr:`185`)
+
+Other changes
+-------------
+
+* Move RAUC calculations to ``load_dataset`` and store them as annotations
+  (:pr:`188`)
+
+* Disable RAUC calculations by default
+  (:pr:`193`)
+
+* Allow ``data_file`` to be unspecified in metadata and signals to be optional
+  (:pr:`195`)
+
+* Ignore ``video_file`` if PyAV is not installed
+  (:pr:`231`)
+
+* Rename elephant functions
+  (:pr:`183`)
+
+Bug fixes
+---------
+
+* Fix crash when ``plots`` list is empty
+  (:pr:`217`)
+
+* Fix plotted signal sampling rate and start time if units are not Hz and sec, respectively
+  (:pr:`194`)
+
+* Fix incompatibility with old versions of tqdm and unknown download size
+  (:pr:`184`)
+
+Documentation
+-------------
+
+* Improve installation and updating documentation
+  (:pr:`180`, :pr:`229`)
+
+Logging
+-------
+
+* Add package logger and permanent log file
+  (:pr:`174`)
+
+* Log fatal errors in standalone app instead of crashing
+  (:pr:`176`)
+
+* Add CLI and GUI options for enabling debug log messages
+  (:pr:`178`)
+
+* Raise the default threshold for PyAV messages from warning to critical
+  (:pr:`179`)
