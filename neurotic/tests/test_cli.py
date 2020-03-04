@@ -123,7 +123,7 @@ class CLITestCase(unittest.TestCase):
         """Test that --ui-scale changes the ui_scale"""
         app = mkQApp()
 
-        for size in ['tiny', 'small', 'medium', 'large', 'huge']:
+        for size in neurotic.available_ui_scales:
             argv = ['neurotic', '--ui-scale', size]
             args = neurotic.parse_args(argv)
             win = neurotic.win_from_args(args)
@@ -133,7 +133,7 @@ class CLITestCase(unittest.TestCase):
         """Test that --theme changes the theme"""
         app = mkQApp()
 
-        for theme in ['light', 'dark', 'original', 'printer-friendly']:
+        for theme in neurotic.available_themes:
             argv = ['neurotic', '--theme', theme]
             args = neurotic.parse_args(argv)
             win = neurotic.win_from_args(args)
