@@ -82,11 +82,12 @@ class MainWindow(QT.QMainWindow):
         # lazy loading using Neo RawIO
         self.lazy = lazy
 
-        # available themes are 'light', 'dark', and 'original'
+        # available themes are 'light', 'dark', 'original', and 'printer-friendly'
         self.theme = theme
 
-        # available sizes are 'tiny', 'small', 'large', and 'huge'
+        # available sizes are 'tiny', 'small', 'medium', 'large', and 'huge'
         self.ui_scale = ui_scale
+        self.default_font_size = QT.QFont().pointSize()
 
         # support_increased_line_width=True eliminates the extremely poor
         # performance associated with TraceViewer's line_width > 1.0, but it
@@ -221,13 +222,14 @@ class MainWindow(QT.QMainWindow):
 
         ui_scale_group = QT.QActionGroup(appearance_menu)
         ui_scale_actions = {}
-        for size in ['tiny', 'small', 'large', 'huge']:
+        for size in ['tiny', 'small', 'medium', 'large', 'huge']:
             ui_scale_actions[size] = appearance_menu.addAction(f'&{size.capitalize()} scale')
             ui_scale_actions[size].setCheckable(True)
             ui_scale_actions[size].triggered.connect(lambda checked, size=size: self.set_ui_scale(size))
             ui_scale_group.addAction(ui_scale_actions[size])
         if self.ui_scale in ui_scale_actions:
             ui_scale_actions[self.ui_scale].setChecked(True)
+            self.set_ui_scale(self.ui_scale)
         else:
             raise ValueError('ui scale "{}" is unrecognized'.format(self.ui_scale))
 
@@ -568,6 +570,17 @@ class MainWindow(QT.QMainWindow):
     def set_ui_scale(self, size):
         self.ui_scale = size
 
+        font_size = {
+            'tiny':   self.default_font_size-4,
+            'small':  self.default_font_size-2,
+            'medium': self.default_font_size,
+            'large':  self.default_font_size+2,
+            'huge':   self.default_font_size+4,
+        }
+        font = self.font()
+        font.setPointSize(font_size[size])
+        self.setFont(font)
+
     def set_theme(self, theme):
         self.theme = theme
 
@@ -615,7 +628,10 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
         self.mainwindow = mainwindow
 
         self.setSelectionMode(QT.QListWidget.SingleSelection)
-        self.setStyleSheet('font: 9pt Courier;')
+
+        font = self.font()
+        font.setFamily('Courier')
+        self.setFont(font)
 
         self.currentRowChanged.connect(self._on_select)
         self.itemDoubleClicked.connect(self.mainwindow.start_launch)

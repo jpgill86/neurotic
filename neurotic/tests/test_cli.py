@@ -75,7 +75,7 @@ class CLITestCase(unittest.TestCase):
                          'thick traces enabled without --thick-traces')
         self.assertFalse(win.show_datetime,
                          'datetime enabled without --show-datetime')
-        self.assertEqual(win.ui_scale, 'small',
+        self.assertEqual(win.ui_scale, 'medium',
                          'ui_scale changed without --ui-scale')
         self.assertEqual(win.theme, 'light', 'theme changed without --theme')
         self.assertEqual(win.metadata_selector.file, self.default_file,
@@ -123,49 +123,21 @@ class CLITestCase(unittest.TestCase):
         """Test that --ui-scale changes the ui_scale"""
         app = mkQApp()
 
-        argv = ['neurotic', '--ui-scale', 'tiny']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.ui_scale, 'tiny', 'unexpected scale')
-
-        argv = ['neurotic', '--ui-scale', 'small']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.ui_scale, 'small', 'unexpected scale')
-
-        argv = ['neurotic', '--ui-scale', 'large']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.ui_scale, 'large', 'unexpected scale')
-
-        argv = ['neurotic', '--ui-scale', 'huge']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.ui_scale, 'huge', 'unexpected scale')
+        for size in ['tiny', 'small', 'medium', 'large', 'huge']:
+            argv = ['neurotic', '--ui-scale', size]
+            args = neurotic.parse_args(argv)
+            win = neurotic.win_from_args(args)
+            self.assertEqual(win.ui_scale, size, 'unexpected scale')
 
     def test_theme(self):
         """Test that --theme changes the theme"""
         app = mkQApp()
 
-        argv = ['neurotic', '--theme', 'light']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.theme, 'light', 'unexpected theme')
-
-        argv = ['neurotic', '--theme', 'dark']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.theme, 'dark', 'unexpected theme')
-
-        argv = ['neurotic', '--theme', 'original']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.theme, 'original', 'unexpected theme')
-
-        argv = ['neurotic', '--theme', 'printer-friendly']
-        args = neurotic.parse_args(argv)
-        win = neurotic.win_from_args(args)
-        self.assertEqual(win.theme, 'printer-friendly', 'unexpected theme')
+        for theme in ['light', 'dark', 'original', 'printer-friendly']:
+            argv = ['neurotic', '--theme', theme]
+            args = neurotic.parse_args(argv)
+            win = neurotic.win_from_args(args)
+            self.assertEqual(win.theme, theme, 'unexpected theme')
 
     def test_file(self):
         """Test that metadata file can be set"""
