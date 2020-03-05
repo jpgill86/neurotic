@@ -113,17 +113,14 @@ class MainWindow(QT.QMainWindow):
         self.metadata_selector = _MetadataSelectorQt(self)
 
         # loading label
-        loading_label = QT.QLabel('Launching, please wait...')
-        loading_label.setFrameStyle(QT.QFrame.Panel | QT.QFrame.Sunken)
-        loading_label.setAlignment(QT.Qt.AlignCenter)
-        font = loading_label.font()
-        font.setPointSize(self.default_font_size+4)
-        loading_label.setFont(font)
+        self.loading_label = QT.QLabel('Launching, please wait...')
+        self.loading_label.setFrameStyle(QT.QFrame.Panel | QT.QFrame.Sunken)
+        self.loading_label.setAlignment(QT.Qt.AlignCenter)
 
         # initially stack the metadata selector above the loading label
         self.stacked_layout = QT.QStackedLayout()
         self.stacked_layout.addWidget(self.metadata_selector)  # index 0
-        self.stacked_layout.addWidget(loading_label)           # index 1
+        self.stacked_layout.addWidget(self.loading_label)      # index 1
         central_widget = QT.QWidget()
         central_widget.setLayout(self.stacked_layout)
         self.setCentralWidget(central_widget)
@@ -577,9 +574,14 @@ class MainWindow(QT.QMainWindow):
             'large':  self.default_font_size+4,
             'huge':   self.default_font_size+8,
         }
+
         font = self.font()
         font.setPointSize(font_size[size])
         self.setFont(font)
+
+        font = self.loading_label.font()
+        font.setPointSize(font_size[size]+4)
+        self.loading_label.setFont(font)
 
     def set_theme(self, theme):
         self.theme = theme
