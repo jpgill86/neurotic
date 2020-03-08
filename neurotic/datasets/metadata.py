@@ -10,7 +10,10 @@ metadata files.
 import os
 import urllib
 import yaml
+from packaging.specifiers import SpecifierSet
+from packaging import version
 
+from .. import __version__
 from ..datasets.download import download
 
 import logging
@@ -244,10 +247,21 @@ def _load_metadata(file = 'metadata.yml', local_data_root = None, remote_data_ro
     config = md.pop('neurotic_config', None)
     if isinstance(config, dict):
         # process global settings
+        neurotic_version = config.get('neurotic_version', None)
         remote_data_root_from_file = config.get('remote_data_root', None)
     else:
         # use defaults for all global settings
+        neurotic_version = None
         remote_data_root_from_file = None
+
+    # check neurotic version requirements
+    if neurotic_version is not None:
+        version_spec = SpecifierSet(str(neurotic_version), prereleases=True)
+        if version.parse(__version__) not in version_spec:
+            logger.warning('the installed version of neurotic '
+                           f'({__version__}) does not meet version '
+                           'requirements specified in the metadata file: '
+                           f'{version_spec}')
 
     # use remote_data_root passed to function preferentially
     if remote_data_root is not None:

@@ -1,3 +1,6 @@
+neurotic_config:
+    neurotic_version: '>=1.4' # required for firing_rates
+
 example dataset:
     description: This is an example data set
 
