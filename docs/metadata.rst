@@ -197,13 +197,16 @@ Global Configuration Settings
 -----------------------------
 
 The top-level name ``neurotic_config`` is reserved for configuration settings
-that apply to all datasets or to the app itself. Presently, only one
-configuration setting is implemented, but future versions of **neurotic** may
-add more under this name.
+that apply to all datasets or to the app itself. The following settings may be
+nested beneath ``neurotic_config``.
 
 ======================  ========================================================
 Key                     Description
 ======================  ========================================================
+``neurotic_version``    A `version specification`_ stating the version of
+                        **neurotic** required by the metadata. Presently, if
+                        the requirement is not met, only a warning is issued.
+                        Quotation marks around the spec are usually required.
 ``remote_data_root``    A URL prepended to each ``remote_data_dir`` that is not
                         already a full URL (i.e., does not already begin with a
                         protocol scheme like ``https://``)
@@ -214,6 +217,7 @@ For example:
 .. code-block:: yaml
 
     neurotic_config:
+        neurotic_version:   '>=1.4,<2'
         remote_data_root:   http://myserver
 
     my favorite dataset:
@@ -725,7 +729,8 @@ without arguments:
    :language: yaml
 
 
-.. _elephant:             https://elephant.readthedocs.io/en/latest
-.. _GIN:                  https://gin.g-node.org
-.. _Neo:                  https://github.com/NeuralEnsemble/python-neo
-.. _tridesclous:          https://github.com/tridesclous/tridesclous
+.. _elephant:               https://elephant.readthedocs.io/en/latest
+.. _GIN:                    https://gin.g-node.org
+.. _Neo:                    https://github.com/NeuralEnsemble/python-neo
+.. _tridesclous:            https://github.com/tridesclous/tridesclous
+.. _version specification:  https://www.python.org/dev/peps/pep-0440/#version-specifiers
