@@ -66,7 +66,7 @@ class MainWindow(QT.QMainWindow):
     request_download = QT.pyqtSignal()
     request_load_dataset = QT.pyqtSignal()
 
-    def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', ui_scale='small', support_increased_line_width=False, show_datetime=False):
+    def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False):
         """
         Initialize a new MainWindow.
         """

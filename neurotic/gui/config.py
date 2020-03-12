@@ -103,15 +103,6 @@ class EphyviewerConfigurator():
             'label_fill_color': '#DDDDDDDD', # transparent light gray
         }
 
-        self.default_font_size = ephyviewer.QT.QFont().pointSize()
-        self.ui_scales = {
-            'tiny':   {'app_font_size': self.default_font_size-4, 'channel_label_size': self.default_font_size-4, 'scatter_size':  4},
-            'small':  {'app_font_size': self.default_font_size-2, 'channel_label_size': self.default_font_size-2, 'scatter_size':  6},
-            'medium': {'app_font_size': self.default_font_size,   'channel_label_size': self.default_font_size,   'scatter_size':  8},
-            'large':  {'app_font_size': self.default_font_size+4, 'channel_label_size': self.default_font_size+4, 'scatter_size': 10},
-            'huge':   {'app_font_size': self.default_font_size+8, 'channel_label_size': self.default_font_size+8, 'scatter_size': 12},
-        }
-
         # hide and disable viewers for which inputs are missing
         if not self.blk.segments[0].analogsignals:
             self.viewer_settings['traces']['show'] = False
@@ -246,7 +237,7 @@ class EphyviewerConfigurator():
         for name in self.viewer_settings:
             self.hide(name)
 
-    def launch_ephyviewer(self, theme='light', ui_scale='small', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
+    def launch_ephyviewer(self, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
         """
         Start a Qt app and create an ephyviewer window.
         """
@@ -256,7 +247,7 @@ class EphyviewerConfigurator():
         win.show()
         app.exec_()
 
-    def create_ephyviewer_window(self, theme='light', ui_scale='small', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
+    def create_ephyviewer_window(self, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
         """
         Load data into each ephyviewer viewer and return the main window.
         """
@@ -304,9 +295,19 @@ class EphyviewerConfigurator():
         # delete on close so that memory and file resources are released
         win.setAttribute(ephyviewer.QT.WA_DeleteOnClose, True)
 
+        # determine ui_scale parameters
+        default_font_size = ephyviewer.QT.QFont().pointSize()
+        ui_scales = {
+            'tiny':   {'app_font_size': default_font_size-4, 'channel_label_size': default_font_size-4, 'scatter_size':  4},
+            'small':  {'app_font_size': default_font_size-2, 'channel_label_size': default_font_size-2, 'scatter_size':  6},
+            'medium': {'app_font_size': default_font_size,   'channel_label_size': default_font_size,   'scatter_size':  8},
+            'large':  {'app_font_size': default_font_size+4, 'channel_label_size': default_font_size+4, 'scatter_size': 10},
+            'huge':   {'app_font_size': default_font_size+8, 'channel_label_size': default_font_size+8, 'scatter_size': 12},
+        }
+
         # set the font size for most text
         font = win.font()
-        font.setPointSize(self.ui_scales[ui_scale]['app_font_size'])
+        font.setPointSize(ui_scales[ui_scale]['app_font_size'])
         win.setFont(font)
 
         ########################################################################
@@ -426,9 +427,9 @@ class EphyviewerConfigurator():
 
             trace_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
             trace_view.params['auto_scale_factor'] = 0.02
-            trace_view.params['scatter_size'] = self.ui_scales[ui_scale]['scatter_size']
+            trace_view.params['scatter_size'] = ui_scales[ui_scale]['scatter_size']
             trace_view.params['line_width'] = line_width
-            trace_view.params['label_size'] = self.ui_scales[ui_scale]['channel_label_size']
+            trace_view.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
             trace_view.params['display_labels'] = True
             trace_view.params['antialias'] = True
 
@@ -488,7 +489,7 @@ class EphyviewerConfigurator():
 
                 trace_rauc_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
                 trace_rauc_view.params['line_width'] = line_width
-                trace_rauc_view.params['label_size'] = self.ui_scales[ui_scale]['channel_label_size']
+                trace_rauc_view.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
                 trace_rauc_view.params['display_labels'] = True
                 trace_rauc_view.params['display_offset'] = True
                 trace_rauc_view.params['antialias'] = True
@@ -579,7 +580,7 @@ class EphyviewerConfigurator():
                     pass
 
             spike_train_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
-            spike_train_view.params['label_size'] = self.ui_scales[ui_scale]['channel_label_size']
+            spike_train_view.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
 
         ########################################################################
         # TRACES OF FIRING RATES
@@ -607,7 +608,7 @@ class EphyviewerConfigurator():
 
                 trace_rates_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
                 trace_rates_view.params['line_width'] = line_width
-                trace_rates_view.params['label_size'] = self.ui_scales[ui_scale]['channel_label_size']
+                trace_rates_view.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
                 trace_rates_view.params['display_labels'] = True
                 trace_rates_view.params['display_offset'] = True
                 trace_rates_view.params['antialias'] = True
@@ -665,7 +666,7 @@ class EphyviewerConfigurator():
                     pass
 
             epoch_view.params['xratio'] = self.metadata.get('past_fraction', 0.3)
-            epoch_view.params['label_size'] = self.ui_scales[ui_scale]['channel_label_size']
+            epoch_view.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
 
         ########################################################################
         # EPOCH ENCODER
@@ -707,7 +708,7 @@ class EphyviewerConfigurator():
                     # TODO add support for combo_cmap
 
                 epoch_encoder.params['xratio'] = self.metadata.get('past_fraction', 0.3)
-                epoch_encoder.params['label_size'] = self.ui_scales[ui_scale]['channel_label_size']
+                epoch_encoder.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
 
         ########################################################################
         # VIDEO
