@@ -246,7 +246,7 @@ class EphyviewerConfigurator():
         for name in self.viewer_settings:
             self.hide(name)
 
-    def launch_ephyviewer(self, theme='light', ui_scale='small', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
+    def launch_ephyviewer(self, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
         """
         Start a Qt app and create an ephyviewer window.
         """
@@ -256,7 +256,7 @@ class EphyviewerConfigurator():
         win.show()
         app.exec_()
 
-    def create_ephyviewer_window(self, theme='light', ui_scale='small', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
+    def create_ephyviewer_window(self, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False, datetime_format='%Y-%m-%d %H:%M:%S'):
         """
         Load data into each ephyviewer viewer and return the main window.
         """
