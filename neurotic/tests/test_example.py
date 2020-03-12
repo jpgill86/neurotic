@@ -34,7 +34,7 @@ class ExampleDatasetsUnitTest(unittest.TestCase):
 
     def test_example_lazy_loading(self):
         """Test loading the example dataset with lazy=True"""
-        dataset = 'example dataset'
+        dataset = 'Aplysia feeding'
         metadata = neurotic.MetadataSelector(file=self.temp_file,
                                              initial_selection=dataset)
         metadata.download_all_data_files()
@@ -44,7 +44,7 @@ class ExampleDatasetsUnitTest(unittest.TestCase):
 
     def test_example_non_lazy_loading(self):
         """Test loading the example dataset with lazy=False"""
-        dataset = 'example dataset'
+        dataset = 'Aplysia feeding'
         metadata = neurotic.MetadataSelector(file=self.temp_file,
                                              initial_selection=dataset)
         metadata.download_all_data_files()

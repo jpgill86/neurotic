@@ -1,7 +1,7 @@
 # Specific to this project
 /neurotic/version.py
-/neurotic/example/example-data/
 /neurotic/example/demo.yml
+/neurotic/example/example-data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

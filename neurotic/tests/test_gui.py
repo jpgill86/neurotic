@@ -45,7 +45,7 @@ class GUITestCase(unittest.TestCase):
     def test_example_create_ephyviewer_window(self):
         """Test creating an ephyviewer window for example dataset"""
         file = self.temp_example_file
-        dataset = 'example dataset'
+        dataset = 'Aplysia feeding'
         metadata = neurotic.MetadataSelector(file=file,
                                              initial_selection=dataset)
         metadata.download_all_data_files()
