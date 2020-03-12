@@ -721,9 +721,12 @@ will not be calculated.
 A Complete Example
 ------------------
 
-These are the contents of the example metadata file that ships with
-**neurotic**, which can be loaded by running ``neurotic`` from the command line
-without arguments:
+Below, the contents of a fully functioning example metadata file are shown,
+which contains metadata for several example datasets. This file is included
+with each installation of **neurotic** and is loaded automatically when
+``neurotic`` first starts. You may use the "Download data" feature to fetch the
+data files and run the examples, and you may try the "Edit metadata" feature to
+test modifications.
 
 .. literalinclude:: ../neurotic/example/metadata.yml
    :language: yaml
