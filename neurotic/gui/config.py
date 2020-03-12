@@ -871,7 +871,7 @@ def _neo_epoch_to_dataframe(neo_epochs, exclude_epoch_encoder_epochs=False):
     columns = list(dtypes.keys())
     df = pd.DataFrame(columns=columns)
     for ep in neo_epochs:
-        if not exclude_epoch_encoder_epochs or '(from epoch encoder file)' not in ep.labels:
+        if len(ep.times) > 0 and (not exclude_epoch_encoder_epochs or '(from epoch encoder file)' not in ep.labels):
             data = np.array([ep.times, ep.times+ep.durations, ep.durations, [ep.name]*len(ep), ep.labels]).T
             df = df.append(pd.DataFrame(data, columns=columns), ignore_index=True)
     return df.astype(dtype=dtypes).sort_values(['Start (s)', 'End (s)', 'Type', 'Label']).reset_index(drop=True)
