@@ -26,6 +26,7 @@ at the same datasets!
    update
    gettingstarted
    metadata
+   examples
    api
    releasenotes
 

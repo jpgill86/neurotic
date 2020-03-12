@@ -716,18 +716,6 @@ is and is set by ``rauc_bin_duration``, given in seconds. If
 ``rauc_bin_duration`` is not specified (default ``None``), RAUC time series
 will not be calculated.
 
-.. _config-metadata-example:
-
-A Complete Example
-------------------
-
-These are the contents of the example metadata file that ships with
-**neurotic**, which can be loaded by running ``neurotic`` from the command line
-without arguments:
-
-.. literalinclude:: ../neurotic/example/metadata.yml
-   :language: yaml
-
 
 .. _elephant:               https://elephant.readthedocs.io/en/latest
 .. _GIN:                    https://gin.g-node.org

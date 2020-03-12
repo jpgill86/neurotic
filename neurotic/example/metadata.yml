@@ -1,37 +1,58 @@
+# ===  GLOBAL PARAMETERS  ======================================================
+
 neurotic_config:
     neurotic_version: '>=1.4' # required for firing_rates
 
-example dataset:
-    description: This is an example data set
+    # the common URL root used for downloading all files
+    # - for web browser access to data files, visit
+    #   https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples
+    remote_data_root: https://gin.g-node.org/jpgill86/neurotic-data/raw/master/examples
 
-    # these data are a subset of Jeffrey Gill's dataset 2018-06-21_IN-VIVO_JG-08 002
+# ===  EXAMPLE 1: APLYSIA FEEDING  =============================================
+
+Aplysia feeding:
+    description: Feeding a sea slug while recording nerve activity
+    # see also https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples/example-data/README.md
+
+    # FILE PATHS
+    # - URLs to files are assembled this way:
+    #     remote_data_root + remote_data_dir + *_file
+    # - downloaded files are stored in a new local directory with name
+    #   data_dir created in a location relative to this metadata file
     data_dir:           example-data
-    remote_data_dir:    https://gin.g-node.org/jpgill86/neurotic-data/raw/master/examples/example-data
-    data_file:          data.axgx
+    remote_data_dir:    example-data
+    data_file:          data.axgx # AxoGraph file
     video_file:         video.mp4
     annotations_file:   annotations.csv
     epoch_encoder_file: epoch-encoder.csv
 
+    # VIDEO SYNC PARAMETERS
     video_offset: 640.3 # seconds
 
+    # EPOCH ENCODER PARAMETERS
     epoch_encoder_possible_labels:
         - force
         - B38 activity
 
+    # SIGNAL PLOTTING PARAMETERS
     plots:
         - channel: I2
+          ylabel: I2 muscle EMG
           units: uV
           ylim: [-30, 30]
 
         - channel: RN
+          ylabel: Radular nerve (RN)
           units: uV
           ylim: [-60, 60]
 
         - channel: BN2
+          ylabel: Buccal nerve 2 (BN2)
           units: uV
           ylim: [-120, 120]
 
         - channel: BN3
+          ylabel: Buccal nerve 3 (BN3)
           units: uV
           ylim: [-150, 150]
 
@@ -39,58 +60,260 @@ example dataset:
           units: mN
           ylim: [-10, 300]
 
-    filters:  # used only if fast loading is off (lazy=False)
-
+    # SIGNAL FILTERS
+    # - used here to remove high-frequency noise
+    # - only applied if "Fast loading" is turned off (lazy=False)
+    filters:
         - channel: I2
           lowpass: 100 # Hz
 
         - channel: Force
           lowpass: 50 # Hz
 
-    amplitude_discriminators:  # used only if fast loading is off (lazy=False)
-
-        - name: B3
+    # NEURONAL SPIKE DETECTION
+    # - used here to detect activity of identified neurons
+    # - only performed if "Fast loading" is turned off (lazy=False)
+    amplitude_discriminators:
+        - name: B3 neuron
           channel: BN2
           units: uV
           amplitude: [50, 150]
           color: '1b9e77'
 
-        - name: B38
+        - name: B38 neuron
           channel: BN2
           units: uV
           amplitude: [17, 26]
           epoch: B38 activity
           color: '7570b3'
 
-        - name: B4/B5
+        - name: B4/B5 neurons
           channel: BN3
           units: uV
           amplitude: [85, 200]
           color: 'e6ab02'
 
-    firing_rates:  # used only if fast loading is off (lazy=False)
-
-        - name: B3
+    # NEURONAL FIRING RATES
+    # - used here to model synaptic output
+    # - only calculated if "Fast loading" is turned off (lazy=False)
+    firing_rates:
+        - name: B3 neuron
           kernel: CausalAlphaKernel
           sigma: 1.0
 
-        - name: B38
+        - name: B38 neuron
           kernel: CausalAlphaKernel
           sigma: 1.0
 
-        - name: B4/B5
+        - name: B4/B5 neurons
           kernel: CausalAlphaKernel
           sigma: 1.0
 
-    burst_detectors:  # used only if fast loading is off (lazy=False)
-
-        - spiketrain: B3
+    # NEURONAL BURST DETECTION
+    # - used here to classify sequences of spikes into "bursts"
+    # - only performed if "Fast loading" is turned off (lazy=False)
+    burst_detectors:
+        - spiketrain: B3 neuron
           thresholds: [8, 2] # Hz
 
-        - spiketrain: B38
+        - spiketrain: B38 neuron
           thresholds: [8, 5] # Hz
 
-        - spiketrain: B4/B5
+        - spiketrain: B4/B5 neurons
           thresholds: [3, 3] # Hz
 
-    rauc_bin_duration: 0.1 # seconds, used only if fast loading is off (lazy=False)
+    # RECTIFIED AND INTEGRATED SIGNALS
+    # - only used if "Fast loading" is turned off (lazy=False)
+    rauc_bin_duration: 0.1 # seconds
+
+
+# ===  EXAMPLE 2: HUMAN BALANCE BEAM  ==========================================
+
+Human balance beam:
+    description: Narrow beam walking, arm EMG, body kinematics
+    # see also https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples/human-balance-beam/README.md
+
+    # FILE PATHS
+    # - URLs to files are assembled this way:
+    #     remote_data_root + remote_data_dir + *_file
+    # - downloaded files are stored in a new local directory with name
+    #   data_dir created in a location relative to this metadata file
+    data_dir:           human-balance-beam
+    remote_data_dir:    human-balance-beam
+    data_file:          data.mat # MATLAB file
+    video_file:         video.mp4
+    epoch_encoder_file: epoch-encoder.csv
+
+    # VIDEO SYNC PARAMETERS
+    video_offset: 0 # seconds
+
+    # INITIAL PLOT WIDTH
+    t_width: 10 # seconds
+
+    # EPOCH ENCODER PARAMETERS
+    epoch_encoder_possible_labels:
+        - Left stance
+        - Right stance
+
+    # SIGNAL PLOTTING PARAMETERS
+    plots:
+        # LEFT ARM
+        - channel: Voltage.BCEP_L
+          ylabel:  L Biceps
+          ylim: [-1, 1]
+          units: mV
+        - channel: Voltage.TCEP_L
+          ylabel:  L Triceps
+          ylim: [-1, 1]
+          units: mV
+
+        # RIGHT ARM
+        - channel: Voltage.BCEP_R
+          ylabel:  R Biceps
+          ylim: [-10, 10]
+          units: mV
+        - channel: Voltage.TCEP_R
+          ylabel:  R Triceps
+          ylim: [-10, 10]
+          units: mV
+
+        # KINEMATIC MARKERS
+        - channel: CLAV Z
+          ylabel:  Clavicle Z
+          ylim: [1220, 1420]
+        - channel: LHEE Z
+          ylabel:  L Heel Z
+          ylim: [30, 350]
+        - channel: RHEE Z
+          ylabel:  R Heel Z
+          ylim: [30, 350]
+
+    # SIGNAL FILTERS
+    # - used here to remove low-frequency motion artifacts
+    # - only applied if "Fast loading" is turned off (lazy=False)
+    filters:
+        - channel: Voltage.BCEP_R
+          highpass: 35 # Hz
+
+        - channel: Voltage.TCEP_R
+          highpass: 35 # Hz
+
+    # RECTIFIED AND INTEGRATED SIGNALS
+    # - used here to represent overall muscle activity
+    # - only used if "Fast loading" is turned off (lazy=False)
+    rauc_baseline: mean     # subtract the mean before rectification
+    rauc_bin_duration: 0.01 # seconds
+
+
+# ===  EXAMPLE 3: DRONE OPTICAL FLOW  ==========================================
+
+Drone optical flow:
+    description: Neural network motion detection from drone flight video
+    # see also https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples/drone-optical-flow/README.md
+
+    # FILE PATHS
+    # - URLs to files are assembled this way:
+    #     remote_data_root + remote_data_dir + *_file
+    # - downloaded files are stored in a new local directory with name
+    #   data_dir created in a location relative to this metadata file
+    data_dir:           drone-optical-flow
+    remote_data_dir:    drone-optical-flow
+    data_file:          data.txt # plain text file
+    video_file:         video.mp4
+
+    # DATA READER (NEO) PARAMETERS
+    # - these arguments are passed to a Neo reader (neo.io.AsciiSignalIO) for
+    #   reading the data_file
+    io_args:
+        skiprows: 1 # skip header
+        sampling_rate: 1250 # Hz
+        units: mV
+
+    # VIDEO SYNC PARAMETERS
+    video_offset: 0 # seconds
+
+    # SIGNAL PLOTTING PARAMETERS
+    plots:
+        - channel: Column 0
+          ylabel: Clockwise Rotate
+          units: mV
+          ylim: [0, 255]
+
+        - channel: Column 1
+          ylabel: Counterclockwise Rotate
+          units: mV
+          ylim: [0, 255]
+
+        - channel: Column 2
+          ylabel: Moving Forward
+          units: mV
+          ylim: [0, 255]
+
+        - channel: Column 3
+          ylabel: Moving Backward
+          units: mV
+          ylim: [0, 255]
+
+        - channel: Column 4
+          ylabel: Down Shift
+          units: mV
+          ylim: [0, 255]
+
+        - channel: Column 5
+          ylabel: Up Shift
+          units: mV
+          ylim: [0, 255]
+
+        - channel: Column 6
+          ylabel: Right Shift
+          units: mV
+          ylim: [0, 255]
+
+        - channel: Column 7
+          ylabel: Left Shift
+          units: mV
+          ylim: [0, 255]
+
+    # NEURONAL SPIKE DETECTION
+    # - used here to detect spikes of simulated neurons
+    # - only performed if "Fast loading" is turned off (lazy=False)
+    amplitude_discriminators:
+        - name: Clockwise Rotate
+          channel: Column 0
+          units: mV
+          amplitude: [150, 255]
+
+        - name: Counterclockwise Rotate
+          channel: Column 1
+          units: mV
+          amplitude: [150, 255]
+
+        - name: Moving Forward
+          channel: Column 2
+          units: mV
+          amplitude: [150, 255]
+
+        - name: Moving Backward
+          channel: Column 3
+          units: mV
+          amplitude: [150, 255]
+
+        - name: Down Shift
+          channel: Column 4
+          units: mV
+          amplitude: [150, 255]
+
+        - name: Up Shift
+          channel: Column 5
+          units: mV
+          amplitude: [150, 255]
+
+        - name: Right Shift
+          channel: Column 6
+          units: mV
+          amplitude: [150, 255]
+
+        - name: Left Shift
+          channel: Column 7
+          units: mV
+          amplitude: [150, 255]

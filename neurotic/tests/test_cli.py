@@ -26,7 +26,7 @@ class CLITestCase(unittest.TestCase):
     def setUp(self):
         self.default_file = pkg_resources.resource_filename(
             'neurotic', 'example/metadata.yml')
-        self.default_dataset = 'example dataset'
+        self.default_dataset = 'Aplysia feeding'
 
         # make a copy of the default file in a temp directory
         self.temp_dir = tempfile.TemporaryDirectory(prefix='neurotic-')
@@ -36,7 +36,7 @@ class CLITestCase(unittest.TestCase):
         with open(self.temp_file) as f:
             metadata = yaml.safe_load(f)
         metadata['zzz_alphabetically_last'] = copy.deepcopy(
-            metadata['example dataset'])
+            metadata['Aplysia feeding'])
         with open(self.temp_file, 'w') as f:
             f.write(yaml.dump(metadata))
 
