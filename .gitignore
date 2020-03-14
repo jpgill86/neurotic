@@ -1,6 +1,7 @@
 # Specific to this project
 /neurotic/version.py
 /neurotic/example/demo.yml
+/neurotic/example/aplysia-feeding/
 /neurotic/example/drone-optical-flow/
 /neurotic/example/example-data/
 /neurotic/example/human-balance-beam/

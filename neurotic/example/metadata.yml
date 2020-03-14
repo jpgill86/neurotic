@@ -11,54 +11,63 @@ neurotic_config:
 # ===  EXAMPLE 1: APLYSIA FEEDING  =============================================
 
 Aplysia feeding:
-    description: Feeding a sea slug while recording nerve activity
-    # see also https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples/example-data/README.md
+    description: '[ 13 MB] Sea slug feeding, identified neurons, swallowing force'
+    # see also https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples/aplysia-feeding/README.md
 
     # FILE PATHS
     # - URLs to files are assembled this way:
     #     remote_data_root + remote_data_dir + *_file
     # - downloaded files are stored in a new local directory with name
     #   data_dir created in a location relative to this metadata file
-    data_dir:           example-data
-    remote_data_dir:    example-data
+    data_dir:           aplysia-feeding
+    remote_data_dir:    aplysia-feeding
     data_file:          data.axgx # AxoGraph file
     video_file:         video.mp4
     annotations_file:   annotations.csv
     epoch_encoder_file: epoch-encoder.csv
 
     # VIDEO SYNC PARAMETERS
-    video_offset: 640.3 # seconds
+    video_offset: 2875.3 # seconds
 
     # EPOCH ENCODER PARAMETERS
     epoch_encoder_possible_labels:
-        - force
+        - I2 protraction activity
+        - B8 activity
+        - B3/6/9/10 activity
         - B38 activity
+        - B4/B5 activity
+        - Inward movement
 
     # SIGNAL PLOTTING PARAMETERS
     plots:
         - channel: I2
           ylabel: I2 muscle EMG
           units: uV
-          ylim: [-30, 30]
+          ylim: [-60, 60]
+          color: '666666'
 
         - channel: RN
           ylabel: Radular nerve (RN)
           units: uV
-          ylim: [-60, 60]
+          ylim: [-25, 25]
+          color: '666666'
 
         - channel: BN2
           ylabel: Buccal nerve 2 (BN2)
           units: uV
-          ylim: [-120, 120]
+          ylim: [-45, 45]
+          color: '666666'
 
-        - channel: BN3
+        - channel: BN3-DIST
           ylabel: Buccal nerve 3 (BN3)
           units: uV
-          ylim: [-150, 150]
+          ylim: [-60, 60]
+          color: '666666'
 
         - channel: Force
           units: mN
-          ylim: [-10, 300]
+          ylim: [-50, 450]
+          color: '666666'
 
     # SIGNAL FILTERS
     # - used here to remove high-frequency noise
@@ -74,50 +83,82 @@ Aplysia feeding:
     # - used here to detect activity of identified neurons
     # - only performed if "Fast loading" is turned off (lazy=False)
     amplitude_discriminators:
-        - name: B3 neuron
-          channel: BN2
-          units: uV
-          amplitude: [50, 150]
-          color: '1b9e77'
-
         - name: B38 neuron
           channel: BN2
           units: uV
-          amplitude: [17, 26]
+          amplitude: [7, 20]
           epoch: B38 activity
-          color: '7570b3'
+          color: 'EFBF46'
+
+        - name: B31/B32/B61/B62 neurons
+          channel: I2
+          units: uV
+          amplitude: [2, 75]
+          epoch: I2 protraction activity
+          color: 'DC5151'
+
+        - name: B8a/b neurons
+          channel: RN
+          units: uV
+          amplitude: [-30, -8]
+          epoch: B8 activity
+          color: 'DA8BC3'
+
+        - name: B6/B9 neurons
+          channel: BN2
+          units: uV
+          amplitude: [-25, -9]
+          epoch: B3/6/9/10 activity
+          color: '64B5CD'
+
+        - name: B3 neuron
+          channel: BN2
+          units: uV
+          amplitude: [-60, -25]
+          epoch: B3/6/9/10 activity
+          color: '4F80BD'
 
         - name: B4/B5 neurons
-          channel: BN3
+          channel: BN3-DIST
           units: uV
-          amplitude: [85, 200]
-          color: 'e6ab02'
+          amplitude: [-80, -20]
+          epoch: B4/B5 activity
+          color: '00A86B'
 
     # NEURONAL FIRING RATES
     # - used here to model synaptic output
     # - only calculated if "Fast loading" is turned off (lazy=False)
     firing_rates:
-        - name: B3 neuron
-          kernel: CausalAlphaKernel
-          sigma: 1.0
-
         - name: B38 neuron
           kernel: CausalAlphaKernel
-          sigma: 1.0
+          sigma: 1.0 # seconds
 
-        - name: B4/B5 neurons
+        - name: B6/B9 neurons
           kernel: CausalAlphaKernel
-          sigma: 1.0
+          sigma: 0.5 # seconds
+
+        - name: B3 neuron
+          kernel: CausalAlphaKernel
+          sigma: 1.0 # seconds
 
     # NEURONAL BURST DETECTION
     # - used here to classify sequences of spikes into "bursts"
     # - only performed if "Fast loading" is turned off (lazy=False)
     burst_detectors:
-        - spiketrain: B3 neuron
-          thresholds: [8, 2] # Hz
-
         - spiketrain: B38 neuron
           thresholds: [8, 5] # Hz
+
+        - spiketrain: B31/B32/B61/B62 neurons
+          thresholds: [10, 5] # Hz
+
+        - spiketrain: B8a/b neurons
+          thresholds: [3, 3] # Hz
+
+        - spiketrain: B6/B9 neurons
+          thresholds: [10, 5] # Hz
+
+        - spiketrain: B3 neuron
+          thresholds: [8, 2] # Hz
 
         - spiketrain: B4/B5 neurons
           thresholds: [3, 3] # Hz
@@ -130,7 +171,7 @@ Aplysia feeding:
 # ===  EXAMPLE 2: HUMAN BALANCE BEAM  ==========================================
 
 Human balance beam:
-    description: Narrow beam walking, arm EMG, body kinematics
+    description: '[0.5 MB] Narrow beam walking, arm EMG, body kinematics'
     # see also https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples/human-balance-beam/README.md
 
     # FILE PATHS
@@ -208,7 +249,7 @@ Human balance beam:
 # ===  EXAMPLE 3: DRONE OPTICAL FLOW  ==========================================
 
 Drone optical flow:
-    description: Neural network motion detection from drone flight video
+    description: '[7.7 MB] Neural network motion detection from drone flight video'
     # see also https://gin.g-node.org/jpgill86/neurotic-data/src/master/examples/drone-optical-flow/README.md
 
     # FILE PATHS
