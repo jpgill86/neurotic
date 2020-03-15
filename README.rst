@@ -61,8 +61,12 @@ ephyviewer_.
 
 |Example screenshot|
 
-*(Pictured above is a voracious Aplysia californica in the act of making the
-researcher very happy.)*
+*In the screenshot above, the video frame shows a voracious sea slug* (Aplysia
+californica) *swallowing a strip of unbreakable seaweed attached to a force
+transducer. Implanted electrodes recorded from a muscle and the major nerves
+controlling feeding. The epoch encoder was used to mark the times when seaweed
+moved into the mouth. Spikes corresponding to activity of identified neurons
+were detected by* **neurotic** *using customizable parameters.*
 
 The viewers are easy and intuitive to navigate (see `User Interface`_):
 
