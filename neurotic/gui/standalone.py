@@ -535,6 +535,8 @@ class MainWindow(QT.QMainWindow):
         text = f"""
         <h2>neurotic {__version__}</h2>
 
+        <p><b>NEUROscience Tool for Interactive Characterization</b></p>
+
         <p><i>Curate, visualize, annotate, and share <br/>
         your behavioral ephys data using Python</i></p>
 

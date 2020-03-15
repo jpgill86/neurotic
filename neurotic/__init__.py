@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+NEUROscience Tool for Interactive Characterization
+
 Curate, visualize, annotate, and share your behavioral ephys data using Python
 """
 
