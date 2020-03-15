@@ -1,0 +1,45 @@
+.. _v1.4.1:
+
+neurotic 1.4.1
+==============
+
+2020-03-15
+
+Improvements
+------------
+
+* Add ``neurotic_version`` parameter to metadata
+  (:pr:`247`)
+
+* Revised and added new example datasets
+  (:pr:`250`, :pr:`251`)
+
+Bug fixes
+---------
+
+* Fix broken import of Neo's ``generate_one_simple_block`` in example notebook
+  (:pr:`253`)
+
+* Fix default font size determination in scripts and Jupyter notebooks
+  (:pr:`249`)
+
+Other changes
+-------------
+
+* Make "large" UI scale larger and "huge" UI scale huger
+  (:pr:`244`)
+
+* Scale loading message with other fonts
+  (:pr:`245`)
+
+* Address numpy FutureWarning when epoch list is empty
+  (:pr:`248`)
+
+Documentation
+-------------
+
+* Add project acronym to package description, app, and docs
+  (:pr:`252`)
+
+* Building of standalone installers is now automated
+  (:pr:`254`)
