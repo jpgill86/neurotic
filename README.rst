@@ -219,14 +219,13 @@ Launch the app from the command line::
 
     neurotic
 
-A simple example is provided. Select the "example dataset", download the
-associated data (~7 MB), and then click "Launch". See `User Interface`_ for
-help with navigation.
+Several examples are provided. Select one, download the associated data, and
+then click "Launch". See `User Interface`_ for help with navigation.
 
 Disabling "Fast loading" before launch will enable additional features
 including amplitude-threshold spike detection and signal filtering.
 
-To inspect the metadata file associated with the example or to make changes to
+To inspect the metadata file associated with the examples or to make changes to
 it, click "Edit metadata". See `Configuring Metadata`_ for details about the
 format.
 
