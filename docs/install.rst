@@ -15,8 +15,8 @@ dependency is installed via conda-forge (recommended method) (:issue:`details
 Standalone Installers (recommended for beginners)
 -------------------------------------------------
 
-Downloadable installers make installing **neurotic** easy for beginners. When
-available, they can be downloaded from the GitHub Releases page:
+Downloadable installers make installing **neurotic** easy for beginners. They
+can be downloaded from the GitHub Releases page:
 
     `👉 Download installers here (listed under "Assets") 👈`__
 
@@ -27,9 +27,6 @@ install Python or conda just to use **neurotic**. They will install
 **neurotic** and everything it needs (including a fully contained Python
 environment) into a dedicated directory on your computer. On Windows, the
 installer will also create a Start Menu shortcut for launching the app.
-
-Because the process of building installers is not automated, installers may not
-be available for the latest releases for all platforms.
 
 For developers, a recipe for building new installers using `conda constructor`_
 is maintained here: `constructor recipe`_.
