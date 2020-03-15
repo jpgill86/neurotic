@@ -3,7 +3,7 @@ neurotic: NEUROscience Tool for Interactive Characterization
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge|
 
 **Version:** |version| (`other versions`_)
 
@@ -47,6 +47,10 @@ at the same datasets!
    :target: `conda-forge feedstock`_
    :alt: conda-forge feedstock
 
+.. |Constructor badge| image:: https://img.shields.io/badge/constructor-recipe-blue.svg
+   :target: `constructor recipe`_
+   :alt: constructor recipe
+
 .. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
    :target: ReadTheDocs_
    :alt: Documentation status
@@ -72,6 +76,7 @@ at the same datasets!
    :alt: Screenshot
 
 .. _Anaconda Cloud: https://anaconda.org/conda-forge/neurotic
+.. _constructor recipe: https://github.com/jpgill86/neurotic-constructor
 .. _conda-forge CI: https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=8417&branchName=master
 .. _conda-forge feedstock: https://github.com/conda-forge/neurotic-feedstock
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
