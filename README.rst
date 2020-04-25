@@ -283,6 +283,12 @@ To cite **neurotic** in your publication, please refer to:
 
 Specific versions of the software can be cited from archives at Zenodo_.
 
+Documentation
+-------------
+
+For detailed information on configuring metadata, working examples, the API
+reference guide, and release notes, see the Documentation_.
+
 
 .. |neurotic logo| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/neurotic/gui/icons/img/neurotic-logo-30.png
     :alt: Project logo
