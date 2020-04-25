@@ -3,7 +3,7 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge| |eNeuro badge|
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
@@ -272,6 +272,18 @@ The command line interface accepts other arguments too:
                             starting the standalone app (other args will be
                             ignored)
 
+Citing neurotic
+---------------
+
+To cite **neurotic** in your publication, please refer to:
+
+    Gill, J. P., Garcia, S., Ting, L. H., Wu, M., & Chiel, H. J. (2020).
+    **neurotic**: Neuroscience Tool for Interactive Characterization. eNeuro.
+    https://doi.org/10.1523/ENEURO.0085-20.2020
+
+Specific versions of the software can be cited from archives at Zenodo_.
+
+
 .. |neurotic logo| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/neurotic/gui/icons/img/neurotic-logo-30.png
     :alt: Project logo
 
@@ -312,8 +324,12 @@ The command line interface accepts other arguments too:
     :alt: Coverage status
 
 .. |Zenodo badge| image:: https://img.shields.io/badge/DOI-10.5281/zenodo.3564990-blue.svg
-   :target: Zenodo_
-   :alt: Zenodo archive
+    :target: Zenodo_
+    :alt: Zenodo archive
+
+.. |eNeuro badge| image:: https://img.shields.io/badge/DOI-10.1523/ENEURO.0085--20.2020-blue.svg
+    :target: eNeuro_
+    :alt: eNeuro article
 
 .. |Example screenshot| image:: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
     :target: https://raw.githubusercontent.com/jpgill86/neurotic/master/docs/_static/example-screenshot.png
@@ -328,6 +344,7 @@ The command line interface accepts other arguments too:
 .. _Configuring Metadata: https://neurotic.readthedocs.io/en/latest/metadata.html
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _Documentation:  https://neurotic.readthedocs.io/en/latest
+.. _eNeuro:         https://doi.org/10.1523/ENEURO.0085-20.2020
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
 .. _GIN:            https://gin.g-node.org
 .. _GitHub:         https://github.com/jpgill86/neurotic
