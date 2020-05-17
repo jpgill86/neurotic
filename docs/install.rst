@@ -1,11 +1,11 @@
 .. _installation:
 
-Installing neurotic
-===================
+Installing *neurotic*
+=====================
 
-**neurotic** requires Python 3.6 or later.
+*neurotic* requires Python 3.6 or later.
 
-Note that the latest release of one of **neurotic**'s dependencies, pyqtgraph
+Note that the latest release of one of *neurotic*'s dependencies, pyqtgraph
 0.10.0, is incompatible with Python 3.8 or later on Windows unless that
 dependency is installed via conda-forge (recommended method) (:issue:`details
 <129>`).
@@ -15,18 +15,18 @@ dependency is installed via conda-forge (recommended method) (:issue:`details
 Standalone Installers (recommended for beginners)
 -------------------------------------------------
 
-Downloadable installers make installing **neurotic** easy for beginners. They
-can be downloaded from the GitHub Releases page:
+Downloadable installers make installing *neurotic* easy for beginners. They can
+be downloaded from the GitHub Releases page:
 
     `👉 Download installers here (listed under "Assets") 👈`__
 
     __ `GitHub Releases`_
 
 These installers are intended for users who do not want to independently
-install Python or conda just to use **neurotic**. They will install
-**neurotic** and everything it needs (including a fully contained Python
-environment) into a dedicated directory on your computer. On Windows, the
-installer will also create a Start Menu shortcut for launching the app.
+install Python or conda just to use *neurotic*. They will install *neurotic*
+and everything it needs (including a fully contained Python environment) into a
+dedicated directory on your computer. On Windows, the installer will also
+create a Start Menu shortcut for launching the app.
 
 For developers, a recipe for building new installers using `conda constructor`_
 is maintained here: `constructor recipe`_.
@@ -36,7 +36,7 @@ is maintained here: `constructor recipe`_.
 Alternate Method: conda (recommended for Pythonistas)
 -----------------------------------------------------
 
-conda_ users can install **neurotic** and all of its dependencies with one
+conda_ users can install *neurotic* and all of its dependencies with one
 command::
 
     conda install -c conda-forge neurotic
@@ -48,12 +48,12 @@ On Windows, this will also create a Start Menu shortcut for launching the app.
 Alternate Method: pip
 ---------------------
 
-Install **neurotic** from PyPI_ using ::
+Install *neurotic* from PyPI_ using ::
 
     pip install neurotic
 
 Note that installation via ``pip`` skips one dependency: PyAV_, which is
-required for displaying videos, and without which **neurotic** will ignore
+required for displaying videos, and without which *neurotic* will ignore
 videos. PyAV is not easily installed with ``pip`` on some systems, especially
 Windows. The easiest way to separately install PyAV is using conda_::
 

@@ -1,5 +1,5 @@
-|neurotic logo| neurotic: NEUROscience Tool for Interactive Characterization
-============================================================================
+|neurotic logo| *neurotic*: NEUROscience Tool for Interactive Characterization
+==============================================================================
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
@@ -7,7 +7,7 @@
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
-**neurotic** is an app for Windows, macOS, and Linux that allows you to easily
+*neurotic* is an app for Windows, macOS, and Linux that allows you to easily
 review and annotate your electrophysiology data and simultaneously captured
 video. It is an easy way to load your Neo_-compatible data (see neo.io_ for
 file formats) into ephyviewer_ without doing any programming. Share a single
@@ -53,7 +53,7 @@ To use the app, first organize your datasets in a *metadata file* like this
     another dataset:
         # etc
 
-Open your metadata file in **neurotic** and choose a dataset. If the data and
+Open your metadata file in *neurotic* and choose a dataset. If the data and
 video files aren't already on your local computer, the app can download them
 for you, even from a password-protected server. Finally, click launch and the
 app will use a standard viewer layout to display your data to you using
@@ -66,7 +66,7 @@ californica) *swallowing a strip of unbreakable seaweed attached to a force
 transducer. Implanted electrodes recorded from a muscle and the major nerves
 controlling feeding. The epoch encoder was used to mark the times when seaweed
 moved into the mouth. Spikes corresponding to activity of identified neurons
-were detected by* **neurotic** *using customizable parameters.*
+were detected by* neurotic *using customizable parameters.*
 
 The viewers are easy and intuitive to navigate (see `User Interface`_):
 
@@ -90,16 +90,16 @@ video synchronization feature!
 along with a remotely accessible data store such as GIN_ to make your metadata
 file fully portable. The same metadata file can be copied to a different
 computer, and downloaded files will automatically be saved to the right place.
-Data stores can be password protected and **neurotic** will prompt you for a
-user name and password. This makes it easy to share the **neurotic** experience
-with your colleagues! 🤪
+Data stores can be password protected and *neurotic* will prompt you for a user
+name and password. This makes it easy to share the *neurotic* experience with
+your colleagues! 🤪
 
-Installing neurotic
--------------------
+Installing *neurotic*
+---------------------
 
-**neurotic** requires Python 3.6 or later.
+*neurotic* requires Python 3.6 or later.
 
-Note that the latest release of one of **neurotic**'s dependencies, pyqtgraph
+Note that the latest release of one of *neurotic*'s dependencies, pyqtgraph
 0.10.0, is incompatible with Python 3.8 or later on Windows unless that
 dependency is installed via conda-forge (recommended method) (`details
 <https://github.com/jpgill86/neurotic/issues/129>`_).
@@ -107,18 +107,18 @@ dependency is installed via conda-forge (recommended method) (`details
 Standalone Installers (recommended for beginners)
 .................................................
 
-Downloadable installers make installing **neurotic** easy for beginners. They
-can be downloaded from the GitHub Releases page:
+Downloadable installers make installing *neurotic* easy for beginners. They can
+be downloaded from the GitHub Releases page:
 
     `👉 Download installers here (listed under "Assets") 👈`__
 
     __ `GitHub Releases`_
 
 These installers are intended for users who do not want to independently
-install Python or conda just to use **neurotic**. They will install
-**neurotic** and everything it needs (including a fully contained Python
-environment) into a dedicated directory on your computer. On Windows, the
-installer will also create a Start Menu shortcut for launching the app.
+install Python or conda just to use *neurotic*. They will install *neurotic*
+and everything it needs (including a fully contained Python environment) into a
+dedicated directory on your computer. On Windows, the installer will also
+create a Start Menu shortcut for launching the app.
 
 For developers, a recipe for building new installers using `conda constructor`_
 is maintained here: `constructor recipe`_.
@@ -126,7 +126,7 @@ is maintained here: `constructor recipe`_.
 Alternate Method: conda (recommended for Pythonistas)
 .....................................................
 
-conda_ users can install **neurotic** and all of its dependencies with one
+conda_ users can install *neurotic* and all of its dependencies with one
 command::
 
     conda install -c conda-forge neurotic
@@ -136,22 +136,22 @@ On Windows, this will also create a Start Menu shortcut for launching the app.
 Alternate Method: pip
 .....................
 
-Install **neurotic** from PyPI_ using ::
+Install *neurotic* from PyPI_ using ::
 
     pip install neurotic
 
 Note that installation via ``pip`` skips one dependency: PyAV_, which is
-required for displaying videos, and without which **neurotic** will ignore
+required for displaying videos, and without which *neurotic* will ignore
 videos. PyAV is not easily installed with ``pip`` on some systems, especially
 Windows. The easiest way to separately install PyAV is using conda_::
 
     conda install -c conda-forge av
 
-Updating neurotic
------------------
+Updating *neurotic*
+-------------------
 
-The recommended method of updating **neurotic** depends on the original method
-of installation.
+The recommended method of updating *neurotic* depends on the original method of
+installation.
 
 If you are unsure what method you used, updating using ``conda`` or ``pip`` is
 likely to work. Standalone installers may be safe too, though this could lead
@@ -160,7 +160,7 @@ to having multiple version installed simultaneously.
 Updating with Standalone Installers
 ...................................
 
-If you previously installed **neurotic** using a standalone installer, you may
+If you previously installed *neurotic* using a standalone installer, you may
 install a newer version using another installer, either into a different
 directory or by first uninstalling the old version. Installers can be
 downloaded from the GitHub Releases page:
@@ -179,24 +179,24 @@ Terminal on macOS and Linux)::
 Updating with conda
 ...................
 
-If you installed **neurotic** with `conda`_, you can update to the latest
-release using ::
+If you installed *neurotic* with `conda`_, you can update to the latest release
+using ::
 
     conda update -c conda-forge neurotic
 
 Updating with pip
 .................
 
-If you installed **neurotic** using ``pip``, you can update to the latest
-release available on PyPI_ using ::
+If you installed *neurotic* using ``pip``, you can update to the latest release
+available on PyPI_ using ::
 
     pip install -U neurotic
 
 Development Version
 ...................
 
-If you are interested in trying new, unreleased features of **neurotic**, you
-may install the latest development version from GitHub_ using ::
+If you are interested in trying new, unreleased features of *neurotic*, you may
+install the latest development version from GitHub_ using ::
 
     pip install -U git+https://github.com/jpgill86/neurotic.git
 
@@ -208,7 +208,7 @@ development version of ephyviewer_, which you can get using ::
 Getting Started
 ---------------
 
-If you installed **neurotic** into a conda environment, first activate it::
+If you installed *neurotic* into a conda environment, first activate it::
 
     conda activate <environment name>
 
@@ -227,7 +227,7 @@ it, click "Edit metadata". See `Configuring Metadata`_ for details about the
 format.
 
 If you prefer Jupyter notebooks, you can launch an example notebook instead,
-which includes a tutorial for using **neurotic**'s API::
+which includes a tutorial for using *neurotic*'s API::
 
     neurotic --launch-example-notebook
 
@@ -272,10 +272,10 @@ The command line interface accepts other arguments too:
                             starting the standalone app (other args will be
                             ignored)
 
-Citing neurotic
----------------
+Citing *neurotic*
+-----------------
 
-To cite **neurotic** in your publication, please refer to:
+To cite *neurotic* in your publication, please refer to:
 
     Gill, J. P., Garcia, S., Ting, L. H., Wu, M., & Chiel, H. J. (2020).
     *neurotic*: Neuroscience Tool for Interactive Characterization. eNeuro,

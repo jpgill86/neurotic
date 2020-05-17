@@ -3,7 +3,7 @@
 Getting Started
 ===============
 
-If you installed **neurotic** into a conda environment, first activate it::
+If you installed *neurotic* into a conda environment, first activate it::
 
     conda activate <environment name>
 
@@ -22,7 +22,7 @@ it, click "Edit metadata". See :ref:`config-metadata` for details about the
 format.
 
 If you prefer Jupyter notebooks, you can launch an example notebook instead,
-which includes a tutorial for using **neurotic**'s API::
+which includes a tutorial for using *neurotic*'s API::
 
     neurotic --launch-example-notebook
 

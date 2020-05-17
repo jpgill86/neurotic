@@ -148,7 +148,7 @@ def quick_launch(metadata={}, blk=None, lazy=True):
     Load data, configure the GUI, and launch the app with one convenient
     function.
 
-    This function allows **neurotic** to be used easily in interactive sessions
+    This function allows *neurotic* to be used easily in interactive sessions
     and scripts. For example, dictionaries can be passed as metadata:
 
     >>> metadata = {'data_file': 'data.axgx'}

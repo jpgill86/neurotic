@@ -8,7 +8,7 @@ eliminate dependency on that package. Original code that builds on this work
 .. warning::
 
     This module and the functions and classes it contains are not intended to
-    be part of **neurotic**'s public API, so the module name begins with an
+    be part of *neurotic*'s public API, so the module name begins with an
     underscore. This module may be moved, renamed, or removed at a future date
     and replaced with explicit dependence on the elephant_ package.
 

@@ -3,7 +3,7 @@
 Configuring Metadata
 ====================
 
-To load your data with **neurotic**, you must organize them in one or more YAML
+To load your data with *neurotic*, you must organize them in one or more YAML
 files, called *metadata files*.
 
 YAML files are very sensitive to punctuation and indentation, so mind those
@@ -21,7 +21,7 @@ Top-Level Organization
 
 Datasets listed within the same metadata file must be given unique names, which
 may include spaces. The special name ``neurotic_config`` is reserved for
-**neurotic** configuration settings and cannot be used for datasets.
+*neurotic* configuration settings and cannot be used for datasets.
 
 In addition to names, a long description can be provided for each dataset.
 
@@ -86,13 +86,13 @@ The ``tridesclous_file`` is described in more detail in
 Remote Data Available for Download
 ----------------------------------
 
-Data files must be stored on the local computer for **neurotic** to load them
-and display their contents. If the files are available for download from a
-remote server, **neurotic** can be configured to download them for you to the
-local directory specified by ``data_dir`` if the files aren't there already.
+Data files must be stored on the local computer for *neurotic* to load them and
+display their contents. If the files are available for download from a remote
+server, *neurotic* can be configured to download them for you to the local
+directory specified by ``data_dir`` if the files aren't there already.
 
 Specify the URL to the directory containing the data on the remote server using
-``remote_data_dir``. **neurotic** expects the local ``data_dir`` and the
+``remote_data_dir``. *neurotic* expects the local ``data_dir`` and the
 ``remote_data_dir`` to have the same structure and will mirror the
 ``remote_data_dir`` in the local ``data_dir`` when you download data (not a
 complete mirror, just the specified files).
@@ -168,9 +168,9 @@ to the metadata file. In the example above, if the metadata file is located in
     metadata file fully portable. The example above is a simple model of this
     style. A metadata file like this can be copied to a different computer, and
     downloaded files will automatically be saved to the right place. Data
-    stores can be password protected and **neurotic** will prompt you for a
-    user name and password. This makes it easy to share the **neurotic**
-    experience with your colleagues! 🤪
+    stores can be password protected and *neurotic* will prompt you for a user
+    name and password. This makes it easy to share the *neurotic* experience
+    with your colleagues! 🤪
 
 .. _gin-urls:
 
@@ -204,8 +204,8 @@ nested beneath ``neurotic_config``.
 Key                     Description
 ======================  ========================================================
 ``neurotic_version``    A `version specification`_ stating the version of
-                        **neurotic** required by the metadata. Presently, if
-                        the requirement is not met, only a warning is issued.
+                        *neurotic* required by the metadata. Presently, if the
+                        requirement is not met, only a warning is issued.
                         Quotation marks around the spec are usually required.
 ``remote_data_root``    A URL prepended to each ``remote_data_dir`` that is not
                         already a full URL (i.e., does not already begin with a
@@ -232,9 +232,9 @@ The electrophysiology file specified by ``data_file`` is read using Neo_, which
 supports many file types. A complete list of the implemented formats can be
 found here: :mod:`neo.io`.
 
-By default, **neurotic** will use the file extension of ``data_file`` to guess
+By default, *neurotic* will use the file extension of ``data_file`` to guess
 the file format and choose the appropriate Neo IO class for reading it. If the
-guess fails, you can force **neurotic** to use a different class by specifying
+guess fails, you can force *neurotic* to use a different class by specifying
 the class name with the ``io_class`` parameter (all available classes are
 listed here: :mod:`neo.io`).
 
@@ -277,7 +277,7 @@ negative value for ``video_offset`` equal to the delay in seconds. If video
 capture began after the start of data acquisition, use a positive value. A
 value of zero will have no effect.
 
-**neurotic** warns users about the risk of async if ``video_file`` is given but
+*neurotic* warns users about the risk of async if ``video_file`` is given but
 ``video_offset`` is not. To eliminate this warning for videos that have no
 delay, provide zero.
 
@@ -334,9 +334,9 @@ These values could correct for three 10-second pauses occurring at times 1:00,
 3:20 according to the video. The extra video frames captured during the pauses
 will be excised from playback so that the data and video remain synced.
 
-**neurotic** will automatically suggest values for ``video_jumps`` if it reads
-an AxoGraph file that contains stops and restarts (only if ``video_jumps`` is
-not already specified).
+*neurotic* will automatically suggest values for ``video_jumps`` if it reads an
+AxoGraph file that contains stops and restarts (only if ``video_jumps`` is not
+already specified).
 
 .. _config-metadata-datetime:
 
@@ -346,7 +346,7 @@ Real-World Date and Time
 The GUI can optionally display the real-world date and time. This feature is
 accurate only if the recording is continuous (no interruptions or pauses during
 recording) and the start time of the recording is known. Some data file formats
-may store the start time of the recording, in which case **neurotic** will use
+may store the start time of the recording, in which case *neurotic* will use
 that information automatically. However, if the start time is missing or
 inaccurate, it can be specified in the metadata like this:
 
@@ -485,9 +485,9 @@ Amplitude Discriminators
 ------------------------
 
 Spikes with peaks that fall within amplitude windows given by
-``amplitude_discriminators`` can be automatically detected by **neurotic** on
-the basis of amplitude alone. Note that amplitude discriminators are only
-applied if fast loading is off (``lazy=False``).
+``amplitude_discriminators`` can be automatically detected by *neurotic* on the
+basis of amplitude alone. Note that amplitude discriminators are only applied
+if fast loading is off (``lazy=False``).
 
 Detected spikes are indicated on the signals with markers, and spike trains are
 displayed in a raster plot. Optionally, a color may be specified for an
@@ -631,7 +631,7 @@ train. The metadata is specified like this:
 The elephant_ package's :func:`instantaneous_rate
 <elephant.statistics.instantaneous_rate>` function is used for calculating
 firing rates. See :mod:`elephant.kernels` for the names of kernel classes that
-may be used with the ``kernel`` parameter. **neurotic** provides an additional
+may be used with the ``kernel`` parameter. *neurotic* provides an additional
 kernel, :class:`CausalAlphaKernel
 <neurotic._elephant_tools.CausalAlphaKernel>`, which may also be used. The
 ``sigma`` parameter is passed as an argument to the kernel class and should be

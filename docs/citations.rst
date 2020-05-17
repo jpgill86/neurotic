@@ -1,9 +1,9 @@
 .. _citations:
 
-Citing neurotic
-===============
+Citing *neurotic*
+=================
 
-To cite **neurotic** in your publication, please refer to:
+To cite *neurotic* in your publication, please refer to:
 
     Gill, J. P., Garcia, S., Ting, L. H., Wu, M., & Chiel, H. J. (2020).
     *neurotic*: Neuroscience Tool for Interactive Characterization. eNeuro,
