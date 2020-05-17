@@ -54,7 +54,7 @@ Help & feedback
 * Add Help menu actions for opening common URLs
   (:pr:`198`, :pr:`230`)
 
-* Add Python version and **neurotic** install path to About window
+* Add Python version and *neurotic* install path to About window
   (:pr:`181`)
 
 * Display common error messages to status bar in standalone app
@@ -72,7 +72,7 @@ here <https://github.com/jpgill86/neurotic/blob/master/neurotic/example/example-
 * Add API tutorial to example Jupyter notebook
   (:pr:`234`, :pr:`236`)
 
-* Add shell commands to example Jupyter notebook for installing **neurotic**
+* Add shell commands to example Jupyter notebook for installing *neurotic*
   (:pr:`185`)
 
 Other changes

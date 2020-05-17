@@ -3,8 +3,8 @@
 Overview
 ========
 
-To use **neurotic**, first organize your datasets in a *metadata file* like
-this (see :ref:`config-metadata`):
+To use *neurotic*, first organize your datasets in a *metadata file* like this
+(see :ref:`config-metadata`):
 
 .. code-block:: yaml
 
@@ -42,7 +42,7 @@ this (see :ref:`config-metadata`):
     another dataset:
         # etc
 
-Open your metadata file in **neurotic** and choose a dataset. If the data and
+Open your metadata file in *neurotic* and choose a dataset. If the data and
 video files aren't already on your local computer, the app can download them
 for you, even from a password-protected server. Finally, click launch and the
 app will use a standard viewer layout to display your data to you using
@@ -55,7 +55,7 @@ californica) *swallowing a strip of unbreakable seaweed attached to a force
 transducer. Implanted electrodes recorded from a muscle and the major nerves
 controlling feeding. The epoch encoder was used to mark the times when seaweed
 moved into the mouth. Spikes corresponding to activity of identified neurons
-were detected by* **neurotic** *using customizable parameters.*
+were detected by* neurotic *using customizable parameters.*
 
 The viewers are easy and intuitive to navigate (see `User Interface`_):
 
@@ -79,9 +79,9 @@ video synchronization feature!
 along with a remotely accessible data store such as GIN_ to make your metadata
 file fully portable. The same metadata file can be copied to a different
 computer, and downloaded files will automatically be saved to the right place.
-Data stores can be password protected and **neurotic** will prompt you for a
-user name and password. This makes it easy to share the **neurotic** experience
-with your colleagues! 🤪
+Data stores can be password protected and *neurotic* will prompt you for a user
+name and password. This makes it easy to share the *neurotic* experience with
+your colleagues! 🤪
 
 
 .. |Example screenshot| image:: _static/example-screenshot.png

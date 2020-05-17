@@ -1,10 +1,10 @@
 .. _updating:
 
-Updating neurotic
-=================
+Updating *neurotic*
+===================
 
-The recommended method of updating **neurotic** depends on the original method
-of installation.
+The recommended method of updating *neurotic* depends on the original method of
+installation.
 
 If you are unsure what method you used, updating using ``conda`` or ``pip`` is
 likely to work. Standalone installers may be safe too, though this could lead
@@ -15,7 +15,7 @@ to having multiple version installed simultaneously.
 Updating with Standalone Installers
 -----------------------------------
 
-If you previously installed **neurotic** using a standalone installer, you may
+If you previously installed *neurotic* using a standalone installer, you may
 install a newer version using another installer, either into a different
 directory or by first uninstalling the old version. Installers can be
 downloaded from the GitHub Releases page:
@@ -36,8 +36,8 @@ Terminal on macOS and Linux)::
 Updating with conda
 -------------------
 
-If you installed **neurotic** with `conda`_, you can update to the latest
-release using ::
+If you installed *neurotic* with `conda`_, you can update to the latest release
+using ::
 
     conda update -c conda-forge neurotic
 
@@ -46,16 +46,16 @@ release using ::
 Updating with pip
 -----------------
 
-If you installed **neurotic** using ``pip``, you can update to the latest
-release available on PyPI_ using ::
+If you installed *neurotic* using ``pip``, you can update to the latest release
+available on PyPI_ using ::
 
     pip install -U neurotic
 
 Development Version
 -------------------
 
-If you are interested in trying new, unreleased features of **neurotic**, you
-may install the latest development version from GitHub_ using ::
+If you are interested in trying new, unreleased features of *neurotic*, you may
+install the latest development version from GitHub_ using ::
 
     pip install -U git+https://github.com/jpgill86/neurotic.git
 

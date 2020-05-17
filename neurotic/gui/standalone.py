@@ -481,7 +481,7 @@ class MainWindow(QT.QMainWindow):
                 <tr><td>Latest version:</td>     <td>{latest}</td></tr>
                 </table></p>
 
-                <p><a href='{urls['updating']}'>How do I update <b>neurotic</b>?</a></p>
+                <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
                 """
             else:
                 text = f"""
@@ -504,7 +504,7 @@ class MainWindow(QT.QMainWindow):
 
             <p><a href='{urls['releases']}'>Check for latest version manually</a></p>
 
-            <p><a href='{urls['updating']}'>How do I update <b>neurotic</b>?</a></p>
+            <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
             """
 
         title = 'Check for updates'
@@ -533,7 +533,7 @@ class MainWindow(QT.QMainWindow):
         urls['PyPI'] = 'https://pypi.org/project/neurotic'
 
         text = f"""
-        <h2>neurotic {__version__}</h2>
+        <h2><i>neurotic</i> {__version__}</h2>
 
         <p><b>NEUROscience Tool for Interactive Characterization</b></p>
 

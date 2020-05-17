@@ -1,5 +1,5 @@
-neurotic: NEUROscience Tool for Interactive Characterization
-============================================================
+*neurotic*: NEUROscience Tool for Interactive Characterization
+==============================================================
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
@@ -7,7 +7,7 @@ neurotic: NEUROscience Tool for Interactive Characterization
 
 **Version:** |version| (`other versions`_)
 
-**neurotic** is an app for Windows, macOS, and Linux that allows you to easily
+*neurotic* is an app for Windows, macOS, and Linux that allows you to easily
 review and annotate your electrophysiology data and simultaneously captured
 video. It is an easy way to load your Neo_-compatible data (see :mod:`neo.io`
 for file formats) into ephyviewer_ without doing any programming. Share a
