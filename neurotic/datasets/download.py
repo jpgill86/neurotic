@@ -13,6 +13,7 @@ The module installs an :class:`urllib.request.HTTPBasicAuthHandler` and a
 """
 
 import os
+import shutil
 import urllib
 from getpass import getpass
 import numpy as np
@@ -116,32 +117,49 @@ def _download_with_progress_bar(url, local_file, show_progress=True, bytes_per_c
 
     if not auth_needed or (auth_needed and authenticated):
 
+        # determine where to temporarily save the file during download
+        temp_file = local_file + '.part'
+        logger.debug(f'Temporarily downloading to {temp_file}')
+
         # create the containing directory if necessary
         if not os.path.exists(os.path.dirname(local_file)):
             os.makedirs(os.path.dirname(local_file))
 
-        with urllib.request.urlopen(urllib.parse.quote(url, safe='/:')) as dist:
-            with open(local_file, 'wb') as f:
-                if show_progress:
-                    if 'Content-Length' in dist.headers:
-                        # knowing the file size allows progress to be displayed
-                        file_size_in_bytes = int(dist.headers['Content-Length'])
-                        num_chunks = int(np.ceil(file_size_in_bytes/bytes_per_chunk))
-                        total = num_chunks*bytes_per_chunk
-                    else:
-                        # progress can't be displayed, but other stats can be
-                        total = None
-                    pbar = tqdm(total=total, unit='B', unit_scale=True)
-                while True:
-                    chunk = dist.read(bytes_per_chunk)
-                    if chunk:
-                        f.write(chunk)
-                        if show_progress:
-                            pbar.update(bytes_per_chunk)
-                    else:
-                        break
-                if show_progress:
-                    pbar.close()
+        try:
+            with urllib.request.urlopen(urllib.parse.quote(url, safe='/:')) as dist:
+                with open(temp_file, 'wb') as f:
+                    if show_progress:
+                        if 'Content-Length' in dist.headers:
+                            # knowing the file size allows progress to be displayed
+                            file_size_in_bytes = int(dist.headers['Content-Length'])
+                            num_chunks = int(np.ceil(file_size_in_bytes/bytes_per_chunk))
+                            total = num_chunks*bytes_per_chunk
+                        else:
+                            # progress can't be displayed, but other stats can be
+                            total = None
+                        pbar = tqdm(total=total, unit='B', unit_scale=True)
+                    while True:
+                        chunk = dist.read(bytes_per_chunk)
+                        if chunk:
+                            f.write(chunk)
+                            if show_progress:
+                                pbar.update(bytes_per_chunk)
+                        else:
+                            break
+                    if show_progress:
+                        pbar.close()
+
+        except:
+            # the download is likely incomplete, so delete the temporary file
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
+
+            # raise the exception so that it can be handled elsewhere
+            raise
+
+        else:
+            # download completed, so move the temp file to the final location
+            shutil.move(temp_file, local_file)
 
 
 def _auth_needed(url):
