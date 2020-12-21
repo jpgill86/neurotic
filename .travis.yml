@@ -66,7 +66,7 @@ install:
 
     # install package
     - echo "INSTALLING NEUROTIC"
-    - python setup.py install
+    - pip install -e .
 
 before_script:
     # list versions
