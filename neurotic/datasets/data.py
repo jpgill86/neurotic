@@ -620,7 +620,7 @@ def _detect_spikes(sig, discriminator, epochs):
     st = neo.SpikeTrain(
         name = discriminator['name'],
         channels = [discriminator['channel']],  # custom annotation
-        amplitude = discriminator['amplitude'], # custom annotation
+        amplitude = pq.Quantity(discriminator['amplitude'], discriminator['units']), # custom annotation
         times = spikes_between_min_and_max * pq.s,
         t_start = sig.t_start,
         t_stop  = sig.t_stop,
