@@ -45,12 +45,6 @@ services:
 
 install:
     - sudo apt-get update
-    - echo "INITIAL SYSTEM PACKAGES"
-    - apt list --installed
-
-    # install system libraries
-    - sudo apt-get install -y libx11-xcb1
-    - echo "SYSTEM PACKAGES AFTER INSTALLS"
     - apt list --installed
 
     # install conda
