@@ -604,21 +604,32 @@ def _detect_spikes(sig, discriminator, epochs):
 
     min_threshold = min(discriminator['amplitude'])
     max_threshold = max(discriminator['amplitude'])
-    if min_threshold >= 0 and max_threshold > 0:
+    spike_type = discriminator.get('type', None)
+    if spike_type == 'peak':
         sign = 'above'
-    elif min_threshold < 0 and max_threshold <= 0:
+    elif spike_type == 'trough':
         sign = 'below'
+    elif spike_type is None:
+        # infer type from thresholds
+        if min_threshold >= 0 and max_threshold > 0:
+            spike_type = 'peak'
+            sign = 'above'
+        elif min_threshold < 0 and max_threshold <= 0:
+            spike_type = 'trough'
+            sign = 'below'
+        else:
+            raise ValueError('automatic spike type inference for amplitude discriminator is possible only with two nonnegative thresholds (type=peak) or two nonpositive thresholds (type=trough); otherwise, type must be given explicitly: {}'.format(discriminator))
     else:
-        raise ValueError('amplitude discriminator must have two nonnegative thresholds or two nonpositive thresholds: {}'.format(discriminator))
+        raise ValueError('amplitude discriminator type must be "peak", "trough", or unspecified: {}'.format(discriminator))
 
     spikes_crossing_min = _elephant_tools.peak_detection(sig, pq.Quantity(min_threshold, discriminator['units']), sign, 'raw')
     spikes_crossing_max = _elephant_tools.peak_detection(sig, pq.Quantity(max_threshold, discriminator['units']), sign, 'raw')
-    if sign == 'above':
+    if spike_type == 'peak':
         spikes_between_min_and_max = np.setdiff1d(spikes_crossing_min, spikes_crossing_max)
-    elif sign == 'below':
+    elif spike_type == 'trough':
         spikes_between_min_and_max = np.setdiff1d(spikes_crossing_max, spikes_crossing_min)
     else:
-        raise ValueError('sign should be "above" or "below": {}'.format(sign))
+        raise ValueError('type should be "peak" or "trough": {}'.format(spike_type))
 
     st = neo.SpikeTrain(
         name = discriminator['name'],
@@ -630,6 +641,7 @@ def _detect_spikes(sig, discriminator, epochs):
     st.annotate(
         channels=[discriminator['channel']],
         amplitude=pq.Quantity(discriminator['amplitude'], discriminator['units']),
+        type=spike_type,
     )
 
     if 'epoch' in discriminator:

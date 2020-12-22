@@ -484,15 +484,23 @@ provides bandpass filtering.
 Amplitude Discriminators
 ------------------------
 
-Spikes with peaks that fall within amplitude windows given by
+Spikes with peaks (or troughs) that fall within amplitude windows given by
 ``amplitude_discriminators`` can be automatically detected by *neurotic* on the
-basis of amplitude alone. Note that amplitude discriminators are only applied
-if fast loading is off (``lazy=False``).
+basis of amplitude. Note that amplitude discriminators are only applied if fast
+loading is off (``lazy=False``).
 
 Detected spikes are indicated on the signals with markers, and spike trains are
 displayed in a raster plot. Optionally, a color may be specified for an
 amplitude discriminator using a single letter color code (e.g., ``'b'`` for
 blue or ``'k'`` for black) or a hexadecimal color code (e.g., ``'1b9e77'``).
+
+The algorithm can detect either peaks or troughs in the signal. When both the
+lower and upper bounds for amplitude windows are positive, the default behavior
+is to detect peaks. When both are negative, the default is to detect troughs.
+These defaults can be overridden using `type: trough` or `type: peak`,
+respectively. This is useful when, for example, detecting subthreshold
+excitatory postsynaptic potentials. If the signs of the bounds differ, explicit
+specification of the type is required.
 
 In addition to restricting spike detection for a given unit to an amplitude
 window, detection can also be limited in time to overlap with epochs with a
@@ -522,17 +530,25 @@ for each amplitude discriminator.
               epoch: Unit 2 activity
               color: 'e6ab02'
 
-Here two units are detected on the same channel with different amplitude
-windows. Any peaks between 50 and 150 microvolts on the "Extracellular" channel
-will be tagged as a spike belonging to "Unit 1". The discriminator for "Unit 2"
-provides the optional ``epoch`` parameter. This restricts detection of "Unit 2"
-to spikes within the amplitude window that occur at the same time as epochs
-labeled "Unit 2 activity". These epochs can be created by the epoch encoder
-(reload required to rerun spike detection at launch-time), specified in the
-read-only ``annotations_file``, or even be contained in the ``data_file`` if
-the format supports epochs.
+            - name: Unit 3
+              channel: Intracellular
+              units: mV
+              amplitude: [-10, 60]
+              type: peak
 
-Amplitude windows are permitted to be negative.
+Here two units are detected on the "Extracellular" channel with different
+amplitude windows, and a third unit is detected on the "Intracellular" channel.
+On the "Extracellular" channel, any peaks between 50 and 150 microvolts will be
+tagged as a spike belonging to "Unit 1". The discriminator for "Unit 2" detects
+smaller peaks, between 20 and 50 microvolts, and it provides the optional
+``epoch`` parameter. This restricts detection of "Unit 2" to spikes within the
+amplitude window that occur at the same time as epochs labeled "Unit 2
+activity". These epochs can be created by the epoch encoder (reload required to
+rerun spike detection at launch-time), specified in the read-only
+``annotations_file``, or even be contained in the ``data_file`` if the format
+supports epochs. Finally, peaks between -10 and +60 millivolts will be detected
+on the "Intracellular" channel; because the signs of these bounds differ, the
+type (peak or trough) must be explicitly given.
 
 .. _config-metadata-tridesclous:
 
