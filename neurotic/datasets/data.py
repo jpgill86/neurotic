@@ -518,11 +518,14 @@ def _create_neo_spike_trains_from_dataframe(dataframe, metadata, t_start, t_stop
             st = neo.SpikeTrain(
                 name = str(spike_label),
                 file_origin = _abs_path(metadata, 'tridesclous_file'),
-                channels = channels, # custom annotation
-                amplitude = None,    # custom annotation
                 times = t_start + sampling_period * df['index'].values,
                 t_start = t_start,
                 t_stop = t_stop,
+            )
+
+            st.annotate(
+                channels=channels,
+                amplitude=None,
             )
 
             spiketrain_list.append(st)
@@ -619,11 +622,14 @@ def _detect_spikes(sig, discriminator, epochs):
 
     st = neo.SpikeTrain(
         name = discriminator['name'],
-        channels = [discriminator['channel']],  # custom annotation
-        amplitude = pq.Quantity(discriminator['amplitude'], discriminator['units']), # custom annotation
         times = spikes_between_min_and_max * pq.s,
         t_start = sig.t_start,
         t_stop  = sig.t_stop,
+    )
+
+    st.annotate(
+        channels=[discriminator['channel']],
+        amplitude=pq.Quantity(discriminator['amplitude'], discriminator['units']),
     )
 
     if 'epoch' in discriminator:
@@ -648,6 +654,8 @@ def _detect_spikes(sig, discriminator, epochs):
         # select the subset of spikes that fall within the epoch
         # windows
         st = st[np.any(time_masks, axis=0)]
+
+        st.annotate(epoch=discriminator['epoch'])
 
     return st
 
