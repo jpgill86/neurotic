@@ -497,7 +497,7 @@ blue or ``'k'`` for black) or a hexadecimal color code (e.g., ``'1b9e77'``).
 The algorithm can detect either peaks or troughs in the signal. When both the
 lower and upper bounds for amplitude windows are positive, the default behavior
 is to detect peaks. When both are negative, the default is to detect troughs.
-These defaults can be overridden using `type: trough` or `type: peak`,
+These defaults can be overridden using ``type: trough`` or ``type: peak``,
 respectively. This is useful when, for example, detecting subthreshold
 excitatory postsynaptic potentials. If the signs of the bounds differ, explicit
 specification of the type is required.
