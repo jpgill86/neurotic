@@ -5,14 +5,20 @@ NEUROscience Tool for Interactive Characterization
 Curate, visualize, annotate, and share your behavioral ephys data using Python
 """
 
-from .version import version as __version__
-from .version import git_revision as __git_revision__
-
-
 import os
 import sys
 import logging
 import logging.handlers
+
+from .version import version as __version__
+from .version import git_revision as __git_revision__
+
+
+# set the user's directory for logs
+neurotic_dir = os.path.join(os.path.expanduser('~'), '.neurotic')
+if not os.path.exists(neurotic_dir):
+    os.mkdir(neurotic_dir)
+
 
 class FileLoggingFormatter(logging.Formatter):
     """
@@ -42,10 +48,7 @@ class StreamLoggingFormatter(logging.Formatter):
 
 
 # set the file path for logging
-log_dir = os.path.join(os.path.expanduser('~'), '.neurotic')
-if not os.path.exists(log_dir):
-    os.mkdir(log_dir)
-log_file = os.path.join(log_dir, 'neurotic-log.txt')
+log_file = os.path.join(neurotic_dir, 'neurotic-log.txt')
 
 # set the default level for logging to INFO unless it was set to a custom level
 # before importing the package
