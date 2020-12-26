@@ -17,7 +17,7 @@ import pkg_resources
 
 from ephyviewer import QT, mkQApp
 
-from . import __version__
+from . import __version__, default_log_level
 from .datasets.data import load_dataset
 from .gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
 from .gui.standalone import MainWindow
@@ -61,17 +61,26 @@ def parse_args(argv):
                         version='neurotic {}'.format(__version__))
     parser.add_argument('--debug', action='store_true', dest='debug',
                         help='enable detailed log messages for debugging')
+    parser.add_argument('--no-debug', action='store_false', dest='debug',
+                        help='disable detailed log messages for debugging ' \
+                             '(default)')
+    parser.add_argument('--lazy', action='store_true', dest='lazy',
+                        help='enable fast loading (default)')
     parser.add_argument('--no-lazy', action='store_false', dest='lazy',
-                        help='do not use fast loading (default: use fast ' \
-                             'loading)')
+                        help='disable fast loading')
     parser.add_argument('--thick-traces', action='store_true', dest='thick_traces',
                         help='enable support for traces with thick lines, ' \
-                             'which has a performance cost (default: ' \
-                             'disable thick line support)')
+                             'which has a performance cost')
+    parser.add_argument('--no-thick-traces', action='store_false', dest='thick_traces',
+                        help='disable support for traces with thick lines ' \
+                             '(default)')
     parser.add_argument('--show-datetime', action='store_true', dest='show_datetime',
                         help='display the real-world date and time, which ' \
                              'may be inaccurate depending on file type and ' \
-                             'acquisition software (default: do not display)')
+                             'acquisition software')
+    parser.add_argument('--no-show-datetime', action='store_false', dest='show_datetime',
+                        help='do not display the real-world date and time ' \
+                             '(default)')
     parser.add_argument('--ui-scale', dest='ui_scale',
                         choices=available_ui_scales,
                         help='the scale of user interface elements, such as ' \
@@ -97,6 +106,17 @@ def parse_args(argv):
             # show only if Jupyter won't be launched, since the setting will
             # not carry over into the kernel started by Jupyter
             logger.debug('Debug messages enabled')
+
+    else:
+        # this should only be necessary if parse_args is called with --no-debug
+        # after having previously enabled debug messages in the current session
+        # (such as during unit testing)
+
+        logger.parent.setLevel(default_log_level)
+
+        # raise the threshold for PyAV messages printed to the console from
+        # warning to critical
+        logging.getLogger('libav').setLevel(logging.CRITICAL)
 
     return args
 

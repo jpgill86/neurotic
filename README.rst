@@ -254,8 +254,10 @@ The command line interface accepts other arguments too:
 
 .. code-block::
 
-    usage: neurotic [-h] [-V] [--debug] [--no-lazy] [--thick-traces]
-                    [--show-datetime] [--ui-scale {tiny,small,medium,large,huge}]
+    usage: neurotic [-h] [-V] [--debug] [--no-debug] [--lazy] [--no-lazy]
+                    [--thick-traces] [--no-thick-traces] [--show-datetime]
+                    [--no-show-datetime]
+                    [--ui-scale {tiny,small,medium,large,huge}]
                     [--theme {light,dark,original,printer-friendly}]
                     [--launch-example-notebook]
                     [file] [dataset]
@@ -274,13 +276,16 @@ The command line interface accepts other arguments too:
       -h, --help            show this help message and exit
       -V, --version         show program's version number and exit
       --debug               enable detailed log messages for debugging
-      --no-lazy             do not use fast loading (default: use fast loading)
+      --no-debug            disable detailed log messages for debugging (default)
+      --lazy                enable fast loading (default)
+      --no-lazy             disable fast loading
       --thick-traces        enable support for traces with thick lines, which has
-                            a performance cost (default: disable thick line
-                            support)
+                            a performance cost
+      --no-thick-traces     disable support for traces with thick lines (default)
       --show-datetime       display the real-world date and time, which may be
                             inaccurate depending on file type and acquisition
-                            software (default: do not display)
+                            software
+      --no-show-datetime    do not display the real-world date and time (default)
       --ui-scale {tiny,small,medium,large,huge}
                             the scale of user interface elements, such as text
                             (default: medium)

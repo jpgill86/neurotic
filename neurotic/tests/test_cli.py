@@ -93,6 +93,23 @@ class CLITestCase(unittest.TestCase):
         self.assertTrue(win.do_toggle_debug_logging.isChecked(),
                         'debug logging disabled with --debug')
 
+    def test_no_debug(self):
+        """Test that --no-debug disables logging of debug messages"""
+        argv = ['neurotic', '--no-debug']
+        args = neurotic.parse_args(argv)
+        app = mkQApp()
+        win = neurotic.win_from_args(args)
+        self.assertFalse(win.do_toggle_debug_logging.isChecked(),
+                         'debug logging enabled with --no-debug')
+
+    def test_lazy(self):
+        """Test that --lazy enables lazy loading"""
+        argv = ['neurotic', '--lazy']
+        args = neurotic.parse_args(argv)
+        app = mkQApp()
+        win = neurotic.win_from_args(args)
+        self.assertTrue(win.lazy, 'lazy loading disbled with --lazy')
+
     def test_no_lazy(self):
         """Test that --no-lazy disables lazy loading"""
         argv = ['neurotic', '--no-lazy']
@@ -110,6 +127,15 @@ class CLITestCase(unittest.TestCase):
         self.assertTrue(win.support_increased_line_width,
                         'thick traces disabled with --thick-traces')
 
+    def test_no_thick_traces(self):
+        """Test that --no-thick-traces disables support for thick traces"""
+        argv = ['neurotic', '--no-thick-traces']
+        args = neurotic.parse_args(argv)
+        app = mkQApp()
+        win = neurotic.win_from_args(args)
+        self.assertFalse(win.support_increased_line_width,
+                         'thick traces enabled with --no-thick-traces')
+
     def test_show_datetime(self):
         """Test that --show-datetime enables display of real-world datetime"""
         argv = ['neurotic', '--show-datetime']
@@ -118,6 +144,15 @@ class CLITestCase(unittest.TestCase):
         win = neurotic.win_from_args(args)
         self.assertTrue(win.show_datetime,
                         'datetime not displayed with --show-datetime')
+
+    def test_no_show_datetime(self):
+        """Test that --no-show-datetime hides the real-world datetime"""
+        argv = ['neurotic', '--no-show-datetime']
+        args = neurotic.parse_args(argv)
+        app = mkQApp()
+        win = neurotic.win_from_args(args)
+        self.assertFalse(win.show_datetime,
+                         'datetime displayed with --no-show-datetime')
 
     def test_ui_scale(self):
         """Test that --ui-scale changes the ui_scale"""
