@@ -10,6 +10,8 @@ from subprocess import check_output
 import tempfile
 import pkg_resources
 import copy
+import fileinput
+import re
 import yaml
 import unittest
 
@@ -24,16 +26,34 @@ logger = logging.getLogger(__name__)
 class CLITestCase(unittest.TestCase):
 
     def setUp(self):
-        self.default_config = copy.deepcopy(neurotic.global_config)
+        self.temp_dir = tempfile.TemporaryDirectory(prefix='neurotic-')
+
+        # save the current global config settings so they can be restored
+        # during tear-down
+        self.original_config = copy.deepcopy(neurotic.global_config)
+
+        # load the template global config file by first copying it to the temp
+        # directory, uncommenting every parameter, and then updating
+        # global_config using the modified file
+        self.template_global_config_file = pkg_resources.resource_filename(
+            'neurotic', 'global_config_template.txt')
+        self.temp_global_config_file = shutil.copy(
+            self.template_global_config_file, self.temp_dir.name)
+        with fileinput.input(files=[self.temp_global_config_file], inplace=True) as f:
+            for line in f:
+                if re.match('#.*=.*', line):
+                    line = line[1:]
+                print(line, end='')  # stdout is redirected into the file
+        neurotic.update_global_config_from_file(self.temp_global_config_file)
+
+        # get parameters for the example
         self.example_file = pkg_resources.resource_filename(
             'neurotic', 'example/metadata.yml')
         self.example_dataset = 'Aplysia feeding'
 
-        # make a copy of the default file in a temp directory
-        self.temp_dir = tempfile.TemporaryDirectory(prefix='neurotic-')
+        # make a copy of the example metadata file in the temp directory and
+        # then add an additional dataset to it
         self.temp_file = shutil.copy(self.example_file, self.temp_dir.name)
-
-        # add another dataset to the example
         with open(self.temp_file) as f:
             metadata = yaml.safe_load(f)
         self.duplicate_dataset = 'zzz_alphabetically_last'
@@ -47,7 +67,7 @@ class CLITestCase(unittest.TestCase):
         self.temp_dir.cleanup()
 
         # restore the original global config
-        neurotic.global_config = copy.deepcopy(self.default_config)
+        neurotic.global_config = copy.deepcopy(self.original_config)
 
     def test_cli_installed(self):
         """Test that the command line interface is installed"""
@@ -73,31 +93,21 @@ class CLITestCase(unittest.TestCase):
         args = neurotic.parse_args(argv)
         app = mkQApp()
         win = neurotic.win_from_args(args)
-        defaults = neurotic.global_config['defaults']
-        self.assertEqual(win.do_toggle_debug_logging.isChecked(),
-                         defaults['debug'],
-                         'debug logging setting did not match default')
-        self.assertEqual(win.lazy,
-                         defaults['lazy'],
-                         'lazy loading setting did not match default')
-        self.assertEqual(win.support_increased_line_width,
-                         defaults['thick_traces'],
-                         'thick traces setting did not match default')
-        self.assertEqual(win.show_datetime,
-                         defaults['show_datetime'],
-                         'datetime setting did not match default')
-        self.assertEqual(win.ui_scale,
-                         defaults['ui_scale'],
-                         'ui scale did not match default')
-        self.assertEqual(win.theme,
-                         defaults['theme'],
-                         'theme did not match default')
-        self.assertEqual(win.metadata_selector.file,
-                         self.example_file if defaults['file'] is None else defaults['file'],
-                         'file was not set to default')
+        self.assertFalse(win.do_toggle_debug_logging.isChecked(),
+                         'debug setting has unexpected default')
+        self.assertTrue(win.lazy, 'lazy setting has unexpected default')
+        self.assertFalse(win.support_increased_line_width,
+                         'thick traces setting has unexpected default')
+        self.assertFalse(win.show_datetime,
+                         'show_datetime has unexpected default')
+        self.assertEqual(win.ui_scale, 'medium',
+                         'ui_scale has unexpected default')
+        self.assertEqual(win.theme, 'light', 'theme has unexpected default')
+        self.assertEqual(win.metadata_selector.file, self.example_file,
+                         'file has unexpected default')
         self.assertEqual(win.metadata_selector._selection,
-                         self.example_dataset if defaults['dataset'] is None else defaults['dataset'],
-                         'dataset was not set to default dataset')
+                         self.example_dataset,
+                         'dataset has unexpected default')
 
     def test_debug(self):
         """Test that --debug enables logging of debug messages"""
@@ -191,7 +201,7 @@ class CLITestCase(unittest.TestCase):
 
     def test_file(self):
         """Test that metadata file can be set"""
-        argv = ['neurotic', self.temp_file, 'none']
+        argv = ['neurotic', self.temp_file]
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
         self.assertEqual(win.metadata_selector.file, self.temp_file,

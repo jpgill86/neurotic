@@ -7,6 +7,8 @@ Curate, visualize, annotate, and share your behavioral ephys data using Python
 
 import os
 import sys
+import shutil
+import pkg_resources
 import collections.abc
 import logging
 import logging.handlers
@@ -40,13 +42,13 @@ global_config = {
 global_config_file = os.path.join(neurotic_dir, 'neurotic-config.txt')
 
 if not os.path.exists(global_config_file):
-    # create a template global config file containing commented-out defaults
-    global_config_string = toml.dumps(global_config)
-    global_config_string = '\n'.join([f'# {s}' if s and not s.startswith('[') else s for s in global_config_string.split('\n')])
-    with open(global_config_file, 'w') as f:
-        f.write(global_config_string)
+    # copy a template global config file containing commented-out defaults
+    shutil.copy(
+        pkg_resources.resource_filename(
+            'neurotic', 'global_config_template.txt'),
+        global_config_file)
 
-def update_global_config_from_file():
+def update_global_config_from_file(file=global_config_file):
     """
     Update the global_config dictionary with data from the global config file,
     using recursion to traverse nested dictionaries.
@@ -58,7 +60,7 @@ def update_global_config_from_file():
             else:
                 d[k] = v
         return d
-    with open(global_config_file, 'r') as f:
+    with open(file, 'r') as f:
         update_dict(global_config, toml.loads(f.read()))
 
 update_global_config_from_file()
