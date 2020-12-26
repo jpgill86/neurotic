@@ -169,6 +169,9 @@ def parse_args(argv):
         # warning to critical
         logging.getLogger('libav').setLevel(logging.CRITICAL)
 
+    logger.debug(f'Global config: {global_config}')
+    logger.debug(f'Parsed arguments: {args}')
+
     return args
 
 def win_from_args(args):
