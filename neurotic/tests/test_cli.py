@@ -62,6 +62,34 @@ class CLITestCase(unittest.TestCase):
         neurotic.global_config.clear()
         neurotic.global_config.update(self.original_config)
 
+    def test_global_config_template(self):
+        """Test that the global config template matches the factory defaults"""
+
+        # load the template global config file by first copying it to the temp
+        # directory, uncommenting every parameter, and then updating
+        # global_config using the modified file
+        self.template_global_config_file = pkg_resources.resource_filename(
+            'neurotic', 'global_config_template.txt')
+        self.temp_global_config_file = shutil.copy(
+            self.template_global_config_file, self.temp_dir.name)
+        with fileinput.input(self.temp_global_config_file, inplace=True) as f:
+            for line in f:
+                if re.match('#.*=.*', line):
+                    line = line[1:]
+                print(line, end='')  # stdout is redirected into the file
+        neurotic.update_global_config_from_file(self.temp_global_config_file)
+
+        # substitute special values
+        if neurotic.global_config['defaults']['file'] == 'example':
+            neurotic.global_config['defaults']['file'] = None
+        if neurotic.global_config['defaults']['dataset'] == 'none':
+            neurotic.global_config['defaults']['dataset'] = None
+
+        self.assertEqual(neurotic.global_config,
+                         neurotic._global_config_factory_defaults,
+                         'global_config loaded from template global config '
+                         'file differs from factory defaults')
+
     def test_cli_installed(self):
         """Test that the command line interface is installed"""
         self.assertIsNotNone(shutil.which('neurotic'), 'path to cli not found')
