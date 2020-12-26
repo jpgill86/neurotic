@@ -48,18 +48,40 @@ if not os.path.exists(global_config_file):
             'neurotic', 'global_config_template.txt'),
         global_config_file)
 
+def update_dict(d, d_new):
+    """
+    Recursively update the contents of a dictionary. Unlike dict.update(), this
+    function preserves items in inner dictionaries that are absent from d_new.
+
+    For example, if given
+
+    >>> d = {'x': 0, 'inner': {'a': 1, 'b': 2}}
+    >>> d_new = {'inner': {'c': 3}}
+
+    then using d.update(d_new) will entirely replace d['inner'] with
+    d_new['inner']:
+
+    >>> d.update(d_new)
+    >>> d == {'x': 0, 'inner': {'c': 3}}
+
+    In contrast, update_dict(d, d_new) will preserve items found in d['inner']
+    but not in d_new['inner']:
+
+    >>> update_dict(d, d_new)
+    >>> d == {'x': 0, 'inner': {'a': 1, 'b': 2, 'c': 3}}
+    """
+    for k_new, v_new in d_new.items():
+        if isinstance(v_new, collections.abc.Mapping):
+            d[k_new] = update_dict(d.get(k_new, {}), v_new)
+        else:
+            d[k_new] = v_new
+    return d
+
 def update_global_config_from_file(file=global_config_file):
     """
     Update the global_config dictionary with data from the global config file,
     using recursion to traverse nested dictionaries.
     """
-    def update_dict(d, u):
-        for k, v in u.items():
-            if isinstance(v, collections.abc.Mapping):
-                d[k] = update_dict(d.get(k, {}), v)
-            else:
-                d[k] = v
-        return d
     with open(file, 'r') as f:
         update_dict(global_config, toml.loads(f.read()))
 
