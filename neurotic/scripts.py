@@ -37,10 +37,22 @@ def parse_args(argv):
     """
     parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument('file', nargs='?', default=None,
+    defaults = {
+        'file': None,
+        'dataset': None,
+        'debug': False,
+        'lazy': True,
+        'thick_traces': False,
+        'show_datetime': False,
+        'ui_scale': 'medium',
+        'theme': 'light',
+    }
+    parser.set_defaults(**defaults)
+
+    parser.add_argument('file', nargs='?',
                         help='the path to a metadata YAML file (default: an ' \
                              'example file)')
-    parser.add_argument('dataset', nargs='?', default=None,
+    parser.add_argument('dataset', nargs='?',
                         help='the name of a dataset in the metadata file to ' \
                              'select initially (default: the first entry in ' \
                              'the metadata file)')
@@ -52,19 +64,19 @@ def parse_args(argv):
     parser.add_argument('--no-lazy', action='store_false', dest='lazy',
                         help='do not use fast loading (default: use fast ' \
                              'loading)')
-    parser.add_argument('--thick-traces', action='store_true', dest='thick',
+    parser.add_argument('--thick-traces', action='store_true', dest='thick_traces',
                         help='enable support for traces with thick lines, ' \
                              'which has a performance cost (default: ' \
                              'disable thick line support)')
-    parser.add_argument('--show-datetime', action='store_true', dest='datetime',
+    parser.add_argument('--show-datetime', action='store_true', dest='show_datetime',
                         help='display the real-world date and time, which ' \
                              'may be inaccurate depending on file type and ' \
                              'acquisition software (default: do not display)')
     parser.add_argument('--ui-scale', dest='ui_scale',
-                        choices=available_ui_scales, default='medium',
+                        choices=available_ui_scales,
                         help='the scale of user interface elements, such as ' \
                              'text (default: medium)')
-    parser.add_argument('--theme', choices=available_themes, default='light',
+    parser.add_argument('--theme', choices=available_themes, dest='theme',
                         help='a color theme for the GUI (default: light)')
 
     parser.add_argument('--launch-example-notebook', action='store_true',
@@ -95,8 +107,8 @@ def win_from_args(args):
 
     win = MainWindow(file=args.file, initial_selection=args.dataset,
                      lazy=args.lazy, theme=args.theme, ui_scale=args.ui_scale,
-                     support_increased_line_width=args.thick,
-                     show_datetime=args.datetime)
+                     support_increased_line_width=args.thick_traces,
+                     show_datetime=args.show_datetime)
     return win
 
 def launch_example_notebook():
