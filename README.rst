@@ -254,9 +254,9 @@ The command line interface accepts other arguments too:
 
 .. code-block::
 
-    usage: neurotic [-h] [-V] [--debug] [--no-debug] [--lazy] [--no-lazy]
-                    [--thick-traces] [--no-thick-traces] [--show-datetime]
-                    [--no-show-datetime]
+    usage: neurotic [-h] [-V] [--debug | --no-debug] [--lazy | --no-lazy]
+                    [--thick-traces | --no-thick-traces]
+                    [--show-datetime | --no-show-datetime]
                     [--ui-scale {tiny,small,medium,large,huge}]
                     [--theme {light,dark,original,printer-friendly}]
                     [--launch-example-notebook]
@@ -291,6 +291,8 @@ The command line interface accepts other arguments too:
                             (default: medium)
       --theme {light,dark,original,printer-friendly}
                             a color theme for the GUI (default: light)
+
+    alternative modes:
       --launch-example-notebook
                             launch Jupyter with an example notebook instead of
                             starting the standalone app (other args will be
