@@ -28,6 +28,7 @@ at the same datasets!
    citations
    metadata
    examples
+   globalconfig
    api
    releasenotes
 
