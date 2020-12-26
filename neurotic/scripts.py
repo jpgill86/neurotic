@@ -50,59 +50,70 @@ def parse_args(argv):
     parser.set_defaults(**defaults)
 
     parser.add_argument('file', nargs='?',
-                        help='the path to a metadata YAML file (default: an ' \
+                        help='the path to a metadata YAML file (default: an '
                              'example file)')
 
     parser.add_argument('dataset', nargs='?',
-                        help='the name of a dataset in the metadata file to ' \
-                             'select initially (default: the first entry in ' \
+                        help='the name of a dataset in the metadata file to '
+                             'select initially (default: the first entry in '
                              'the metadata file)')
 
-    parser.add_argument('-V', '--version', action='version',
+    parser.add_argument('-V', '--version',
+                        action='version',
                         version='neurotic {}'.format(__version__))
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--debug', action='store_true', dest='debug',
+    group.add_argument('--debug', dest='debug',
+                       action='store_true',
                        help='enable detailed log messages for debugging')
-    group.add_argument('--no-debug', action='store_false', dest='debug',
-                       help='disable detailed log messages for debugging ' \
+    group.add_argument('--no-debug', dest='debug',
+                       action='store_false',
+                       help='disable detailed log messages for debugging '
                             '(default)')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--lazy', action='store_true', dest='lazy',
+    group.add_argument('--lazy', dest='lazy',
+                       action='store_true',
                        help='enable fast loading (default)')
-    group.add_argument('--no-lazy', action='store_false', dest='lazy',
+    group.add_argument('--no-lazy', dest='lazy',
+                       action='store_false',
                        help='disable fast loading')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--thick-traces', action='store_true', dest='thick_traces',
-                       help='enable support for traces with thick lines, ' \
+    group.add_argument('--thick-traces', dest='thick_traces',
+                       action='store_true',
+                       help='enable support for traces with thick lines, '
                             'which has a performance cost')
-    group.add_argument('--no-thick-traces', action='store_false', dest='thick_traces',
-                       help='disable support for traces with thick lines ' \
+    group.add_argument('--no-thick-traces', dest='thick_traces',
+                       action='store_false',
+                       help='disable support for traces with thick lines '
                             '(default)')
 
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('--show-datetime', action='store_true', dest='show_datetime',
-                       help='display the real-world date and time, which ' \
-                            'may be inaccurate depending on file type and ' \
+    group.add_argument('--show-datetime', dest='show_datetime',
+                       action='store_true',
+                       help='display the real-world date and time, which '
+                            'may be inaccurate depending on file type and '
                             'acquisition software')
-    group.add_argument('--no-show-datetime', action='store_false', dest='show_datetime',
-                       help='do not display the real-world date and time ' \
+    group.add_argument('--no-show-datetime', dest='show_datetime',
+                       action='store_false',
+                       help='do not display the real-world date and time '
                             '(default)')
 
     parser.add_argument('--ui-scale', dest='ui_scale',
                         choices=available_ui_scales,
-                        help='the scale of user interface elements, such as ' \
+                        help='the scale of user interface elements, such as '
                              'text (default: medium)')
 
-    parser.add_argument('--theme', choices=available_themes, dest='theme',
+    parser.add_argument('--theme', dest='theme',
+                        choices=available_themes,
                         help='a color theme for the GUI (default: light)')
 
     group = parser.add_argument_group('alternative modes')
-    group.add_argument('--launch-example-notebook', action='store_true',
-                       help='launch Jupyter with an example notebook ' \
-                            'instead of starting the standalone app (other ' \
+    group.add_argument('--launch-example-notebook',
+                       action='store_true',
+                       help='launch Jupyter with an example notebook '
+                            'instead of starting the standalone app (other '
                             'args will be ignored)')
 
     args = parser.parse_args(argv[1:])
