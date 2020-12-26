@@ -259,7 +259,7 @@ The command line interface accepts other arguments too:
                     [--show-datetime | --no-show-datetime]
                     [--ui-scale {tiny,small,medium,large,huge}]
                     [--theme {light,dark,original,printer-friendly}]
-                    [--launch-example-notebook]
+                    [--use-factory-defaults] [--launch-example-notebook]
                     [file] [dataset]
 
     neurotic lets you curate, visualize, annotate, and share your behavioral ephys
@@ -291,6 +291,9 @@ The command line interface accepts other arguments too:
                             (default: medium)
       --theme {light,dark,original,printer-friendly}
                             a color theme for the GUI (default: light)
+      --use-factory-defaults
+                            start with "factory default" settings, ignoring other
+                            args and your global config file
 
     alternative modes:
       --launch-example-notebook
@@ -298,8 +301,8 @@ The command line interface accepts other arguments too:
                             starting the standalone app (other args will be
                             ignored)
 
-    Defaults for arguments and options can be changed in
-    .neurotic/neurotic-config.txt, located in your home directory.
+    Defaults for arguments and options can be changed in a global config file,
+    .neurotic\neurotic-config.txt, located in your home directory.
 
 Citing *neurotic*
 -----------------

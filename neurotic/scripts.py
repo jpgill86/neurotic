@@ -18,7 +18,7 @@ import pkg_resources
 
 from ephyviewer import QT, mkQApp
 
-from . import __version__, global_config, global_config_file, default_log_level
+from . import __version__, global_config, _global_config_factory_defaults, global_config_file, default_log_level
 from .datasets.data import load_dataset
 from .gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
 from .gui.standalone import MainWindow
@@ -38,7 +38,7 @@ def parse_args(argv):
     """
 
     epilog = f"""
-    Defaults for arguments and options can be changed in
+    Defaults for arguments and options can be changed in a global config file,
     {os.path.relpath(global_config_file, os.path.expanduser('~'))}, located in
     your home directory.
     """
@@ -115,6 +115,11 @@ def parse_args(argv):
                         help='a color theme for the GUI'
                              f' (default: {defaults["theme"]})')
 
+    parser.add_argument('--use-factory-defaults',
+                        action='store_true',
+                        help='start with "factory default" settings, ignoring '
+                             'other args and your global config file')
+
     group = parser.add_argument_group('alternative modes')
     group.add_argument('--launch-example-notebook',
                        action='store_true',
@@ -123,6 +128,11 @@ def parse_args(argv):
                             'args will be ignored)')
 
     args = parser.parse_args(argv[1:])
+
+    if args.use_factory_defaults:
+        # replace every argument with the factory default
+        for k, v in _global_config_factory_defaults['defaults'].items():
+            setattr(args, k, v)
 
     # these special values for the positional arguments can be used to override
     # the defaults set in the global config file with the defaults normally set

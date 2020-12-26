@@ -228,6 +228,16 @@ class CLITestCase(unittest.TestCase):
             win = neurotic.win_from_args(args)
             self.assertEqual(win.theme, theme, 'unexpected theme')
 
+    def test_use_factory_defaults(self):
+        """Test that --use-factory-defaults resets all defaults"""
+        for k in neurotic.global_config['defaults']:
+            neurotic.global_config['defaults'][k] = 'bad value'
+        argv = ['neurotic', '--use-factory-defaults']
+        args = neurotic.parse_args(argv)
+        for k, v in neurotic._global_config_factory_defaults['defaults'].items():
+            self.assertEqual(getattr(args, k), v,
+                             f'args.{k} was not reset to factory default')
+
     def test_file(self):
         """Test that metadata file can be set"""
         argv = ['neurotic', self.temp_file]
