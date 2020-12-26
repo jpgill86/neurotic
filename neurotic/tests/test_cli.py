@@ -32,19 +32,11 @@ class CLITestCase(unittest.TestCase):
         # during tear-down
         self.original_config = copy.deepcopy(neurotic.global_config)
 
-        # load the template global config file by first copying it to the temp
-        # directory, uncommenting every parameter, and then updating
-        # global_config using the modified file
-        self.template_global_config_file = pkg_resources.resource_filename(
-            'neurotic', 'global_config_template.txt')
-        self.temp_global_config_file = shutil.copy(
-            self.template_global_config_file, self.temp_dir.name)
-        with fileinput.input(files=[self.temp_global_config_file], inplace=True) as f:
-            for line in f:
-                if re.match('#.*=.*', line):
-                    line = line[1:]
-                print(line, end='')  # stdout is redirected into the file
-        neurotic.update_global_config_from_file(self.temp_global_config_file)
+        # reset global config settings to their factory defaults (use deepcopy
+        # so that _global_config_factory_defaults is not changed during tests)
+        neurotic.global_config.clear()
+        neurotic.global_config.update(copy.deepcopy(
+            neurotic._global_config_factory_defaults))
 
         # get parameters for the example
         self.example_file = pkg_resources.resource_filename(
@@ -67,7 +59,8 @@ class CLITestCase(unittest.TestCase):
         self.temp_dir.cleanup()
 
         # restore the original global config
-        neurotic.global_config = copy.deepcopy(self.original_config)
+        neurotic.global_config.clear()
+        neurotic.global_config.update(self.original_config)
 
     def test_cli_installed(self):
         """Test that the command line interface is installed"""
@@ -88,21 +81,29 @@ class CLITestCase(unittest.TestCase):
                         'version\'s stdout has unexpected content')
 
     def test_cli_defaults(self):
-        """Test CLI default values"""
+        """Test CLI default values match factory defaults"""
         argv = ['neurotic']
         args = neurotic.parse_args(argv)
         app = mkQApp()
         win = neurotic.win_from_args(args)
-        self.assertFalse(win.do_toggle_debug_logging.isChecked(),
+
+        # should match factory defaults because setUp() explicitly reset the
+        # defaults to the factory defaults
+        factory_defaults = neurotic._global_config_factory_defaults['defaults']
+        self.assertEqual(win.do_toggle_debug_logging.isChecked(),
+                         factory_defaults['debug'],
                          'debug setting has unexpected default')
-        self.assertTrue(win.lazy, 'lazy setting has unexpected default')
-        self.assertFalse(win.support_increased_line_width,
+        self.assertEqual(win.lazy, factory_defaults['lazy'],
+                         'lazy setting has unexpected default')
+        self.assertEqual(win.support_increased_line_width,
+                         factory_defaults['thick_traces'],
                          'thick traces setting has unexpected default')
-        self.assertFalse(win.show_datetime,
+        self.assertEqual(win.show_datetime, factory_defaults['show_datetime'],
                          'show_datetime has unexpected default')
-        self.assertEqual(win.ui_scale, 'medium',
+        self.assertEqual(win.ui_scale, factory_defaults['ui_scale'],
                          'ui_scale has unexpected default')
-        self.assertEqual(win.theme, 'light', 'theme has unexpected default')
+        self.assertEqual(win.theme, factory_defaults['theme'],
+                         'theme has unexpected default')
         self.assertEqual(win.metadata_selector.file, self.example_file,
                          'file has unexpected default')
         self.assertEqual(win.metadata_selector._selection,

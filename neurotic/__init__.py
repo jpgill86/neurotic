@@ -8,6 +8,7 @@ Curate, visualize, annotate, and share your behavioral ephys data using Python
 import os
 import sys
 import shutil
+import copy
 import pkg_resources
 import collections.abc
 import logging
@@ -36,6 +37,9 @@ global_config = {
         'theme': 'light',
     },
 }
+
+# keep a copy of the original config before it is modified
+_global_config_factory_defaults = copy.deepcopy(global_config)
 
 # the global config file is a text file in TOML format owned by the user that
 # allows alternate defaults to be specified to replace those in global_config
