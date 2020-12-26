@@ -10,6 +10,7 @@ another for starting a Jupyter server with an example notebook.
 .. autofunction:: launch_example_notebook
 """
 
+import os
 import sys
 import argparse
 import subprocess
@@ -17,7 +18,7 @@ import pkg_resources
 
 from ephyviewer import QT, mkQApp
 
-from . import __version__, global_config, default_log_level
+from . import __version__, global_config, global_config_file, default_log_level
 from .datasets.data import load_dataset
 from .gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
 from .gui.standalone import MainWindow
@@ -35,19 +36,26 @@ def parse_args(argv):
     neurotic lets you curate, visualize, annotate, and share your behavioral
     ephys data.
     """
-    parser = argparse.ArgumentParser(description=description)
+
+    epilog = f"""
+    Defaults for arguments and options can be changed in
+    {os.path.relpath(global_config_file, os.path.expanduser('~'))}, located in
+    your home directory.
+    """
+
+    parser = argparse.ArgumentParser(description=description, epilog=epilog)
 
     defaults = global_config['defaults']
     parser.set_defaults(**defaults)
 
     parser.add_argument('file', nargs='?',
                         help='the path to a metadata YAML file'
-                             f' (default: {"an example file" if defaults["file"] is None else defaults["file"]})')
+                             f' (default: {"an example file" if defaults["file"] is None else defaults["file"] + "; to force the example, use: example"})')
 
     parser.add_argument('dataset', nargs='?',
                         help='the name of a dataset in the metadata file to '
                              'select initially'
-                             f' (default: {"the first entry in the metadata file" if defaults["dataset"] is None else defaults["dataset"]})')
+                             f' (default: {"the first entry in the metadata file" if defaults["dataset"] is None else defaults["dataset"] + "; to force the first, use: - none"})')
 
     parser.add_argument('-V', '--version',
                         action='version',
@@ -115,6 +123,18 @@ def parse_args(argv):
                             'args will be ignored)')
 
     args = parser.parse_args(argv[1:])
+
+    # these special values for the positional arguments can be used to override
+    # the defaults set in the global config file with the defaults normally set
+    # in the absence of global config file settings
+    if args.file == '-':
+        args.file = defaults['file']
+    elif args.file == 'example':
+        args.file = None
+    if args.dataset == '-':
+        args.dataset = defaults['dataset']
+    elif args.dataset == 'none':
+        args.dataset = None
 
     if args.debug:
         logger.parent.setLevel(logging.DEBUG)

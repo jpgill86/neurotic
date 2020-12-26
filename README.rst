@@ -298,6 +298,9 @@ The command line interface accepts other arguments too:
                             starting the standalone app (other args will be
                             ignored)
 
+    Defaults for arguments and options can be changed in
+    .neurotic/neurotic-config.txt, located in your home directory.
+
 Citing *neurotic*
 -----------------
 

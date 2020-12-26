@@ -7,14 +7,16 @@ Curate, visualize, annotate, and share your behavioral ephys data using Python
 
 import os
 import sys
+import collections.abc
 import logging
 import logging.handlers
+import toml
 
 from .version import version as __version__
 from .version import git_revision as __git_revision__
 
 
-# set the user's directory for logs
+# set the user's directory for global settings file, logs, and more
 neurotic_dir = os.path.join(os.path.expanduser('~'), '.neurotic')
 if not os.path.exists(neurotic_dir):
     os.mkdir(neurotic_dir)
@@ -30,8 +32,37 @@ global_config = {
         'show_datetime': False,
         'ui_scale': 'medium',
         'theme': 'light',
-    }
+    },
 }
+
+# the global config file is a text file in TOML format owned by the user that
+# allows alternate defaults to be specified to replace those in global_config
+global_config_file = os.path.join(neurotic_dir, 'neurotic-config.txt')
+
+if not os.path.exists(global_config_file):
+    # create a template global config file containing commented-out defaults
+    global_config_string = toml.dumps(global_config)
+    global_config_string = '\n'.join([f'# {s}' if s and not s.startswith('[') else s for s in global_config_string.split('\n')])
+    with open(global_config_file, 'w') as f:
+        f.write(global_config_string)
+
+def update_global_config_from_file():
+    """
+    Update the global_config dictionary with data from the global config file,
+    using recursion to traverse nested dictionaries.
+    """
+    def update_dict(d, u):
+        for k, v in u.items():
+            if isinstance(v, collections.abc.Mapping):
+                d[k] = update_dict(d.get(k, {}), v)
+            else:
+                d[k] = v
+        return d
+    with open(global_config_file, 'r') as f:
+        update_dict(global_config, toml.loads(f.read()))
+
+update_global_config_from_file()
+
 
 class FileLoggingFormatter(logging.Formatter):
     """

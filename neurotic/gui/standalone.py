@@ -18,7 +18,7 @@ import quantities as pq
 import neo
 from ephyviewer import QT, QT_MODE
 
-from .. import __version__, _elephant_tools, default_log_level, log_file
+from .. import __version__, _elephant_tools, global_config_file, default_log_level, log_file
 from ..datasets import MetadataSelector, load_dataset
 from ..datasets.metadata import _selector_labels
 from ..gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
@@ -220,6 +220,11 @@ class MainWindow(QT.QMainWindow):
         do_toggle_show_datetime.setCheckable(True)
         do_toggle_show_datetime.setChecked(self.show_datetime)
         do_toggle_show_datetime.triggered.connect(self.toggle_show_datetime)
+
+        options_menu.addSeparator()
+
+        do_view_global_config_file = options_menu.addAction('View global &config file')
+        do_view_global_config_file.triggered.connect(self.view_global_config_file)
 
         appearance_menu = menu_bar.addMenu(self.tr('&Appearance'))
 
@@ -423,6 +428,19 @@ class MainWindow(QT.QMainWindow):
             self.do_launch.setEnabled(True)
             self.metadata_selector.setEnabled(True)
             self.stacked_layout.setCurrentIndex(0)  # show metadata selector
+
+    def view_global_config_file(self):
+        """
+        Open the global config file in an editor.
+        """
+
+        try:
+            open_path_with_default_program(global_config_file)
+        except FileNotFoundError as e:
+            logger.error(f'The global config file was not found: {e}')
+            self.statusBar().showMessage('ERROR: The global config file could '
+                                         'not be found', msecs=5000)
+            return
 
     def toggle_debug_logging(self, checked):
         """

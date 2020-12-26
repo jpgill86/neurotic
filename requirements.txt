@@ -10,4 +10,5 @@ quantities
 requests
 scipy
 setuptools
+toml
 tqdm

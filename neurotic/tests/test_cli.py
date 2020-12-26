@@ -24,25 +24,30 @@ logger = logging.getLogger(__name__)
 class CLITestCase(unittest.TestCase):
 
     def setUp(self):
-        self.default_file = pkg_resources.resource_filename(
+        self.default_config = copy.deepcopy(neurotic.global_config)
+        self.example_file = pkg_resources.resource_filename(
             'neurotic', 'example/metadata.yml')
-        self.default_dataset = 'Aplysia feeding'
+        self.example_dataset = 'Aplysia feeding'
 
         # make a copy of the default file in a temp directory
         self.temp_dir = tempfile.TemporaryDirectory(prefix='neurotic-')
-        self.temp_file = shutil.copy(self.default_file, self.temp_dir.name)
+        self.temp_file = shutil.copy(self.example_file, self.temp_dir.name)
 
-        # add a second dataset
+        # add another dataset to the example
         with open(self.temp_file) as f:
             metadata = yaml.safe_load(f)
-        metadata['zzz_alphabetically_last'] = copy.deepcopy(
-            metadata['Aplysia feeding'])
+        self.duplicate_dataset = 'zzz_alphabetically_last'
+        metadata[self.duplicate_dataset] = copy.deepcopy(
+            metadata[self.example_dataset])
         with open(self.temp_file, 'w') as f:
             f.write(yaml.dump(metadata))
 
     def tearDown(self):
         # remove the temp directory
         self.temp_dir.cleanup()
+
+        # restore the original global config
+        neurotic.global_config = copy.deepcopy(self.default_config)
 
     def test_cli_installed(self):
         """Test that the command line interface is installed"""
@@ -68,20 +73,30 @@ class CLITestCase(unittest.TestCase):
         args = neurotic.parse_args(argv)
         app = mkQApp()
         win = neurotic.win_from_args(args)
-        self.assertFalse(win.do_toggle_debug_logging.isChecked(),
-                         'debug logging enabled without --debug')
-        self.assertTrue(win.lazy, 'lazy loading disabled without --no-lazy')
-        self.assertFalse(win.support_increased_line_width,
-                         'thick traces enabled without --thick-traces')
-        self.assertFalse(win.show_datetime,
-                         'datetime enabled without --show-datetime')
-        self.assertEqual(win.ui_scale, 'medium',
-                         'ui_scale changed without --ui-scale')
-        self.assertEqual(win.theme, 'light', 'theme changed without --theme')
-        self.assertEqual(win.metadata_selector.file, self.default_file,
+        defaults = neurotic.global_config['defaults']
+        self.assertEqual(win.do_toggle_debug_logging.isChecked(),
+                         defaults['debug'],
+                         'debug logging setting did not match default')
+        self.assertEqual(win.lazy,
+                         defaults['lazy'],
+                         'lazy loading setting did not match default')
+        self.assertEqual(win.support_increased_line_width,
+                         defaults['thick_traces'],
+                         'thick traces setting did not match default')
+        self.assertEqual(win.show_datetime,
+                         defaults['show_datetime'],
+                         'datetime setting did not match default')
+        self.assertEqual(win.ui_scale,
+                         defaults['ui_scale'],
+                         'ui scale did not match default')
+        self.assertEqual(win.theme,
+                         defaults['theme'],
+                         'theme did not match default')
+        self.assertEqual(win.metadata_selector.file,
+                         self.example_file if defaults['file'] is None else defaults['file'],
                          'file was not set to default')
         self.assertEqual(win.metadata_selector._selection,
-                         self.default_dataset,
+                         self.example_dataset if defaults['dataset'] is None else defaults['dataset'],
                          'dataset was not set to default dataset')
 
     def test_debug(self):
@@ -176,7 +191,7 @@ class CLITestCase(unittest.TestCase):
 
     def test_file(self):
         """Test that metadata file can be set"""
-        argv = ['neurotic', self.temp_file]
+        argv = ['neurotic', self.temp_file, 'none']
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
         self.assertEqual(win.metadata_selector.file, self.temp_file,
@@ -184,11 +199,24 @@ class CLITestCase(unittest.TestCase):
 
     def test_dataset(self):
         """Test that dataset can be set"""
-        argv = ['neurotic', self.temp_file, 'zzz_alphabetically_last']
+        argv = ['neurotic', self.temp_file, self.duplicate_dataset]
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
         self.assertEqual(win.metadata_selector._selection,
-                         'zzz_alphabetically_last',
+                         self.duplicate_dataset,
+                         'dataset was not changed correctly')
+
+    def test_example_file_and_first_dataset_overrides(self):
+        """Test that 'example' and 'none' open first dataset in example file"""
+        neurotic.global_config['defaults']['file'] = 'some other file'
+        neurotic.global_config['defaults']['dataset'] = 'some other dataset'
+        argv = ['neurotic', 'example', 'none']
+        args = neurotic.parse_args(argv)
+        win = neurotic.win_from_args(args)
+        self.assertEqual(win.metadata_selector.file, self.example_file,
+                         'file was not changed correctly')
+        self.assertEqual(win.metadata_selector._selection,
+                         self.example_dataset,
                          'dataset was not changed correctly')
 
 if __name__ == '__main__':
