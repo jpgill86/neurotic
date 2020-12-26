@@ -89,8 +89,6 @@ def update_global_config_from_file(file=global_config_file):
     with open(file, 'r') as f:
         update_dict(global_config, toml.loads(f.read()))
 
-update_global_config_from_file()
-
 
 class FileLoggingFormatter(logging.Formatter):
     """
@@ -142,6 +140,12 @@ logger.info(f'Importing neurotic {__version__}')  # file logger only
 logger_streamhandler = logging.StreamHandler(stream=sys.stderr)
 logger_streamhandler.setFormatter(StreamLoggingFormatter())
 logger.addHandler(logger_streamhandler)
+
+
+try:
+    update_global_config_from_file()
+except Exception as e:
+    logger.error(f'Ignoring global config file due to parsing error ({global_config_file}): {e}')
 
 
 from .datasets import *
