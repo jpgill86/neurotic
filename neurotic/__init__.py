@@ -19,6 +19,19 @@ neurotic_dir = os.path.join(os.path.expanduser('~'), '.neurotic')
 if not os.path.exists(neurotic_dir):
     os.mkdir(neurotic_dir)
 
+global_config = {
+    'defaults': {
+        # defaults used by the command line interface
+        'file': None,
+        'dataset': None,
+        'debug': False,
+        'lazy': True,
+        'thick_traces': False,
+        'show_datetime': False,
+        'ui_scale': 'medium',
+        'theme': 'light',
+    }
+}
 
 class FileLoggingFormatter(logging.Formatter):
     """

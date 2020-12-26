@@ -17,7 +17,7 @@ import pkg_resources
 
 from ephyviewer import QT, mkQApp
 
-from . import __version__, default_log_level
+from . import __version__, global_config, default_log_level
 from .datasets.data import load_dataset
 from .gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
 from .gui.standalone import MainWindow
@@ -37,16 +37,7 @@ def parse_args(argv):
     """
     parser = argparse.ArgumentParser(description=description)
 
-    defaults = {
-        'file': None,
-        'dataset': None,
-        'debug': False,
-        'lazy': True,
-        'thick_traces': False,
-        'show_datetime': False,
-        'ui_scale': 'medium',
-        'theme': 'light',
-    }
+    defaults = global_config['defaults']
     parser.set_defaults(**defaults)
 
     parser.add_argument('file', nargs='?',
