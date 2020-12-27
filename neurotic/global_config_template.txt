@@ -1,0 +1,25 @@
+# --- neurotic global config --------------------------------------------------
+# Use this file to configure the way neurotic behaves. This file uses the TOML
+# format.
+
+[defaults]
+# When the app is launched, the following customizable defaults are used unless
+# overridden by command line arguments. Example uses include:
+#   - Uncomment the "file" parameter and insert the path to your favorite
+#     metadata file so that it always opens automatically
+#   - Uncomment the "lazy" parameter and set it to false to always disable fast
+#     loading, ensuring that expensive procedures like spike detection and
+#     filtering are performed by default
+# To open the example metadata file by default, either leave the "file"
+# parameter commented or set it to "example". To initially select the first
+# dataset in the file, either leave the "dataset" parameter commented or set it
+# to "none".
+
+# file = "example"
+# dataset = "none"
+# debug = false
+# lazy = true
+# thick_traces = false
+# show_datetime = false
+# ui_scale = "medium"
+# theme = "light"

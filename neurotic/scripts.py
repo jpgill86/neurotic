@@ -10,6 +10,7 @@ another for starting a Jupyter server with an example notebook.
 .. autofunction:: launch_example_notebook
 """
 
+import os
 import sys
 import argparse
 import subprocess
@@ -17,7 +18,7 @@ import pkg_resources
 
 from ephyviewer import QT, mkQApp
 
-from . import __version__
+from . import __version__, global_config, _global_config_factory_defaults, global_config_file, default_log_level
 from .datasets.data import load_dataset
 from .gui.config import EphyviewerConfigurator, available_themes, available_ui_scales
 from .gui.standalone import MainWindow
@@ -35,44 +36,115 @@ def parse_args(argv):
     neurotic lets you curate, visualize, annotate, and share your behavioral
     ephys data.
     """
-    parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument('file', nargs='?', default=None,
-                        help='the path to a metadata YAML file (default: an ' \
-                             'example file)')
-    parser.add_argument('dataset', nargs='?', default=None,
-                        help='the name of a dataset in the metadata file to ' \
-                             'select initially (default: the first entry in ' \
-                             'the metadata file)')
+    epilog = f"""
+    Defaults for arguments and options can be changed in a global config file,
+    {os.path.relpath(global_config_file, os.path.expanduser('~'))}, located in
+    your home directory.
+    """
 
-    parser.add_argument('-V', '--version', action='version',
+    parser = argparse.ArgumentParser(description=description, epilog=epilog)
+
+    defaults = global_config['defaults']
+    parser.set_defaults(**defaults)
+
+    parser.add_argument('file', nargs='?',
+                        help='the path to a metadata YAML file'
+                             f' (default: {"an example file" if defaults["file"] is None else defaults["file"] + "; to force the example, use: example"})')
+
+    parser.add_argument('dataset', nargs='?',
+                        help='the name of a dataset in the metadata file to '
+                             'select initially'
+                             f' (default: {"the first entry in the metadata file" if defaults["dataset"] is None else defaults["dataset"] + "; to force the first, use: - none"})')
+
+    parser.add_argument('-V', '--version',
+                        action='version',
                         version='neurotic {}'.format(__version__))
-    parser.add_argument('--debug', action='store_true', dest='debug',
-                        help='enable detailed log messages for debugging')
-    parser.add_argument('--no-lazy', action='store_false', dest='lazy',
-                        help='do not use fast loading (default: use fast ' \
-                             'loading)')
-    parser.add_argument('--thick-traces', action='store_true', dest='thick',
-                        help='enable support for traces with thick lines, ' \
-                             'which has a performance cost (default: ' \
-                             'disable thick line support)')
-    parser.add_argument('--show-datetime', action='store_true', dest='datetime',
-                        help='display the real-world date and time, which ' \
-                             'may be inaccurate depending on file type and ' \
-                             'acquisition software (default: do not display)')
-    parser.add_argument('--ui-scale', dest='ui_scale',
-                        choices=available_ui_scales, default='medium',
-                        help='the scale of user interface elements, such as ' \
-                             'text (default: medium)')
-    parser.add_argument('--theme', choices=available_themes, default='light',
-                        help='a color theme for the GUI (default: light)')
 
-    parser.add_argument('--launch-example-notebook', action='store_true',
-                        help='launch Jupyter with an example notebook ' \
-                             'instead of starting the standalone app (other ' \
-                             'args will be ignored)')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--debug', dest='debug',
+                       action='store_true',
+                       help='enable detailed log messages for debugging'
+                            f'{" (default)" if defaults["debug"] else ""}')
+    group.add_argument('--no-debug', dest='debug',
+                       action='store_false',
+                       help='disable detailed log messages for debugging'
+                            f'{" (default)" if not defaults["debug"] else ""}')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--lazy', dest='lazy',
+                       action='store_true',
+                       help='enable fast loading'
+                            f'{" (default)" if defaults["lazy"] else ""}')
+    group.add_argument('--no-lazy', dest='lazy',
+                       action='store_false',
+                       help='disable fast loading'
+                            f'{" (default)" if not defaults["lazy"] else ""}')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--thick-traces', dest='thick_traces',
+                       action='store_true',
+                       help='enable support for traces with thick lines, '
+                            'which has a performance cost'
+                            f'{" (default)" if defaults["thick_traces"] else ""}')
+    group.add_argument('--no-thick-traces', dest='thick_traces',
+                       action='store_false',
+                       help='disable support for traces with thick lines'
+                            f'{" (default)" if not defaults["thick_traces"] else ""}')
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--show-datetime', dest='show_datetime',
+                       action='store_true',
+                       help='display the real-world date and time, which '
+                            'may be inaccurate depending on file type and '
+                            'acquisition software'
+                            f'{" (default)" if defaults["show_datetime"] else ""}')
+    group.add_argument('--no-show-datetime', dest='show_datetime',
+                       action='store_false',
+                       help='do not display the real-world date and time'
+                            f'{" (default)" if not defaults["show_datetime"] else ""}')
+
+    parser.add_argument('--ui-scale', dest='ui_scale',
+                        choices=available_ui_scales,
+                        help='the scale of user interface elements, such as '
+                             'text'
+                             f' (default: {defaults["ui_scale"]})')
+
+    parser.add_argument('--theme', dest='theme',
+                        choices=available_themes,
+                        help='a color theme for the GUI'
+                             f' (default: {defaults["theme"]})')
+
+    parser.add_argument('--use-factory-defaults',
+                        action='store_true',
+                        help='start with "factory default" settings, ignoring '
+                             'other args and your global config file')
+
+    group = parser.add_argument_group('alternative modes')
+    group.add_argument('--launch-example-notebook',
+                       action='store_true',
+                       help='launch Jupyter with an example notebook '
+                            'instead of starting the standalone app (other '
+                            'args will be ignored)')
 
     args = parser.parse_args(argv[1:])
+
+    if args.use_factory_defaults:
+        # replace every argument with the factory default
+        for k, v in _global_config_factory_defaults['defaults'].items():
+            setattr(args, k, v)
+
+    # these special values for the positional arguments can be used to override
+    # the defaults set in the global config file with the defaults normally set
+    # in the absence of global config file settings
+    if args.file == '-':
+        args.file = defaults['file']
+    elif args.file == 'example':
+        args.file = None
+    if args.dataset == '-':
+        args.dataset = defaults['dataset']
+    elif args.dataset == 'none':
+        args.dataset = None
 
     if args.debug:
         logger.parent.setLevel(logging.DEBUG)
@@ -86,6 +158,20 @@ def parse_args(argv):
             # not carry over into the kernel started by Jupyter
             logger.debug('Debug messages enabled')
 
+    else:
+        # this should only be necessary if parse_args is called with --no-debug
+        # after having previously enabled debug messages in the current session
+        # (such as during unit testing)
+
+        logger.parent.setLevel(default_log_level)
+
+        # raise the threshold for PyAV messages printed to the console from
+        # warning to critical
+        logging.getLogger('libav').setLevel(logging.CRITICAL)
+
+    logger.debug(f'Global config: {global_config}')
+    logger.debug(f'Parsed arguments: {args}')
+
     return args
 
 def win_from_args(args):
@@ -95,8 +181,8 @@ def win_from_args(args):
 
     win = MainWindow(file=args.file, initial_selection=args.dataset,
                      lazy=args.lazy, theme=args.theme, ui_scale=args.ui_scale,
-                     support_increased_line_width=args.thick,
-                     show_datetime=args.datetime)
+                     support_increased_line_width=args.thick_traces,
+                     show_datetime=args.show_datetime)
     return win
 
 def launch_example_notebook():
