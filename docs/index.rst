@@ -3,7 +3,7 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge| |eNeuro badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |GitHub Actions badge| |Azure badge| |Coverage badge| |Zenodo badge| |eNeuro badge|
 
 **Version:** |version| (`other versions`_)
 
@@ -57,9 +57,9 @@ at the same datasets!
     :target: ReadTheDocs_
     :alt: Documentation status
 
-.. |Travis badge| image:: https://img.shields.io/travis/com/jpgill86/neurotic/master.svg?logo=travis-ci&logoColor=white
-    :target: Travis_
-    :alt: Travis build status
+.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg
+    :target: `GitHub Actions`_
+    :alt: Tests status
 
 .. |Azure badge| image:: https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/neurotic-feedstock?branchName=master
     :target: `conda-forge CI`_
@@ -89,9 +89,9 @@ at the same datasets!
 .. _eNeuro:         https://doi.org/10.1523/ENEURO.0085-20.2020
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
 .. _GitHub:         https://github.com/jpgill86/neurotic
+.. _GitHub Actions: https://github.com/jpgill86/neurotic/actions
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
 .. _other versions: https://readthedocs.org/projects/neurotic/versions/
 .. _PyPI:           https://pypi.org/project/neurotic
 .. _ReadTheDocs:    https://readthedocs.org/projects/neurotic
-.. _Travis:         https://travis-ci.com/jpgill86/neurotic
 .. _Zenodo:         https://doi.org/10.5281/zenodo.3564990
