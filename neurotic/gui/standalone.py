@@ -785,7 +785,7 @@ class MainWindow(QT.QMainWindow):
 class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
     """
     A QWidget that displays the state of a MetadataSelector, providing a
-    QListWidget for selecting one dataset.
+    QListWidget for selecting one dataset and other widgets for ... TODO
     """
 
     def __init__(self, mainwindow):
@@ -813,6 +813,9 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
         self.dataset_list.currentRowChanged.connect(self._on_select)
         self.dataset_list.itemDoubleClicked.connect(self.mainwindow.start_launch)
 
+        self.my_text_edit = QT.QTextEdit()
+        self.layout.addWidget(self.my_text_edit)
+
     def _on_select(self, currentRow):
         """
         Update the MetadataSelector's selection after changing the
@@ -821,6 +824,9 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
 
         if currentRow >= 0:
             self._selection = list(self.all_metadata)[currentRow]
+
+            from pprint import pformat
+            self.my_text_edit.setText(pformat(self.selected_metadata))
         else:
             self._selection = None
 
