@@ -3,7 +3,7 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |Travis badge| |Azure badge| |Coverage badge| |Zenodo badge| |eNeuro badge|
+|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |GitHub Actions badge| |Azure badge| |Coverage badge| |Zenodo badge| |eNeuro badge|
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
@@ -349,9 +349,9 @@ reference guide, and release notes, see the Documentation_.
     :target: ReadTheDocs_
     :alt: Documentation status
 
-.. |Travis badge| image:: https://img.shields.io/travis/com/jpgill86/neurotic/master.svg?logo=travis-ci&logoColor=white
-    :target: Travis_
-    :alt: Travis build status
+.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg
+    :target: `GitHub Actions`_
+    :alt: Tests status
 
 .. |Azure badge| image:: https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/neurotic-feedstock?branchName=master
     :target: `conda-forge CI`_
@@ -386,6 +386,7 @@ reference guide, and release notes, see the Documentation_.
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
 .. _GIN:            https://gin.g-node.org
 .. _GitHub:         https://github.com/jpgill86/neurotic
+.. _GitHub Actions: https://github.com/jpgill86/neurotic/actions
 .. _GitHub Releases: https://github.com/jpgill86/neurotic/releases
 .. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
@@ -394,6 +395,5 @@ reference guide, and release notes, see the Documentation_.
 .. _PyPI:           https://pypi.org/project/neurotic
 .. _ReadTheDocs:    https://readthedocs.org/projects/neurotic
 .. _Release Notes:  https://neurotic.readthedocs.io/en/latest/releasenotes.html
-.. _Travis:         https://travis-ci.com/jpgill86/neurotic
 .. _User Interface: https://ephyviewer.readthedocs.io/en/latest/interface.html
 .. _Zenodo:         https://doi.org/10.5281/zenodo.3564990
