@@ -14,6 +14,7 @@ import subprocess
 import pkg_resources
 import warnings
 from packaging import version
+import pprint
 
 import quantities as pq
 import neo
@@ -785,7 +786,8 @@ class MainWindow(QT.QMainWindow):
 class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
     """
     A QWidget that displays the state of a MetadataSelector, providing a
-    QListWidget for selecting one dataset.
+    QListWidget for selecting one dataset and a QTextEdit for displaying parsed
+    metadata.
     """
 
     def __init__(self, mainwindow):
@@ -813,6 +815,20 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
         self.dataset_list.currentRowChanged.connect(self._on_select)
         self.dataset_list.itemDoubleClicked.connect(self.mainwindow.start_launch)
 
+        parsed_metadata_checkbox = QT.QCheckBox('&Show parsed metadata')
+        parsed_metadata_checkbox.setChecked(False)
+        parsed_metadata_checkbox.stateChanged.connect(self.toggle_parsed_metadata)
+        self.layout.addWidget(parsed_metadata_checkbox)
+
+        self.parsed_metadata_widget = QT.QTextEdit()
+        self.parsed_metadata_widget.setReadOnly(True)
+        self.layout.addWidget(self.parsed_metadata_widget)
+        self.toggle_parsed_metadata(parsed_metadata_checkbox.checkState())
+
+        font = self.parsed_metadata_widget.font()
+        font.setFamily('Courier')
+        self.parsed_metadata_widget.setFont(font)
+
     def _on_select(self, currentRow):
         """
         Update the MetadataSelector's selection after changing the
@@ -821,6 +837,9 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
 
         if currentRow >= 0:
             self._selection = list(self.all_metadata)[currentRow]
+
+            self.parsed_metadata_widget.setText(pprint.pformat(
+                self.selected_metadata, sort_dicts=False, width=200))
         else:
             self._selection = None
 
@@ -855,6 +874,15 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
                 # otherwise select the first item
                 self.dataset_list.setCurrentRow(0)
 
+    def toggle_parsed_metadata(self, checked):
+        """
+        Toggle visibility of the parsed metadata QTextEdit
+        """
+
+        if checked == QT.Checked:
+            self.parsed_metadata_widget.show()
+        else:
+            self.parsed_metadata_widget.hide()
 
 class _NetworkWorker(QT.QObject):
     """
