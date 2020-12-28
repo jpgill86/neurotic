@@ -57,7 +57,7 @@ at the same datasets!
     :target: ReadTheDocs_
     :alt: Documentation status
 
-.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg
+.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg?branch=master
     :target: `GitHub Actions`_
     :alt: Tests status
 
@@ -89,7 +89,7 @@ at the same datasets!
 .. _eNeuro:         https://doi.org/10.1523/ENEURO.0085-20.2020
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
 .. _GitHub:         https://github.com/jpgill86/neurotic
-.. _GitHub Actions: https://github.com/jpgill86/neurotic/actions
+.. _GitHub Actions: https://github.com/jpgill86/neurotic/actions?query=workflow%3Atests
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
 .. _other versions: https://readthedocs.org/projects/neurotic/versions/
 .. _PyPI:           https://pypi.org/project/neurotic

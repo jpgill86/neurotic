@@ -349,7 +349,7 @@ reference guide, and release notes, see the Documentation_.
     :target: ReadTheDocs_
     :alt: Documentation status
 
-.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg
+.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg?branch=master
     :target: `GitHub Actions`_
     :alt: Tests status
 
@@ -386,7 +386,7 @@ reference guide, and release notes, see the Documentation_.
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
 .. _GIN:            https://gin.g-node.org
 .. _GitHub:         https://github.com/jpgill86/neurotic
-.. _GitHub Actions: https://github.com/jpgill86/neurotic/actions
+.. _GitHub Actions: https://github.com/jpgill86/neurotic/actions?query=workflow%3Atests
 .. _GitHub Releases: https://github.com/jpgill86/neurotic/releases
 .. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
