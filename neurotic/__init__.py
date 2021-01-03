@@ -92,7 +92,7 @@ global_config = {
     'gdrive': {
         # parameters for Google Drive access
         'credentials_file': os.path.join(neurotic_dir, 'gdrive-creds', 'credentials.json'),
-        'token_file': os.path.join(neurotic_dir, 'gdrive-creds', 'gdrive-token.pickle'),
+        'token_file': os.path.join(neurotic_dir, 'gdrive-creds', 'tokens.json'),
         'save_token': False,
     },
 }

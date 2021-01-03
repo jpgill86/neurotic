@@ -510,10 +510,10 @@ class MainWindow(QT.QMainWindow):
         if gdrive_downloader.is_authorized() or os.path.exists(global_config['gdrive']['token_file']):
             # already authorized
             logger.info('Already authorized to access Google Drive for '
-                        f'{gdrive_downloader.get_user_email()}')
+                        f'{gdrive_downloader.GetUserEmail()}')
             self.statusBar().showMessage('Google Drive authorization already '
                                          'complete for '
-                                         f'{gdrive_downloader.get_user_email()}',
+                                         f'{gdrive_downloader.GetUserEmail()}',
                                          msecs=5000)
 
         elif not os.path.exists(global_config['gdrive']['credentials_file']):

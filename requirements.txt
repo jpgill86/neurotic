@@ -1,11 +1,10 @@
 # av  # required but typically not installable via pip, try `conda install -c conda-forge av`
 ephyviewer>=1.3.0
-google-api-python-client
-google-auth-oauthlib
 neo>=0.7.2
 numpy
 packaging
 pandas
+PyDrive2
 pyqt5
 pyyaml
 quantities

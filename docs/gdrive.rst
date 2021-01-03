@@ -116,7 +116,7 @@ to authorize *neurotic* to access your Google Drive:
     :width: 300
 
 6. When you see this message in your browser, you can close it: "The
-   authorization flow has completed. You may close this window."
+   authentication flow has completed."
 
 The authorization process should now be complete, and you can begin using
 *neurotic* to access and download Google Drive files.

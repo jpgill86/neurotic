@@ -196,8 +196,8 @@ you to structure your metadata with the file tree hierarchy in mind, so that
 relative paths can be used.
 
 For example, with datasets stored in subdirectories "datasets/A", "datasets/B",
-etc., of a Shared Drive titled "Lab Project Data", you
-could use this metadata to mirror the files locally:
+etc., of a Shared Drive titled "Lab Project Data", you could use this metadata
+to mirror the files locally:
 
 .. code-block:: yaml
 
