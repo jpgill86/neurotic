@@ -5,11 +5,6 @@ Installing *neurotic*
 
 *neurotic* requires Python 3.6 or later.
 
-Note that the latest release of one of *neurotic*'s dependencies, pyqtgraph
-0.10.0, is incompatible with Python 3.8 or later on Windows unless that
-dependency is installed via conda-forge (recommended method) (:issue:`details
-<129>`).
-
 .. _installation-installers:
 
 Standalone Installers (recommended for beginners)
