@@ -88,8 +88,9 @@ Remote Data Available for Download
 
 Data files must be stored on the local computer for *neurotic* to load them and
 display their contents. If the files are available for download from a remote
-server, *neurotic* can be configured to download them for you to the local
-directory specified by ``data_dir`` if the files aren't there already.
+server (e.g., a web site, an FTP server, or Google Drive), *neurotic* can be
+configured to download them for you to the local directory specified by
+``data_dir`` if the files aren't there already.
 
 Specify the URL to the directory containing the data on the remote server using
 ``remote_data_dir``. *neurotic* expects the local ``data_dir`` and the
@@ -164,13 +165,56 @@ to the metadata file. In the example above, if the metadata file is located in
 .. note::
 
     **Portability is easy with neurotic!** Use relative paths in your metadata
-    file along with a remotely accessible data store such as GIN_ to make your
-    metadata file fully portable. The example above is a simple model of this
-    style. A metadata file like this can be copied to a different computer, and
-    downloaded files will automatically be saved to the right place. Data
-    stores can be password protected and *neurotic* will prompt you for a user
-    name and password. This makes it easy to share the *neurotic* experience
-    with your colleagues! 🤪
+    file along with a remotely accessible data store such as GIN_ or a Shared
+    Drive on Google Drive (see details below) to make your metadata file fully
+    portable. The example above is a simple model of this style. A metadata
+    file like this can be copied to a different computer, and downloaded files
+    will automatically be saved to the right place. Data stores can be password
+    protected and *neurotic* will prompt you for a user name and password. This
+    makes it easy to share the *neurotic* experience with your colleagues! 🤪
+
+.. _gdrive-urls:
+
+URLs to Use with Google Drive
+.............................
+
+After completing some essential manual setup (see :ref:`gdrive`), *neurotic*
+can retrieve remote files from Google Drive using URL-like paths of the
+following form::
+
+    gdrive://<drive name>/<folder 1>/<...>/<folder N>/<file name>
+
+The ``<drive name>`` may be "``My Drive``" for files located in a personal
+Google Drive, or it may be the name of a Shared Drive that the user has
+permission to access.
+
+Note that these URL-like paths are not equivalent to ordinary URLs
+associated with Google Drive files, such as shareable links, which are
+composed of pseudorandom file IDs and do not reveal anything about the name
+of the file or the folders containing it. Instead, these URL-like paths allow
+you to structure your metadata with the file tree hierarchy in mind, so that
+relative paths can be used.
+
+For example, with datasets stored in subdirectories "datasets/A", "datasets/B",
+etc., of a Shared Drive titled "Lab Project Data", you
+could use this metadata to mirror the files locally:
+
+.. code-block:: yaml
+
+    neurotic_config:
+        remote_data_root:   gdrive://Lab Project Data/datasets
+
+    Dataset A:
+        data_dir:           A
+        remote_data_dir:    A
+        data_file:          data.axgx
+        video_file:         video.mp4
+
+    Dataset B:
+        data_dir:           B
+        remote_data_dir:    B
+        data_file:          data.axgx
+        video_file:         video.mp4
 
 .. _gin-urls:
 

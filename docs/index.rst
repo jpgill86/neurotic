@@ -28,6 +28,7 @@ at the same datasets!
    citations
    metadata
    examples
+   gdrive
    globalconfig
    api
    releasenotes

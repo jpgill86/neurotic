@@ -89,6 +89,12 @@ global_config = {
         'ui_scale': 'medium',
         'theme': 'light',
     },
+    'gdrive': {
+        # parameters for Google Drive access
+        'credentials_file': os.path.join(neurotic_dir, 'gdrive-creds', 'credentials.json'),
+        'token_file': os.path.join(neurotic_dir, 'gdrive-creds', 'gdrive-token.pickle'),
+        'save_token': False,
+    },
 }
 
 # keep a copy of the original config before it is modified
@@ -146,6 +152,14 @@ try:
     update_global_config_from_file()
 except Exception as e:
     logger.error(f'Ignoring global config file due to parsing error ({global_config_file}): {e}')
+
+
+# create directories for storing Google Drive credentials and tokens if
+# necessary
+for file in [global_config['gdrive']['credentials_file'],
+             global_config['gdrive']['token_file']]:
+    if file and not os.path.exists(os.path.dirname(file)):
+        os.mkdir(os.path.dirname(file))
 
 
 from .datasets import *

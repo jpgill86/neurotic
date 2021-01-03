@@ -38,6 +38,7 @@ as ``neurotic.MetadataSelector``.
    api/data
    api/download
    api/ftpauth
+   api/gdrive
    api/metadata
 
 

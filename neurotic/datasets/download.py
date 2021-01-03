@@ -20,7 +20,9 @@ import numpy as np
 from tqdm.auto import tqdm
 
 from urllib.request import HTTPBasicAuthHandler, HTTPPasswordMgrWithDefaultRealm
+from .. import global_config
 from ..datasets.ftpauth import FTPBasicAuthHandler
+from ..datasets.gdrive import GoogleDriveDownloader
 
 import logging
 logger = logging.getLogger(__name__)
@@ -34,11 +36,20 @@ _ftp_auth_handler = FTPBasicAuthHandler()
 _opener = urllib.request.build_opener(_http_auth_handler, _ftp_auth_handler)
 urllib.request.install_opener(_opener)
 
+gdrive_downloader = GoogleDriveDownloader(
+    credentials_file=global_config['gdrive']['credentials_file'],
+    token_file=global_config['gdrive']['token_file'],
+    save_token=global_config['gdrive']['save_token'],
+)
+
 
 def download(url, local_file, overwrite_existing=False, show_progress=True, bytes_per_chunk=1024*8):
     """
     Download a file.
     """
+    if urllib.parse.urlparse(url).scheme == 'gdrive':
+        return gdrive_downloader.download(url, local_file, show_progress=show_progress, bytes_per_chunk=1024*1024*5)
+
     if not overwrite_existing and os.path.exists(local_file):
         logger.info(f'Skipping {os.path.basename(local_file)} (already exists)')
         return
@@ -82,28 +93,28 @@ def download(url, local_file, overwrite_existing=False, show_progress=True, byte
             if error_code == 404:
                 # not found
                 logger.error(f'Skipping {os.path.basename(local_file)} (not found on server)')
-                return
+                raise error
 
             elif error_code == 550:
                 # no such file or folder, or permission denied
                 logger.error(f'Skipping {os.path.basename(local_file)} (not found on server, or user is unauthorized)')
-                return
+                raise error
 
             elif error_code == 10060:
                 # timeout
                 hostname = urllib.parse.urlparse(url).hostname
                 logger.error(f'Skipping {os.path.basename(local_file)} (timed out when connecting to {hostname})')
-                return
+                raise error
 
             elif error_code == 11001:
                 # could not reach server or resolve hostname
                 hostname = urllib.parse.urlparse(url).hostname
                 logger.error(f'Skipping {os.path.basename(local_file)} (cannot connect to {hostname})')
-                return
+                raise error
 
             else:
                 logger.error(f'Encountered a problem: {error}')
-                return
+                raise error
 
 
 def _download_with_progress_bar(url, local_file, show_progress=True, bytes_per_chunk=1024*8):
