@@ -48,32 +48,32 @@ class GoogleDriveDownloader(GoogleDrive):
     tokens to a file so that the authorization flow does not need to be
     repeated in the future.
 
-    The ``credentials_file`` should be the path to a client secrets file in
-    JSON format, obtained from the `Google API
-    Console <https://console.developers.google.com/>`_. The Drive API must be
-    enabled for the corresponding client.
+    The ``client_secret_file`` should be the path to a client secret file in
+    JSON format, obtained from the `Google API Console
+    <https://console.developers.google.com/>`_. The Drive API must be enabled
+    for the corresponding client.
 
-    If ``save_token=False``, the authorization flow (a request via web browser
+    If ``save_tokens=False``, the authorization flow (a request via web browser
     for permission to access Google Drive) will always run the first time a new
     instance of this class is used, and authorization will not persist after
-    the instance is destroyed. If ``save_token=True`` and a file path is
-    provided with ``token_file``, access/refresh tokens resulting from a
+    the instance is destroyed. If ``save_tokens=True`` and a file path is
+    provided with ``tokens_file``, access/refresh tokens resulting from a
     successful authorization are stored in the file, and tokens are loaded from
     the file in the future, so that the authorization flow does not need to be
     repeated.
     """
 
-    def __init__(self, credentials_file, token_file=None, save_token=False):
+    def __init__(self, client_secret_file, tokens_file=None, save_tokens=False):
         """
         Initialize a new GoogleDriveDownloader.
         """
 
         self.settings = {
-            'client_config_file': credentials_file,
+            'client_config_file': client_secret_file,
             'oauth_scope': ['https://www.googleapis.com/auth/drive.readonly'],
-            'save_credentials': save_token,
+            'save_credentials': save_tokens,
             'save_credentials_backend': 'file',
-            'save_credentials_file': token_file
+            'save_credentials_file': tokens_file
         }
 
         GoogleDrive.__init__(self, auth=self._create_auth())
@@ -91,13 +91,13 @@ class GoogleDriveDownloader(GoogleDrive):
         """
         Obtain tokens for reading the contents of a Google Drive account.
 
-        If ``save_token=True``, tokens will be loaded from the ``token_file``
+        If ``save_tokens=True``, tokens will be loaded from the ``tokens_file``
         if possible. If tokens cannot be restored this way, or if the loaded
         tokens have expired, an authorization flow will be initiated, prompting
         the user through a web browser to grant read-only privileges to the
-        client associated with the ``credentials_file``. When the authorization
-        flow completes, if ``save_token=True``, the newly created tokens will
-        be stored in the ``token_file`` for future use.
+        client associated with the ``client_secret_file``. When the
+        authorization flow completes, if ``save_tokens=True``, the newly
+        created tokens will be stored in the ``tokens_file`` for future use.
 
         Authorization is performed automatically when needed, but this method
         can be called directly to retrieve (and possibly store) tokens without
@@ -108,7 +108,7 @@ class GoogleDriveDownloader(GoogleDrive):
 
     def deauthorize(self):
         """
-        Forget tokens and delete the ``token_file``. The authorization flow
+        Forget tokens and delete the ``tokens_file``. The authorization flow
         will be required for the next download.
         """
         if os.path.exists(self.settings['save_credentials_file']):
