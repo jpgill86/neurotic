@@ -2,6 +2,7 @@
 # Use this file to configure the way neurotic behaves. This file uses the TOML
 # format.
 
+
 [defaults]
 # When the app is launched, the following customizable defaults are used unless
 # overridden by command line arguments. Example uses include:
@@ -23,3 +24,18 @@
 # show_datetime = false
 # ui_scale = "medium"
 # theme = "light"
+
+
+[gdrive]
+# The "save_token" parameter controls how often you need to authorize neurotic
+# to access your Google Drive account for downloads:
+#   - Set "save_token" to true to remember Google Drive access tokens after
+#     authorization, so that permissions only need to be granted once. This is
+#     not recommended if others you do not trust have access to this computer,
+#     as it could let them download files from your Google Drive account.
+#   - Set "save_token" to false or leave it commented to forget access
+#     authorization after neurotic closes. Each time you restart neurotic, you
+#     will be required to re-grant permissions when you download a Google Drive
+#     file.
+
+# save_token = false

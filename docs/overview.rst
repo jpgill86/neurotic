@@ -44,9 +44,9 @@ To use *neurotic*, first organize your datasets in a *metadata file* like this
 
 Open your metadata file in *neurotic* and choose a dataset. If the data and
 video files aren't already on your local computer, the app can download them
-for you, even from a password-protected server. Finally, click launch and the
-app will use a standard viewer layout to display your data to you using
-ephyviewer_.
+for you, even from a password-protected server or from Google Drive. Finally,
+click launch and the app will use a standard viewer layout to display your data
+to you using ephyviewer_.
 
 |Example screenshot|
 
@@ -76,12 +76,12 @@ Electrophysiologists will find this tool useful even if they don't need the
 video synchronization feature!
 
 **Portability is easy with neurotic!** Use relative paths in your metadata file
-along with a remotely accessible data store such as GIN_ to make your metadata
-file fully portable. The same metadata file can be copied to a different
-computer, and downloaded files will automatically be saved to the right place.
-Data stores can be password protected and *neurotic* will prompt you for a user
-name and password. This makes it easy to share the *neurotic* experience with
-your colleagues! 🤪
+along with a remotely accessible data store such as GIN_ or a Shared Drive on
+Google Drive to make your metadata file fully portable. The same metadata file
+can be copied to a different computer, and downloaded files will automatically
+be saved to the right place. Data stores can be password protected and
+*neurotic* will prompt you for a user name and password. This makes it easy to
+share the *neurotic* experience with your colleagues! 🤪
 
 
 .. |Example screenshot| image:: _static/example-screenshot.png
