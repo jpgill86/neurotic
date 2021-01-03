@@ -91,9 +91,9 @@ global_config = {
     },
     'gdrive': {
         # parameters for Google Drive access
-        'credentials_file': os.path.join(neurotic_dir, 'gdrive-creds', 'credentials.json'),
-        'token_file': os.path.join(neurotic_dir, 'gdrive-creds', 'gdrive-token.pickle'),
-        'save_token': False,
+        'client_secret_file': os.path.join(neurotic_dir, 'gdrive-creds', 'client_secret.json'),
+        'tokens_file': os.path.join(neurotic_dir, 'gdrive-creds', 'tokens.json'),
+        'save_tokens': False,
     },
 }
 
@@ -154,10 +154,9 @@ except Exception as e:
     logger.error(f'Ignoring global config file due to parsing error ({global_config_file}): {e}')
 
 
-# create directories for storing Google Drive credentials and tokens if
-# necessary
-for file in [global_config['gdrive']['credentials_file'],
-             global_config['gdrive']['token_file']]:
+# create directories for storing Google Drive credentials if necessary
+for file in [global_config['gdrive']['client_secret_file'],
+             global_config['gdrive']['tokens_file']]:
     if file and not os.path.exists(os.path.dirname(file)):
         os.mkdir(os.path.dirname(file))
 

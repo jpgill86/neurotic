@@ -37,9 +37,9 @@ _opener = urllib.request.build_opener(_http_auth_handler, _ftp_auth_handler)
 urllib.request.install_opener(_opener)
 
 gdrive_downloader = GoogleDriveDownloader(
-    credentials_file=global_config['gdrive']['credentials_file'],
-    token_file=global_config['gdrive']['token_file'],
-    save_token=global_config['gdrive']['save_token'],
+    client_secret_file=global_config['gdrive']['client_secret_file'],
+    tokens_file=global_config['gdrive']['tokens_file'],
+    save_tokens=global_config['gdrive']['save_tokens'],
 )
 
 

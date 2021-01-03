@@ -494,7 +494,7 @@ class MainWindow(QT.QMainWindow):
         Open the Google Drive credentials directory.
         """
 
-        gdrive_creds_dir = os.path.dirname(global_config['gdrive']['credentials_file'])
+        gdrive_creds_dir = os.path.dirname(global_config['gdrive']['client_secret_file'])
         try:
             open_path_with_default_program(gdrive_creds_dir)
         except FileNotFoundError as e:
@@ -507,20 +507,20 @@ class MainWindow(QT.QMainWindow):
         """
         Trigger the Google Drive authorization flow if necessary.
         """
-        if gdrive_downloader.is_authorized() or os.path.exists(global_config['gdrive']['token_file']):
+        if gdrive_downloader.is_authorized() or os.path.exists(global_config['gdrive']['tokens_file']):
             # already authorized
             logger.info('Already authorized to access Google Drive for '
-                        f'{gdrive_downloader.get_user_email()}')
+                        f'{gdrive_downloader.GetUserEmail()}')
             self.statusBar().showMessage('Google Drive authorization already '
                                          'complete for '
-                                         f'{gdrive_downloader.get_user_email()}',
+                                         f'{gdrive_downloader.GetUserEmail()}',
                                          msecs=5000)
 
-        elif not os.path.exists(global_config['gdrive']['credentials_file']):
-            # missing credentials file
+        elif not os.path.exists(global_config['gdrive']['client_secret_file']):
+            # missing client secret file
             logger.error('Google Drive authorization could not begin due to '
-                         'missing credentials file')
-            self.statusBar().showMessage('ERROR: Missing credentials file',
+                         'missing client secret file')
+            self.statusBar().showMessage('ERROR: Missing client secret file',
                                          msecs=5000)
 
         else:
@@ -633,7 +633,7 @@ class MainWindow(QT.QMainWindow):
         urls['GitHub user'] = 'https://github.com/jpgill86'
         urls['PyPI'] = 'https://pypi.org/project/neurotic'
 
-        gdrive_creds_dir = os.path.dirname(global_config['gdrive']['credentials_file'])
+        gdrive_creds_dir = os.path.dirname(global_config['gdrive']['client_secret_file'])
 
         text = f"""
         <h2><i>neurotic</i> {__version__}</h2>

@@ -9,23 +9,17 @@ files from Google Drive using paths, rather than file IDs or shareable links.
 
 import os
 import shutil
-import json
-import pickle
 import urllib
 from functools import reduce
 from tqdm.auto import tqdm
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaIoBaseDownload
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
+from pydrive2.auth import GoogleAuth, LoadAuth
+from pydrive2.drive import GoogleDrive
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-class GoogleDriveDownloader():
+class GoogleDriveDownloader(GoogleDrive):
     """
     A class for downloading files from Google Drive using paths.
 
@@ -54,112 +48,96 @@ class GoogleDriveDownloader():
     tokens to a file so that the authorization flow does not need to be
     repeated in the future.
 
-    The ``credentials_file`` should be the path to a client secrets file in
-    JSON format, obtained from the `Google API
-    Console <https://console.developers.google.com/>`_. The Drive API must be
-    enabled for the corresponding client.
+    The ``client_secret_file`` should be the path to a client secret file in
+    JSON format, obtained from the `Google API Console
+    <https://console.developers.google.com/>`_. The Drive API must be enabled
+    for the corresponding client.
 
-    If ``save_token=False``, the authorization flow (a request via web browser
+    If ``save_tokens=False``, the authorization flow (a request via web browser
     for permission to access Google Drive) will always run the first time a new
     instance of this class is used, and authorization will not persist after
-    the instance is destroyed. If ``save_token=True`` and a file path is
-    provided with ``token_file``, access/refresh tokens resulting from a
-    successful authorization are pickled and stored in the file, and tokens are
-    loaded from the file in the future, so that the authorization flow does not
-    need to be repeated.
+    the instance is destroyed. If ``save_tokens=True`` and a file path is
+    provided with ``tokens_file``, access/refresh tokens resulting from a
+    successful authorization are stored in the file, and tokens are loaded from
+    the file in the future, so that the authorization flow does not need to be
+    repeated.
     """
 
-    def __init__(self, credentials_file, token_file=None, save_token=False):
+    def __init__(self, client_secret_file, tokens_file=None, save_tokens=False):
         """
         Initialize a new GoogleDriveDownloader.
         """
 
-        self.credentials_file = credentials_file
-        self.token_file = token_file
-        self.save_token = save_token
+        self.settings = {
+            'client_config_file': client_secret_file,
+            'oauth_scope': ['https://www.googleapis.com/auth/drive.readonly'],
+            'save_credentials': save_tokens,
+            'save_credentials_backend': 'file',
+            'save_credentials_file': tokens_file
+        }
 
-        self._creds = None
-        self._service = None
+        GoogleDrive.__init__(self, auth=self._create_auth())
 
+    def _create_auth(self):
+        """
+        Create a GoogleAuth object with the correct settings.
+        """
+        auth = GoogleAuth()
+        auth.settings.update(self.settings)
+        return auth
+
+    @LoadAuth
     def authorize(self):
         """
         Obtain tokens for reading the contents of a Google Drive account.
 
-        If ``save_token=True``, tokens will be loaded from the ``token_file``
+        If ``save_tokens=True``, tokens will be loaded from the ``tokens_file``
         if possible. If tokens cannot be restored this way, or if the loaded
         tokens have expired, an authorization flow will be initiated, prompting
         the user through a web browser to grant read-only privileges to the
-        client associated with the ``credentials_file``. When the authorization
-        flow completes, if ``save_token=True``, the newly created tokens will
-        be stored in the ``token_file`` for future use.
+        client associated with the ``client_secret_file``. When the
+        authorization flow completes, if ``save_tokens=True``, the newly
+        created tokens will be stored in the ``tokens_file`` for future use.
 
-        This method is executed automatically when needed, but it can be called
-        directly to retrieve (and possibly store) tokens without initiating a
-        download.
+        Authorization is performed automatically when needed, but this method
+        can be called directly to retrieve (and possibly store) tokens without
+        initiating a download.
         """
-        if not self._creds:
-            creds = None
-
-            # load access and refresh tokens from a file if possible
-            if self.save_token and self.token_file and os.path.exists(self.token_file):
-                with open(self.token_file, 'rb') as token:
-                    creds = pickle.load(token)
-
-            if not creds or not creds.valid:
-                if creds and creds.expired and creds.refresh_token:
-                    # refresh the tokens if they have expired
-                    creds.refresh(Request())
-                else:
-                    # run the authorization flow, letting the user log in and
-                    # grant privileges through a web browser
-                    if not os.path.exists(self.credentials_file):
-                        raise FileNotFoundError(f'missing Google Drive API credentials file "{self.credentials_file}"')
-                    scopes = ['https://www.googleapis.com/auth/drive.readonly']
-                    flow = InstalledAppFlow.from_client_secrets_file(
-                        self.credentials_file, scopes)
-                    creds = flow.run_local_server(port=0)
-
-                # save the tokens to a file so that the authorization flow can
-                # be skipped in the future
-                if self.save_token and self.token_file:
-                    with open(self.token_file, 'wb') as token:
-                        pickle.dump(creds, token)
-
-            self._creds = creds
+        # the LoadAuth decorator does all the work
+        return
 
     def deauthorize(self):
         """
-        Forget tokens and delete the ``token_file``. The authorization flow
+        Forget tokens and delete the ``tokens_file``. The authorization flow
         will be required for the next download.
         """
-        self._creds = None
-        self._service = None
-        if os.path.exists(self.token_file):
-            os.remove(self.token_file)
+        if os.path.exists(self.settings['save_credentials_file']):
+            os.remove(self.settings['save_credentials_file'])
+        del self.auth
+        self.auth = self._create_auth()
 
     def is_authorized(self):
         """
         Get the current authorization state.
         """
-        return isinstance(self._creds, Credentials) and self._creds.valid
+        return (self.auth is not None and
+                self.auth.credentials is not None and
+                self.auth.service is not None)
 
-    def _get_service(self):
-        """
-        Get an authorized googleapiclient Resource for executing API calls.
-        """
-        if not self._service:
-            if not self.is_authorized():
-                self.authorize()
-            self._service = build('drive', 'v3', credentials=self._creds)
-        return self._service
-
-    def get_user_email(self):
+    @LoadAuth
+    def GetUserEmail(self):
         """
         Get the email address for the authorized Google Drive account.
         """
-        results = self._get_service().about().get(fields='user(emailAddress)').execute()
-        email = results.get('user', {}).get('emailAddress', 'unknown email')
-        return email
+        return self.GetAbout()['user']['emailAddress']
+
+    @LoadAuth
+    def GetSharedDrivesList(self):
+        """
+        Return information about available Shared Drives.
+        """
+        # no PyDrive2 interface for this, so implement it here
+        return self.auth.service.drives().list().execute(http=self.http)
 
     def download(self, gdrive_url, local_file, overwrite_existing=False, show_progress=True, bytes_per_chunk=1024*1024*5):
         """
@@ -173,22 +151,7 @@ class GoogleDriveDownloader():
         logger.info(f'Downloading {os.path.basename(local_file)}')
         try:
             self._download_with_progress_bar(gdrive_url, local_file, show_progress=show_progress, bytes_per_chunk=bytes_per_chunk)
-
-        except HttpError as e:
-
-            error_code = json.loads(e.args[1]).get('error', {}).get('code', None)
-
-            if error_code == 404:
-                # not found
-                logger.error(f'Skipping {os.path.basename(local_file)} (not found on server for account "{self.get_user_email()}")')
-                raise
-
-            else:
-                logger.error(f'Skipping {os.path.basename(local_file)} ({e})')
-                raise
-
         except Exception as e:
-
             logger.error(f'Skipping {os.path.basename(local_file)} ({e})')
             raise
 
@@ -197,13 +160,13 @@ class GoogleDriveDownloader():
         Download while showing a progress bar.
         """
         # TODO: bytes_per_chunk=1024*1024*100 (100 MiB) would match
-        # MediaIoBaseDownload's default chunk size and seems to be
-        # significantly faster than smaller values, suggesting chunk fetching
-        # incurs a large overhead. Unfortunately, such a large chunk size would
-        # prevent the progress bar from updating frequently. As a compromise,
-        # the chunk size used by this method is just 5 MiB, which is a little
-        # larger than is ideal for progress reporting and yet still noticeably
-        # slows downloads. Is there a better solution?
+        # googleapiclient.http.MediaIoBaseDownload's default chunk size and
+        # seems to be significantly faster than smaller values, suggesting
+        # chunk fetching incurs a large overhead. Unfortunately, such a large
+        # chunk size would prevent the progress bar from updating frequently.
+        # As a compromise, the chunk size used by this method is just 5 MiB,
+        # which is a little larger than is ideal for progress reporting and yet
+        # still noticeably slows downloads. Is there a better solution?
 
         # determine where to temporarily save the file during download
         temp_file = local_file + '.part'
@@ -216,25 +179,15 @@ class GoogleDriveDownloader():
         # locate the Google Drive file
         file_id = self._get_file_id(gdrive_url)
         if file_id is None:
-            raise ValueError(f'error locating file on server for account "{self.get_user_email()}"')
-
-        # knowing the file size allows progress to be displayed
-        file_size_in_bytes = int(self._get_service().files().get(
-            fileId=file_id, supportsAllDrives=True,
-            fields='size').execute().get('size', 0))
+            raise ValueError(f'error locating file on server for account "{self.GetUserEmail()}"')
+        file = self.CreateFile({'id': file_id})
 
         try:
-            with open(temp_file, 'wb') as f:
-                request = self._get_service().files().get_media(fileId=file_id)
-                downloader = MediaIoBaseDownload(f, request, chunksize=bytes_per_chunk)
-                with tqdm(total=file_size_in_bytes, unit='B', unit_scale=True) as pbar:
-                    done = False
-                    while done is False:
-                        status, done = downloader.next_chunk()
-
-                        # set progress to the exact number of bytes downloaded so far
-                        pbar.n = status.resumable_progress
-                        pbar.update()
+            with tqdm(total=int(file['fileSize']), unit='B', unit_scale=True) as pbar:
+                def update_pbar(total_transferred, file_size):
+                    pbar.n = total_transferred
+                    pbar.update()
+                file.GetContentFile(temp_file, callback=update_pbar, chunksize=bytes_per_chunk)
 
         except:
             # the download is likely incomplete, so delete the temporary file
@@ -268,15 +221,15 @@ class GoogleDriveDownloader():
         elif drive_name == 'My Drive':
             drive_id = 'root'
         else:
-            # search for all drives with a matching name
-            drives = self._get_service().drives().list().execute().get('drives', [])
+            # search for all Shared Drives with a matching name
+            drives = self.GetSharedDrivesList().get('items', [])
             drives = [drive for drive in drives if drive['name'] == drive_name]
 
             # make sure the drive is unique
             if len(drives) == 0:
-                raise ValueError(f'drive "{drive_name}" not found on server for account "{self.get_user_email()}"')
+                raise ValueError(f'drive "{drive_name}" not found on server for account "{self.GetUserEmail()}"')
             elif len(drives) > 1:
-                raise ValueError(f'ambigous path, multiple drives with name "{drive_name}" exist on server for account "{self.get_user_email()}"')
+                raise ValueError(f'ambigous path, multiple drives with name "{drive_name}" exist on server for account "{self.GetUserEmail()}"')
             else:
                 drive_id = drives[0]['id']
 
@@ -292,16 +245,14 @@ class GoogleDriveDownloader():
         ``child_name`` located in a folder or drive with ID ``parent_id``.
         """
         # search for all files with a matching name and parent id
-        items = self._get_service().files().list(
-            supportsAllDrives=True, includeItemsFromAllDrives=True,
-            q=f'name="{child_name}" and "{parent_id}" in parents and trashed=false',
-            fields="nextPageToken, files(id)").execute().get('files', [])
+        items = self.ListFile({'q': f'title="{child_name}" and "{parent_id}" '
+                                    'in parents and trashed=false'}).GetList()
 
         # make sure the file is unique
         if len(items) == 0:
-            raise ValueError(f'file or folder "{child_name}" not found on server for account "{self.get_user_email()}"')
+            raise ValueError(f'file or folder "{child_name}" not found on server for account "{self.GetUserEmail()}"')
         elif len(items) > 1:
-            raise ValueError(f'ambiguous path, multiple files or folders with the name "{child_name}" exist under their parent folder on server for account "{self.get_user_email()}"')
+            raise ValueError(f'ambiguous path, multiple files or folders with the name "{child_name}" exist under their parent folder on server for account "{self.GetUserEmail()}"')
         else:
             child_id = items[0]['id']
 
