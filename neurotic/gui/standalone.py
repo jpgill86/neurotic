@@ -801,6 +801,8 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
         self.layout = QT.QGridLayout()
         self.setLayout(self.layout)
 
+        self.metadata_widgets = {}
+
         # DATASET LIST
 
         self.dataset_list = QT.QListWidget(self)
@@ -818,21 +820,21 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
 
         # DATA DIR
 
-        metadata_data_dir_label = QT.QLabel('Data directory:')
-        self.layout.addWidget(metadata_data_dir_label, 1, 0)
+        label = QT.QLabel('Data directory:')
+        self.layout.addWidget(label, 1, 0)
 
-        self.metadata_data_dir = QT.QLineEdit()
-        self.metadata_data_dir.setReadOnly(True)
-        self.layout.addWidget(self.metadata_data_dir, 1, 1)
+        self.metadata_widgets['data_dir'] = QT.QLineEdit()
+        self.metadata_widgets['data_dir'].setReadOnly(True)
+        self.layout.addWidget(self.metadata_widgets['data_dir'], 1, 1)
 
         # DATA FILE
 
-        metadata_data_file_label = QT.QLabel('Data file:')
-        self.layout.addWidget(metadata_data_file_label, 2, 0)
+        label = QT.QLabel('Data file:')
+        self.layout.addWidget(label, 2, 0)
 
-        self.metadata_data_file = QT.QLineEdit()
-        self.metadata_data_file.setReadOnly(True)
-        self.layout.addWidget(self.metadata_data_file, 2, 1)
+        self.metadata_widgets['data_file'] = QT.QLineEdit()
+        self.metadata_widgets['data_file'].setReadOnly(True)
+        self.layout.addWidget(self.metadata_widgets['data_file'], 2, 1)
 
         # STRETCHY EMPTY ROW
         # TODO: this is temporary, delete when done
@@ -855,8 +857,8 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
         if currentRow >= 0:
             self._selection = list(self.all_metadata)[currentRow]
 
-            self.metadata_data_dir.setText(self.get('data_dir', ''))
-            self.metadata_data_file.setText(self.get('data_file', ''))
+            self.metadata_widgets['data_dir'].setText(self.get('data_dir', ''))
+            self.metadata_widgets['data_file'].setText(self.get('data_file', ''))
 
             # TODO: this is temporary, delete when done
             from pprint import pformat
