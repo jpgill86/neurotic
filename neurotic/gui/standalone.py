@@ -798,11 +798,14 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
 
         self.mainwindow = mainwindow
 
-        self.layout = QT.QVBoxLayout()
+        self.layout = QT.QGridLayout()
         self.setLayout(self.layout)
 
+        # DATASET LIST
+
         self.dataset_list = QT.QListWidget(self)
-        self.layout.addWidget(self.dataset_list)
+        self.dataset_list.setFixedHeight(150)
+        self.layout.addWidget(self.dataset_list, 0, 0, 1, 2)
 
         self.dataset_list.setSelectionMode(QT.QListWidget.SingleSelection)
 
@@ -813,8 +816,35 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
         self.dataset_list.currentRowChanged.connect(self._on_select)
         self.dataset_list.itemDoubleClicked.connect(self.mainwindow.start_launch)
 
-        self.my_text_edit = QT.QTextEdit()
-        self.layout.addWidget(self.my_text_edit)
+        # DATA DIR
+
+        metadata_data_dir_label = QT.QLabel('Data directory:')
+        self.layout.addWidget(metadata_data_dir_label, 1, 0)
+
+        self.metadata_data_dir = QT.QLineEdit()
+        self.metadata_data_dir.setReadOnly(True)
+        self.layout.addWidget(self.metadata_data_dir, 1, 1)
+
+        # DATA FILE
+
+        metadata_data_file_label = QT.QLabel('Data file:')
+        self.layout.addWidget(metadata_data_file_label, 2, 0)
+
+        self.metadata_data_file = QT.QLineEdit()
+        self.metadata_data_file.setReadOnly(True)
+        self.layout.addWidget(self.metadata_data_file, 2, 1)
+
+        # STRETCHY EMPTY ROW
+        # TODO: this is temporary, delete when done
+
+        self.layout.setRowStretch(3, 2)
+
+        # PRINT ALL METADATA IN A TEXT BOX FOR REFERENCE
+        # TODO: this is temporary, delete when done
+
+        self.metadata_print_all = QT.QTextEdit()
+        self.metadata_print_all.setFixedHeight(100)
+        self.layout.addWidget(self.metadata_print_all, 4, 0, 1, 2)
 
     def _on_select(self, currentRow):
         """
@@ -825,8 +855,12 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
         if currentRow >= 0:
             self._selection = list(self.all_metadata)[currentRow]
 
+            self.metadata_data_dir.setText(self.get('data_dir', ''))
+            self.metadata_data_file.setText(self.get('data_file', ''))
+
+            # TODO: this is temporary, delete when done
             from pprint import pformat
-            self.my_text_edit.setText(pformat(self.selected_metadata))
+            self.metadata_print_all.setText(pformat(self.selected_metadata))
         else:
             self._selection = None
 
