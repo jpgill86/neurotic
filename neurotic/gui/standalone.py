@@ -798,8 +798,14 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
 
         self.mainwindow = mainwindow
 
-        self.layout = QT.QGridLayout()
-        self.setLayout(self.layout)
+        grid = QT.QGridLayout()
+        # self.setLayout(grid)  # TODO: uncomment after we're done with vbox
+
+        # TODO: vbox exists so that metadata_print_all can be temporarilly
+        # stacked below the grid, delete when done
+        vbox = QT.QVBoxLayout()
+        self.setLayout(vbox)
+        vbox.addLayout(grid)
 
         self.metadata_widgets = {}
 
@@ -807,7 +813,7 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
 
         self.dataset_list = QT.QListWidget(self)
         self.dataset_list.setFixedHeight(150)
-        self.layout.addWidget(self.dataset_list, 0, 0, 1, 2)
+        grid.addWidget(self.dataset_list, 0, 0, 1, 2)
 
         self.dataset_list.setSelectionMode(QT.QListWidget.SingleSelection)
 
@@ -821,32 +827,28 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
         # DATA DIR
 
         label = QT.QLabel('Data directory:')
-        self.layout.addWidget(label, 1, 0)
+        grid.addWidget(label, 1, 0)
 
         self.metadata_widgets['data_dir'] = QT.QLineEdit()
         self.metadata_widgets['data_dir'].setReadOnly(True)
-        self.layout.addWidget(self.metadata_widgets['data_dir'], 1, 1)
+        grid.addWidget(self.metadata_widgets['data_dir'], 1, 1)
 
         # DATA FILE
 
         label = QT.QLabel('Data file:')
-        self.layout.addWidget(label, 2, 0)
+        grid.addWidget(label, 2, 0)
 
         self.metadata_widgets['data_file'] = QT.QLineEdit()
         self.metadata_widgets['data_file'].setReadOnly(True)
-        self.layout.addWidget(self.metadata_widgets['data_file'], 2, 1)
+        grid.addWidget(self.metadata_widgets['data_file'], 2, 1)
 
-        # STRETCHY EMPTY ROW
-        # TODO: this is temporary, delete when done
-
-        self.layout.setRowStretch(3, 2)
 
         # PRINT ALL METADATA IN A TEXT BOX FOR REFERENCE
         # TODO: this is temporary, delete when done
-
         self.metadata_print_all = QT.QTextEdit()
         self.metadata_print_all.setFixedHeight(100)
-        self.layout.addWidget(self.metadata_print_all, 4, 0, 1, 2)
+        vbox.addStretch()
+        vbox.addWidget(self.metadata_print_all)
 
     def _on_select(self, currentRow):
         """
@@ -863,6 +865,7 @@ class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
             # TODO: this is temporary, delete when done
             from pprint import pformat
             self.metadata_print_all.setText(pformat(self.selected_metadata))
+
         else:
             self._selection = None
 
