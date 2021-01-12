@@ -19,7 +19,6 @@ at the same datasets!
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: Table of Contents
 
    overview
    install
