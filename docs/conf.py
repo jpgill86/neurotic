@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'neurotic'
-copyright = '2020, Jeffrey Gill'
+copyright = '2021, Jeffrey Gill'
 author = 'Jeffrey Gill'
 
 import neurotic
