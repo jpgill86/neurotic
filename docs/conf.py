@@ -100,11 +100,7 @@ html_theme_options = {
 }
 
 # Values to pass into the template engine's context for all pages.
-html_context = {
-    'css_files': [
-        '_static/theme_overrides.css',  # italicise neurotic in alabaster theme
-    ],
-}
+# html_context = {}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

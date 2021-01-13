@@ -1,3 +1,7 @@
+# these restricted versions are defaults on ReadTheDocs, so use the same in
+# local builds and in tests
 sphinx<2
-readthedocs-sphinx-ext<1.1
+readthedocs-sphinx-ext<2.2
+
+# for inserting CLI usage printout into docs
 sphinxcontrib-programoutput
