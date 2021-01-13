@@ -1,0 +1,7 @@
+# configuration of coverage.py
+# https://coverage.readthedocs.io
+
+[report]
+omit =
+    neurotic/gui/icons/make_resources.py
+    neurotic/tests/*
