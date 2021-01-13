@@ -16,10 +16,13 @@ at the same datasets!
 
 |Example screenshot|
 
+.. _toc:
+
+Table of Contents
+-----------------
+
 .. toctree::
    :maxdepth: 2
-   :hidden:
-   :caption: Table of Contents
 
    overview
    install

@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'neurotic'
-copyright = '2020, Jeffrey Gill'
+copyright = '2021, Jeffrey Gill'
 author = 'Jeffrey Gill'
 
 import neurotic
@@ -83,18 +83,26 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'description': 'Curate, visualize, annotate, and share your behavioral '
+                   'ephys data using Python',
+    'description_font_style': 'italic',
+    'font_family': 'Arial',
+    'page_width': '1200px',  # default is 940
+    'sidebar_width': '280px',  # default is 220
+    'show_relbars': True,
+}
 
 # Values to pass into the template engine's context for all pages.
 html_context = {
     'css_files': [
-        '_static/theme_overrides.css',  # override wide tables in RTD theme
+        '_static/theme_overrides.css',  # italicise neurotic in alabaster theme
     ],
 }
 
@@ -111,11 +119,21 @@ html_static_path = ['_static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {}
+# This is required for the alabaster theme
+# refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+        'relations.html',  # needs 'show_related': True theme option to display
+        'searchbox.html',
+        # 'donate.html',
+    ]
+}
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = '_static/neurotic-logo-banner.svg'
+html_logo = '_static/neurotic-logo-150.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32

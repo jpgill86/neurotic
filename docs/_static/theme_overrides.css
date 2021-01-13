@@ -1,21 +1,4 @@
-/* override table width restrictions */
-@media screen and (min-width: 767px) {
-
-   .wy-table-responsive table td {
-      /* !important prevents the common CSS stylesheets from overriding
-         this as on RTD they are loaded after this stylesheet */
-      white-space: normal !important;
-   }
-
-   .wy-table-responsive {
-      overflow: visible !important;
-   }
-}
-
-/* override navigation background color */
-.wy-nav-top {
-    background-color: #C23B92 !important;
-}
-.wy-side-nav-search {
-    background-color: #C23B92 !important;
+/* italicise neurotic under logo */
+div.sphinxsidebarwrapper h1.logo {
+    font-style: italic;
 }
