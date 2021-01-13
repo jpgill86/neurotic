@@ -61,14 +61,10 @@ jobs:
         - name: Report coverage to Coveralls
           run: coveralls
           env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              COVERALLS_FLAG_NAME: test-linux-${{ matrix.python-version }}
-              COVERALLS_PARALLEL: true
-
-        # - name: Report coverage to Coveralls
-        #   uses: coverallsapp/github-action@master
-        #   with:
-        #     github-token: ${{ secrets.GITHUB_TOKEN }}
+            COVERALLS_SERVICE_NAME: github
+            COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            COVERALLS_FLAG_NAME: test-linux-${{ matrix.python-version }}
+            COVERALLS_PARALLEL: true
 
   coveralls:
     name: Finish Coveralls
@@ -81,4 +77,5 @@ jobs:
         pip3 install --upgrade coveralls
         coveralls --finish
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COVERALLS_SERVICE_NAME: github
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
