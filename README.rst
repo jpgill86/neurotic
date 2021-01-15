@@ -5,8 +5,7 @@
 
 :Distributions: |PyPI badge| |Anaconda badge| |Installers badge|
 :Source Code:   |GitHub badge| |Feedstock badge| |Constructor badge|
-:Tests Status:  |GitHub Actions badge| |Azure badge| |Coverage badge|
-:Documentation: |Docs badge|
+:Tests Status:  |GitHub Actions badge| |Azure badge| |Docs badge| |Coverage badge|
 :Citing:        |Zenodo badge| |eNeuro badge|
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
@@ -356,13 +355,13 @@ reference guide, release notes, and more, see the Documentation_.
     :target: `conda-forge CI`_
     :alt: conda-forge build status
 
-.. |Coverage badge| image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
-    :target: Coveralls_
-    :alt: Coverage status
-
 .. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
     :target: ReadTheDocs_
     :alt: Documentation status
+
+.. |Coverage badge| image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
+    :target: Coveralls_
+    :alt: Coverage status
 
 .. |Zenodo badge| image:: https://img.shields.io/badge/DOI-10.5281/zenodo.3564990-blue.svg
     :target: Zenodo_
