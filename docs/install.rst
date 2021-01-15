@@ -58,7 +58,6 @@ Windows. The easiest way to separately install PyAV is using conda_::
 .. _conda:              https://docs.conda.io/projects/conda/en/latest/user-guide/install/
 .. _conda constructor:  https://github.com/conda/constructor
 .. _constructor recipe: https://github.com/jpgill86/neurotic-constructor
-.. _ephyviewer:         https://github.com/NeuralEnsemble/ephyviewer
 .. _GitHub:             https://github.com/jpgill86/neurotic
 .. _GitHub Releases:    https://github.com/jpgill86/neurotic/releases
 .. _PyAV:               https://docs.mikeboers.com/pyav/develop/overview/installation.html

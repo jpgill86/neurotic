@@ -3,7 +3,11 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |GitHub Actions badge| |Azure badge| |Coverage badge| |Zenodo badge| |eNeuro badge|
+:Distributions: |PyPI badge| |Anaconda badge| |Installers badge|
+:Source Code:   |GitHub badge| |Feedstock badge| |Constructor badge|
+:Tests Status:  |GitHub Actions badge| |Azure badge| |Coverage badge|
+:Documentation: |Docs badge|
+:Citing:        |Zenodo badge| |eNeuro badge|
 
 Documentation_ | `Release Notes`_ | `Issue Tracker`_
 
@@ -328,6 +332,10 @@ reference guide, release notes, and more, see the Documentation_.
     :target: `Anaconda Cloud`_
     :alt: Anaconda Cloud project
 
+.. |Installers badge| image:: https://img.shields.io/github/v/release/jpgill86/neurotic?label=installers&logo=github&logoColor=white&sort=semver
+    :target: `GitHub Releases`_
+    :alt: Installers
+
 .. |GitHub badge| image:: https://img.shields.io/badge/github-source_code-blue.svg?logo=github&logoColor=white
     :target: GitHub_
     :alt: GitHub source code
@@ -340,11 +348,7 @@ reference guide, release notes, and more, see the Documentation_.
     :target: `constructor recipe`_
     :alt: constructor recipe
 
-.. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
-    :target: ReadTheDocs_
-    :alt: Documentation status
-
-.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg?branch=master
+.. |GitHub Actions badge| image:: https://img.shields.io/github/workflow/status/jpgill86/neurotic/tests/master?label=tests&logo=github&logoColor=white
     :target: `GitHub Actions`_
     :alt: Tests status
 
@@ -355,6 +359,10 @@ reference guide, release notes, and more, see the Documentation_.
 .. |Coverage badge| image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
     :target: Coveralls_
     :alt: Coverage status
+
+.. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
+    :target: ReadTheDocs_
+    :alt: Documentation status
 
 .. |Zenodo badge| image:: https://img.shields.io/badge/DOI-10.5281/zenodo.3564990-blue.svg
     :target: Zenodo_
@@ -378,13 +386,13 @@ reference guide, release notes, and more, see the Documentation_.
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _Documentation:  https://neurotic.readthedocs.io/en/latest
 .. _eNeuro:         https://doi.org/10.1523/ENEURO.0085-20.2020
-.. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _ephyviewer:     https://ephyviewer.readthedocs.io/en/latest
 .. _GIN:            https://gin.g-node.org
 .. _GitHub:         https://github.com/jpgill86/neurotic
 .. _GitHub Actions: https://github.com/jpgill86/neurotic/actions?query=workflow%3Atests
 .. _GitHub Releases: https://github.com/jpgill86/neurotic/releases
 .. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
-.. _Neo:            https://github.com/NeuralEnsemble/python-neo
+.. _Neo:            https://neo.readthedocs.io/en/latest
 .. _neo.io:         https://neo.readthedocs.io/en/latest/io.html#module-neo.io
 .. _PyAV:           https://docs.mikeboers.com/pyav/develop/overview/installation.html
 .. _PyPI:           https://pypi.org/project/neurotic
