@@ -66,7 +66,7 @@ development version of ephyviewer_, which you can get using ::
 
 
 .. _conda:              https://docs.conda.io/projects/conda/en/latest/user-guide/install/
-.. _ephyviewer:         https://github.com/NeuralEnsemble/ephyviewer
+.. _ephyviewer:         https://ephyviewer.readthedocs.io/en/latest
 .. _GitHub:             https://github.com/jpgill86/neurotic
 .. _GitHub Releases:    https://github.com/jpgill86/neurotic/releases
 .. _PyPI:               https://pypi.org/project/neurotic

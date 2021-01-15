@@ -386,13 +386,13 @@ reference guide, release notes, and more, see the Documentation_.
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _Documentation:  https://neurotic.readthedocs.io/en/latest
 .. _eNeuro:         https://doi.org/10.1523/ENEURO.0085-20.2020
-.. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _ephyviewer:     https://ephyviewer.readthedocs.io/en/latest
 .. _GIN:            https://gin.g-node.org
 .. _GitHub:         https://github.com/jpgill86/neurotic
 .. _GitHub Actions: https://github.com/jpgill86/neurotic/actions?query=workflow%3Atests
 .. _GitHub Releases: https://github.com/jpgill86/neurotic/releases
 .. _Issue Tracker:  https://github.com/jpgill86/neurotic/issues
-.. _Neo:            https://github.com/NeuralEnsemble/python-neo
+.. _Neo:            https://neo.readthedocs.io/en/latest
 .. _neo.io:         https://neo.readthedocs.io/en/latest/io.html#module-neo.io
 .. _PyAV:           https://docs.mikeboers.com/pyav/develop/overview/installation.html
 .. _PyPI:           https://pypi.org/project/neurotic

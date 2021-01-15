@@ -102,11 +102,11 @@ Table of Contents
 .. _conda-forge feedstock: https://github.com/conda-forge/neurotic-feedstock
 .. _Coveralls:      https://coveralls.io/github/jpgill86/neurotic?branch=master
 .. _eNeuro:         https://doi.org/10.1523/ENEURO.0085-20.2020
-.. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _ephyviewer:     https://ephyviewer.readthedocs.io/en/latest
 .. _GitHub:         https://github.com/jpgill86/neurotic
 .. _GitHub Actions: https://github.com/jpgill86/neurotic/actions?query=workflow%3Atests
 .. _GitHub Releases: https://github.com/jpgill86/neurotic/releases
-.. _Neo:            https://github.com/NeuralEnsemble/python-neo
+.. _Neo:            https://neo.readthedocs.io/en/latest
 .. _other versions: https://readthedocs.org/projects/neurotic/versions/
 .. _PyPI:           https://pypi.org/project/neurotic
 .. _ReadTheDocs:    https://readthedocs.org/projects/neurotic

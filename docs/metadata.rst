@@ -779,6 +779,6 @@ will not be calculated.
 
 .. _elephant:               https://elephant.readthedocs.io/en/latest
 .. _GIN:                    https://gin.g-node.org
-.. _Neo:                    https://github.com/NeuralEnsemble/python-neo
-.. _tridesclous:            https://github.com/tridesclous/tridesclous
+.. _Neo:                    https://neo.readthedocs.io/en/latest
+.. _tridesclous:            https://tridesclous.readthedocs.io/en/latest
 .. _version specification:  https://www.python.org/dev/peps/pep-0440/#version-specifiers

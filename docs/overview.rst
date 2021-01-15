@@ -88,6 +88,6 @@ share the *neurotic* experience with your colleagues! 🤪
    :target: _static/example-screenshot.png
    :alt: Screenshot
 
-.. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
+.. _ephyviewer:     https://ephyviewer.readthedocs.io/en/latest
 .. _GIN:            https://gin.g-node.org
 .. _User Interface: https://ephyviewer.readthedocs.io/en/latest/interface.html
