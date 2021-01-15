@@ -80,8 +80,8 @@ logger.addHandler(logger_streamhandler)
 global_config = {
     'defaults': {
         # defaults used by the command line interface
-        'file': None,
-        'dataset': None,
+        'file': False,
+        'dataset': False,
         'debug': False,
         'lazy': True,
         'thick_traces': False,

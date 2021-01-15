@@ -12,12 +12,12 @@
 #     loading, ensuring that expensive procedures like spike detection and
 #     filtering are performed by default
 # To open the example metadata file by default, either leave the "file"
-# parameter commented or set it to "example". To initially select the first
-# dataset in the file, either leave the "dataset" parameter commented or set it
-# to "none".
+# parameter unset, set it to false, or set it to "example". To initially select
+# the first dataset in the file, either leave the "dataset" parameter unset,
+# set it to false, or set it to "first".
 
-# file = "example"
-# dataset = "none"
+# file = false
+# dataset = false
 # debug = false
 # lazy = true
 # thick_traces = false
@@ -33,7 +33,7 @@
 #     authorization, so that permissions only need to be granted once. This is
 #     not recommended if others you do not trust have access to this computer,
 #     as it could let them download files from your Google Drive account.
-#   - Set "save_tokens" to false or leave it commented to forget access
+#   - Set "save_tokens" to false or leave it unset to forget access
 #     authorization after neurotic closes. Each time you restart neurotic, you
 #     will be required to re-grant permissions when you download a Google Drive
 #     file.

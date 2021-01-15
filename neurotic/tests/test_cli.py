@@ -79,12 +79,6 @@ class CLITestCase(unittest.TestCase):
                 print(line, end='')  # stdout is redirected into the file
         neurotic.update_global_config_from_file(self.temp_global_config_file)
 
-        # substitute special values
-        if neurotic.global_config['defaults']['file'] == 'example':
-            neurotic.global_config['defaults']['file'] = None
-        if neurotic.global_config['defaults']['dataset'] == 'none':
-            neurotic.global_config['defaults']['dataset'] = None
-
         self.assertEqual(neurotic.global_config,
                          neurotic._global_config_factory_defaults,
                          'global_config loaded from template global config '
@@ -256,10 +250,10 @@ class CLITestCase(unittest.TestCase):
                          'dataset was not changed correctly')
 
     def test_example_file_and_first_dataset_overrides(self):
-        """Test that 'example' and 'none' open first dataset in example file"""
+        """Test that 'example' and 'first' open first dataset in example file"""
         neurotic.global_config['defaults']['file'] = 'some other file'
         neurotic.global_config['defaults']['dataset'] = 'some other dataset'
-        argv = ['neurotic', 'example', 'none']
+        argv = ['neurotic', 'example', 'first']
         args = neurotic.parse_args(argv)
         win = neurotic.win_from_args(args)
         self.assertEqual(win.metadata_selector.file, self.example_file,

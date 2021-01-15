@@ -50,12 +50,12 @@ def parse_args(argv):
 
     parser.add_argument('file', nargs='?',
                         help='the path to a metadata YAML file'
-                             f' (default: {"an example file" if defaults["file"] is None else defaults["file"] + "; to force the example, use: example"})')
+                             f' (default: {"an example file" if defaults["file"] in [False, "example"] else defaults["file"] + "; to force the example, use: example"})')
 
     parser.add_argument('dataset', nargs='?',
                         help='the name of a dataset in the metadata file to '
                              'select initially'
-                             f' (default: {"the first entry in the metadata file" if defaults["dataset"] is None else defaults["dataset"] + "; to force the first, use: - none"})')
+                             f' (default: {"the first entry in the metadata file" if defaults["dataset"] in [False, "first"] else defaults["dataset"] + "; to force the first, use: - first"})')
 
     parser.add_argument('-V', '--version',
                         action='version',
@@ -134,17 +134,18 @@ def parse_args(argv):
         for k, v in _global_config_factory_defaults['defaults'].items():
             setattr(args, k, v)
 
+    # this special value for the first positional argument can be used to skip
+    # specifying any file and instead use the default file
+    if args.file == '-':
+        args.file = defaults['file']
+
     # these special values for the positional arguments can be used to override
     # the defaults set in the global config file with the defaults normally set
     # in the absence of global config file settings
-    if args.file == '-':
-        args.file = defaults['file']
-    elif args.file == 'example':
-        args.file = None
-    if args.dataset == '-':
-        args.dataset = defaults['dataset']
-    elif args.dataset == 'none':
-        args.dataset = None
+    if args.file == 'example':
+        args.file = _global_config_factory_defaults['defaults']['file']
+    if args.dataset == 'first':
+        args.dataset = _global_config_factory_defaults['defaults']['dataset']
 
     if args.debug:
         logger.parent.setLevel(logging.DEBUG)
