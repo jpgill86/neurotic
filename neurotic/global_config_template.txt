@@ -14,10 +14,10 @@
 # To open the example metadata file by default, either leave the "file"
 # parameter commented or set it to "example". To initially select the first
 # dataset in the file, either leave the "dataset" parameter commented or set it
-# to "none".
+# to "first".
 
 # file = "example"
-# dataset = "none"
+# dataset = "first"
 # debug = false
 # lazy = true
 # thick_traces = false
