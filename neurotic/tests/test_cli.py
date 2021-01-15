@@ -79,12 +79,6 @@ class CLITestCase(unittest.TestCase):
                 print(line, end='')  # stdout is redirected into the file
         neurotic.update_global_config_from_file(self.temp_global_config_file)
 
-        # substitute special values
-        if neurotic.global_config['defaults']['file'] == 'example':
-            neurotic.global_config['defaults']['file'] = None
-        if neurotic.global_config['defaults']['dataset'] == 'first':
-            neurotic.global_config['defaults']['dataset'] = None
-
         self.assertEqual(neurotic.global_config,
                          neurotic._global_config_factory_defaults,
                          'global_config loaded from template global config '

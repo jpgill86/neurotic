@@ -50,12 +50,12 @@ def parse_args(argv):
 
     parser.add_argument('file', nargs='?',
                         help='the path to a metadata YAML file'
-                             f' (default: {"an example file" if defaults["file"] in [None, "example"] else defaults["file"] + "; to force the example, use: example"})')
+                             f' (default: {"an example file" if defaults["file"] in [False, "example"] else defaults["file"] + "; to force the example, use: example"})')
 
     parser.add_argument('dataset', nargs='?',
                         help='the name of a dataset in the metadata file to '
                              'select initially'
-                             f' (default: {"the first entry in the metadata file" if defaults["dataset"] in [None, "first"] else defaults["dataset"] + "; to force the first, use: - first"})')
+                             f' (default: {"the first entry in the metadata file" if defaults["dataset"] in [False, "first"] else defaults["dataset"] + "; to force the first, use: - first"})')
 
     parser.add_argument('-V', '--version',
                         action='version',

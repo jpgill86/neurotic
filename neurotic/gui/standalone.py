@@ -145,7 +145,7 @@ class MainWindow(QT.QMainWindow):
         self.create_menus()
 
         # open metadata file
-        if file is not None:
+        if file:
             # try the user-specified file
             self.metadata_selector.file = file
             self.metadata_selector.load()
@@ -156,7 +156,7 @@ class MainWindow(QT.QMainWindow):
             self.metadata_selector.load()
 
         # select a dataset if the user provided one
-        if initial_selection is not None:
+        if initial_selection:
             try:
                 self.metadata_selector.setCurrentRow(list(self.metadata_selector.all_metadata).index(initial_selection))
             except (TypeError, ValueError) as e:
