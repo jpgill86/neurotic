@@ -89,6 +89,7 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
+# https://alabaster.readthedocs.io/en/latest/customization.html
 html_theme_options = {
     'description': 'Curate, visualize, annotate, and share your behavioral '
                    'ephys data using Python',
@@ -97,6 +98,11 @@ html_theme_options = {
     'page_width': '1200px',  # default is 940
     'sidebar_width': '280px',  # default is 220
     'show_relbars': True,
+    'link_hover': '#C23B92',  # neurotic pink
+    'anchor_hover_fg': '#C23B92',  # neurotic pink
+    'anchor_hover_bg': None,
+    'narrow_sidebar_bg': '#C23B92',  # neurotic pink
+    'narrow_sidebar_link': '#FFFFFF',
 }
 
 # Values to pass into the template engine's context for all pages.
