@@ -3,7 +3,14 @@
 
 *Curate, visualize, annotate, and share your behavioral ephys data using Python*
 
-|PyPI badge| |Anaconda badge| |GitHub badge| |Feedstock badge| |Constructor badge| |Docs badge| |GitHub Actions badge| |Azure badge| |Coverage badge| |Zenodo badge| |eNeuro badge|
+.. container::
+    :name: badges
+
+    :Distributions: |PyPI badge| |Anaconda badge| |Installers badge|
+    :Source Code:   |GitHub badge| |Feedstock badge| |Constructor badge|
+    :Tests Status:  |GitHub Actions badge| |Azure badge| |Coverage badge|
+    :Documentation: |Docs badge|
+    :Citing:        |Zenodo badge| |eNeuro badge|
 
 **Version:** |version| (`other versions`_)
 
@@ -45,6 +52,10 @@ Table of Contents
     :target: `Anaconda Cloud`_
     :alt: Anaconda Cloud project
 
+.. |Installers badge| image:: https://img.shields.io/github/v/release/jpgill86/neurotic?label=installers&logo=github&logoColor=white&sort=semver
+    :target: `GitHub Releases`_
+    :alt: Installers
+
 .. |GitHub badge| image:: https://img.shields.io/badge/github-source_code-blue.svg?logo=github&logoColor=white
     :target: GitHub_
     :alt: GitHub source code
@@ -57,11 +68,7 @@ Table of Contents
     :target: `constructor recipe`_
     :alt: constructor recipe
 
-.. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
-    :target: ReadTheDocs_
-    :alt: Documentation status
-
-.. |GitHub Actions badge| image:: https://github.com/jpgill86/neurotic/workflows/tests/badge.svg?branch=master
+.. |GitHub Actions badge| image:: https://img.shields.io/github/workflow/status/jpgill86/neurotic/tests/master?label=tests&logo=github&logoColor=white
     :target: `GitHub Actions`_
     :alt: Tests status
 
@@ -72,6 +79,10 @@ Table of Contents
 .. |Coverage badge| image:: https://coveralls.io/repos/github/jpgill86/neurotic/badge.svg?branch=master
     :target: Coveralls_
     :alt: Coverage status
+
+.. |Docs badge| image:: https://img.shields.io/readthedocs/neurotic/latest.svg?logo=read-the-docs&logoColor=white
+    :target: ReadTheDocs_
+    :alt: Documentation status
 
 .. |Zenodo badge| image:: https://img.shields.io/badge/DOI-10.5281/zenodo.3564990-blue.svg
     :target: Zenodo_
@@ -94,6 +105,7 @@ Table of Contents
 .. _ephyviewer:     https://github.com/NeuralEnsemble/ephyviewer
 .. _GitHub:         https://github.com/jpgill86/neurotic
 .. _GitHub Actions: https://github.com/jpgill86/neurotic/actions?query=workflow%3Atests
+.. _GitHub Releases: https://github.com/jpgill86/neurotic/releases
 .. _Neo:            https://github.com/NeuralEnsemble/python-neo
 .. _other versions: https://readthedocs.org/projects/neurotic/versions/
 .. _PyPI:           https://pypi.org/project/neurotic
