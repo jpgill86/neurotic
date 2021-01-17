@@ -12,6 +12,7 @@ import platform
 import requests
 import subprocess
 import pkg_resources
+import warnings
 from packaging import version
 
 import quantities as pq
@@ -25,6 +26,9 @@ from ..gui.config import EphyviewerConfigurator, available_themes, available_ui_
 
 import logging
 logger = logging.getLogger(__name__)
+
+# suppress warning that gdrive token file does not exist
+warnings.filterwarnings('ignore', message='Cannot access .*', module='oauth2client')
 
 
 def open_path_with_default_program(path):
@@ -64,8 +68,9 @@ class MainWindow(QT.QMainWindow):
     """
 
     request_download = QT.pyqtSignal()
-    request_check_for_updates = QT.pyqtSignal(bool)
     request_load_dataset = QT.pyqtSignal()
+    request_gdrive_authorization = QT.pyqtSignal()
+    request_check_for_updates = QT.pyqtSignal(bool)
 
     def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False):
         """
@@ -118,22 +123,36 @@ class MainWindow(QT.QMainWindow):
         self.loading_label.setFrameStyle(QT.QFrame.Panel | QT.QFrame.Sunken)
         self.loading_label.setAlignment(QT.Qt.AlignCenter)
 
+        # gdrive auth flow label
+        self.gdrive_auth_label = QT.QLabel('Continue Google Drive authorization\nin your web browser')
+        self.gdrive_auth_label.setFrameStyle(QT.QFrame.Panel | QT.QFrame.Sunken)
+        self.gdrive_auth_label.setAlignment(QT.Qt.AlignCenter)
+
         # initially stack the metadata selector above the loading label
         self.stacked_layout = QT.QStackedLayout()
         self.stacked_layout.addWidget(self.metadata_selector)  # index 0
         self.stacked_layout.addWidget(self.loading_label)      # index 1
+        self.stacked_layout.addWidget(self.gdrive_auth_label)  # index 2
         central_widget = QT.QWidget()
         central_widget.setLayout(self.stacked_layout)
         self.setCentralWidget(central_widget)
 
-        # create a worker thread for downloading data and checking for updates
+        # create a worker thread for network activity (e.g., downloading data)
         self.network_thread = QT.QThread()
         self.network_worker = _NetworkWorker(self)
         self.network_worker.moveToThread(self.network_thread)
+
+        # set up the network thread to perform data downloads
         self.request_download.connect(self.network_worker.download)
         self.network_worker.download_finished.connect(self.on_download_finished)
+
+        # set up the network thread to perform checks for updates
         self.request_check_for_updates.connect(self.network_worker.get_latest_release_number)
         self.network_worker.version_check_finished.connect(self.on_version_check_finished)
+
+        # set up the network thread to run the Google Drive authorization flow
+        self.request_gdrive_authorization.connect(self.network_worker.authorize_gdrive)
+        self.network_worker.gdrive_authorization_finished.connect(self.on_gdrive_authorization_finished)
 
         # create a worker thread for loading datasets
         self.load_dataset_thread = QT.QThread()
@@ -181,10 +200,10 @@ class MainWindow(QT.QMainWindow):
         Construct the menus of the app.
         """
 
-        menu_bar = self.menuBar()
-        menu_bar.setNativeMenuBar(False)  # disable for macOS, see GH-239
+        self.menu_bar = self.menuBar()
+        self.menu_bar.setNativeMenuBar(False)  # disable for macOS, see GH-239
 
-        file_menu = menu_bar.addMenu(self.tr('&File'))
+        file_menu = self.menu_bar.addMenu(self.tr('&File'))
 
         do_open_metadata = file_menu.addAction('&Open metadata')
         do_open_metadata.setShortcut('Ctrl+O')
@@ -219,7 +238,7 @@ class MainWindow(QT.QMainWindow):
         self.do_launch.setShortcut('Return')
         self.do_launch.triggered.connect(self.start_launch)
 
-        options_menu = menu_bar.addMenu(self.tr('&Options'))
+        options_menu = self.menu_bar.addMenu(self.tr('&Options'))
 
         do_toggle_lazy = options_menu.addAction('&Fast loading')
         do_toggle_lazy.setStatusTip('Reduces load time and memory usage, disables expensive features like spike detection')
@@ -238,7 +257,7 @@ class MainWindow(QT.QMainWindow):
         do_view_global_config_file = options_menu.addAction('View global &config file')
         do_view_global_config_file.triggered.connect(self.view_global_config_file)
 
-        appearance_menu = menu_bar.addMenu(self.tr('&Appearance'))
+        appearance_menu = self.menu_bar.addMenu(self.tr('&Appearance'))
 
         ui_scale_group = QT.QActionGroup(appearance_menu)
         ui_scale_actions = {}
@@ -269,7 +288,7 @@ class MainWindow(QT.QMainWindow):
         do_toggle_support_increased_line_width.setChecked(self.support_increased_line_width)
         do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
 
-        help_menu = menu_bar.addMenu(self.tr('&Help'))
+        help_menu = self.menu_bar.addMenu(self.tr('&Help'))
 
         self.do_toggle_debug_logging = help_menu.addAction('Show and log &debug messages')
         self.do_toggle_debug_logging.setCheckable(True)
@@ -287,8 +306,8 @@ class MainWindow(QT.QMainWindow):
         do_open_gdrive_creds_dir = help_menu.addAction('Open Google Drive credentials directory')
         do_open_gdrive_creds_dir.triggered.connect(self.open_gdrive_creds_dir)
 
-        do_authorize_gdrive = help_menu.addAction('Request Google Drive authorization now')
-        do_authorize_gdrive.triggered.connect(self.authorize_gdrive)
+        self.do_authorize_gdrive = help_menu.addAction('Request Google Drive authorization now')
+        self.do_authorize_gdrive.triggered.connect(self.authorize_gdrive)
 
         do_deauthorize_gdrive = help_menu.addAction('Purge Google Drive authorization token')
         do_deauthorize_gdrive.triggered.connect(self.deauthorize_gdrive)
@@ -401,8 +420,7 @@ class MainWindow(QT.QMainWindow):
         Load data for the selected dataset in a separate thread.
         """
 
-        self.do_launch.setText('&Launch in progress!')
-        self.do_launch.setEnabled(False)
+        self.menu_bar.setEnabled(False)
         self.metadata_selector.setEnabled(False)
         self.stacked_layout.setCurrentIndex(1)  # show loading label
         self.load_dataset_thread.start()
@@ -451,8 +469,7 @@ class MainWindow(QT.QMainWindow):
 
         finally:
 
-            self.do_launch.setText('&Launch')
-            self.do_launch.setEnabled(True)
+            self.menu_bar.setEnabled(True)
             self.metadata_selector.setEnabled(True)
             self.stacked_layout.setCurrentIndex(0)  # show metadata selector
 
@@ -540,26 +557,34 @@ class MainWindow(QT.QMainWindow):
             text = 'Completing this process will allow <i>neurotic</i> to ' \
                    'download files from your Google Drive. A web browser ' \
                    'will open so that you can log into your Google account ' \
-                   'and accept the request for permissions. <i>neurotic</i> ' \
-                   'will be unresponsive until this process finishes.' \
+                   'and accept the request for permissions. You will not be ' \
+                   'able to use <i>neurotic</i> until this process finishes.' \
                    '<br/><br/>Do you want to continue?'
             button = QT.QMessageBox.question(self, title, text,
                                              defaultButton=QT.QMessageBox.Yes)
             if button == QT.QMessageBox.Yes:
-                logger.info(f'Initiating Google Drive authorization flow')
-                self.statusBar().showMessage('Check web browser to continue '
-                                             'authorization', msecs=5000)
-                try:
-                    gdrive_downloader.authorize()
-                except Exception as e:
-                    logger.error(f'Problem during authorization: {e}')
-                    self.statusBar().showMessage('ERROR: Authorization failed '
-                                                 '(see console for details)',
-                                                 msecs=5000)
-                else:
-                    logger.info(f'Authorization complete')
-                    self.statusBar().showMessage('Authorization complete',
-                                                 msecs=5000)
+                self.menu_bar.setEnabled(False)
+                self.metadata_selector.setEnabled(False)
+                self.stacked_layout.setCurrentIndex(2)  # show gdrive auth label
+                self.network_thread.start()
+                self.request_gdrive_authorization.emit()
+
+    def on_gdrive_authorization_finished(self, success):
+        """
+        Cleanup network thread and display success or failute of Google Drive
+        authorization flow.
+        """
+        self.network_thread.quit()
+        if success:
+            self.statusBar().showMessage('Authorization successful',
+                                         msecs=5000)
+        else:
+            self.statusBar().showMessage('ERROR: Authorization failed '
+                                         '(see console for details)',
+                                         msecs=5000)
+        self.menu_bar.setEnabled(True)
+        self.metadata_selector.setEnabled(True)
+        self.stacked_layout.setCurrentIndex(0)  # show metadata selector
 
     def deauthorize_gdrive(self):
         """
@@ -722,6 +747,10 @@ class MainWindow(QT.QMainWindow):
         font.setPointSize(font_size[size]+4)
         self.loading_label.setFont(font)
 
+        font = self.gdrive_auth_label.font()
+        font.setPointSize(font_size[size]+4)
+        self.gdrive_auth_label.setFont(font)
+
     def set_theme(self, theme):
         self.theme = theme
 
@@ -822,10 +851,11 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
 
 class _NetworkWorker(QT.QObject):
     """
-    A thread worker for downloading data files and checking for updates.
+    A thread worker for for network activity (e.g., downloading data)
     """
 
     download_finished = QT.pyqtSignal(bool)
+    gdrive_authorization_finished = QT.pyqtSignal(bool)
     version_check_finished = QT.pyqtSignal(str, bool)
 
     def __init__(self, mainwindow):
@@ -850,6 +880,18 @@ class _NetworkWorker(QT.QObject):
             pass
         finally:
             self.download_finished.emit(success)
+
+    def authorize_gdrive(self):
+        success = False
+        try:
+            logger.info('Initiating Google Drive authorization flow')
+            gdrive_downloader.authorize()
+            success = True
+            logger.info('Authorization successful')
+        except Exception as e:
+            logger.error(f'Problem during authorization: {e}')
+        finally:
+            self.gdrive_authorization_finished.emit(success)
 
     def get_latest_release_number(self, show_new_only):
         """
