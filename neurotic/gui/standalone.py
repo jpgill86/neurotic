@@ -64,7 +64,7 @@ class MainWindow(QT.QMainWindow):
     """
 
     request_download = QT.pyqtSignal()
-    request_check_for_updates = QT.pyqtSignal()
+    request_check_for_updates = QT.pyqtSignal(bool)
     request_load_dataset = QT.pyqtSignal()
 
     def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False):
@@ -166,6 +166,15 @@ class MainWindow(QT.QMainWindow):
                 logger.error(f'Bad dataset key, will ignore: {e}')
                 self.statusBar().showMessage('ERROR: Bad dataset key, will '
                                              'ignore', msecs=5000)
+
+    def showEvent(self, event):
+        """
+        Executed when the window is shown.
+        """
+        QT.QMainWindow.showEvent(self, event)
+
+        if global_config['auto_check_for_updates']:
+            self.check_for_updates(show_new_only=True)
 
     def create_menus(self):
         """
@@ -561,15 +570,15 @@ class MainWindow(QT.QMainWindow):
         self.statusBar().showMessage('Purged Google Drive authorization token',
                                      msecs=5000)
 
-    def check_for_updates(self):
+    def check_for_updates(self, *args, show_new_only=False):
         """
         Check for new releases in a separate thread.
         """
 
         self.network_thread.start()
-        self.request_check_for_updates.emit()
+        self.request_check_for_updates.emit(show_new_only)
 
-    def on_version_check_finished(self, latest_release):
+    def on_version_check_finished(self, latest_release, show_new_only):
         """
         Cleanup network thread and display a dialog window showing the state of
         available updates.
@@ -592,8 +601,14 @@ class MainWindow(QT.QMainWindow):
                 </table></p>
 
                 <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
+
+                <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+                <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
                 """
-            else:
+                title = 'Check for updates'
+                return QT.QMessageBox.about(self, title, text)
+
+            elif not show_new_only:
                 # display up to date
                 text = f"""
                 <h2>neurotic is up to date</h2>
@@ -602,8 +617,14 @@ class MainWindow(QT.QMainWindow):
                 <tr><td>Installed version:</td>  <td>{__version__}</td></tr>
                 <tr><td>Latest version:</td>     <td>{latest_release}</td></tr>
                 </table></p>
+
+                <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+                <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
                 """
-        else:
+                title = 'Check for updates'
+                return QT.QMessageBox.about(self, title, text)
+
+        elif not show_new_only:
             # display failure message
             text = f"""
             <h2>Could not detect latest version</h2>
@@ -616,11 +637,12 @@ class MainWindow(QT.QMainWindow):
             <p><a href='{urls['releases']}'>Check for latest version manually</a></p>
 
             <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
+
+            <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+            <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
             """
-
-        title = 'Check for updates'
-
-        QT.QMessageBox.about(self, title, text)
+            title = 'Check for updates'
+            return QT.QMessageBox.about(self, title, text)
 
     def show_about(self):
         """
@@ -804,7 +826,7 @@ class _NetworkWorker(QT.QObject):
     """
 
     download_finished = QT.pyqtSignal(bool)
-    version_check_finished = QT.pyqtSignal(str)
+    version_check_finished = QT.pyqtSignal(str, bool)
 
     def __init__(self, mainwindow):
         """
@@ -829,7 +851,7 @@ class _NetworkWorker(QT.QObject):
         finally:
             self.download_finished.emit(success)
 
-    def get_latest_release_number(self):
+    def get_latest_release_number(self, show_new_only):
         """
         Query GitHub for the version number of the latest release and emit a
         signal when complete.
@@ -847,7 +869,7 @@ class _NetworkWorker(QT.QObject):
             # something went wrong with the query
             logger.error(f'Query for latest release version failed: {e}')
         finally:
-            self.version_check_finished.emit(latest_release)
+            self.version_check_finished.emit(latest_release, show_new_only)
 
 
 class _LoadDatasetWorker(QT.QObject):
