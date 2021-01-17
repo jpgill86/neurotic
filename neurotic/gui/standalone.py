@@ -12,6 +12,7 @@ import platform
 import requests
 import subprocess
 import pkg_resources
+import warnings
 from packaging import version
 
 import quantities as pq
@@ -25,6 +26,9 @@ from ..gui.config import EphyviewerConfigurator, available_themes, available_ui_
 
 import logging
 logger = logging.getLogger(__name__)
+
+# suppress warning that gdrive token file does not exist
+warnings.filterwarnings('ignore', message='Cannot access .*', module='oauth2client')
 
 
 def open_path_with_default_program(path):
