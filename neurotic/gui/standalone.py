@@ -200,10 +200,10 @@ class MainWindow(QT.QMainWindow):
         Construct the menus of the app.
         """
 
-        menu_bar = self.menuBar()
-        menu_bar.setNativeMenuBar(False)  # disable for macOS, see GH-239
+        self.menu_bar = self.menuBar()
+        self.menu_bar.setNativeMenuBar(False)  # disable for macOS, see GH-239
 
-        file_menu = menu_bar.addMenu(self.tr('&File'))
+        file_menu = self.menu_bar.addMenu(self.tr('&File'))
 
         do_open_metadata = file_menu.addAction('&Open metadata')
         do_open_metadata.setShortcut('Ctrl+O')
@@ -238,7 +238,7 @@ class MainWindow(QT.QMainWindow):
         self.do_launch.setShortcut('Return')
         self.do_launch.triggered.connect(self.start_launch)
 
-        options_menu = menu_bar.addMenu(self.tr('&Options'))
+        options_menu = self.menu_bar.addMenu(self.tr('&Options'))
 
         do_toggle_lazy = options_menu.addAction('&Fast loading')
         do_toggle_lazy.setStatusTip('Reduces load time and memory usage, disables expensive features like spike detection')
@@ -257,7 +257,7 @@ class MainWindow(QT.QMainWindow):
         do_view_global_config_file = options_menu.addAction('View global &config file')
         do_view_global_config_file.triggered.connect(self.view_global_config_file)
 
-        appearance_menu = menu_bar.addMenu(self.tr('&Appearance'))
+        appearance_menu = self.menu_bar.addMenu(self.tr('&Appearance'))
 
         ui_scale_group = QT.QActionGroup(appearance_menu)
         ui_scale_actions = {}
@@ -288,7 +288,7 @@ class MainWindow(QT.QMainWindow):
         do_toggle_support_increased_line_width.setChecked(self.support_increased_line_width)
         do_toggle_support_increased_line_width.triggered.connect(self.toggle_support_increased_line_width)
 
-        help_menu = menu_bar.addMenu(self.tr('&Help'))
+        help_menu = self.menu_bar.addMenu(self.tr('&Help'))
 
         self.do_toggle_debug_logging = help_menu.addAction('Show and log &debug messages')
         self.do_toggle_debug_logging.setCheckable(True)
@@ -420,8 +420,7 @@ class MainWindow(QT.QMainWindow):
         Load data for the selected dataset in a separate thread.
         """
 
-        self.do_launch.setText('&Launch in progress!')
-        self.do_launch.setEnabled(False)
+        self.menu_bar.setEnabled(False)
         self.metadata_selector.setEnabled(False)
         self.stacked_layout.setCurrentIndex(1)  # show loading label
         self.load_dataset_thread.start()
@@ -470,8 +469,7 @@ class MainWindow(QT.QMainWindow):
 
         finally:
 
-            self.do_launch.setText('&Launch')
-            self.do_launch.setEnabled(True)
+            self.menu_bar.setEnabled(True)
             self.metadata_selector.setEnabled(True)
             self.stacked_layout.setCurrentIndex(0)  # show metadata selector
 
@@ -565,8 +563,7 @@ class MainWindow(QT.QMainWindow):
             button = QT.QMessageBox.question(self, title, text,
                                              defaultButton=QT.QMessageBox.Yes)
             if button == QT.QMessageBox.Yes:
-                self.do_authorize_gdrive.setText('Continue Google Drive authorization in your browser!')
-                self.do_authorize_gdrive.setEnabled(False)
+                self.menu_bar.setEnabled(False)
                 self.metadata_selector.setEnabled(False)
                 self.stacked_layout.setCurrentIndex(2)  # show gdrive auth label
                 self.network_thread.start()
@@ -585,8 +582,7 @@ class MainWindow(QT.QMainWindow):
             self.statusBar().showMessage('ERROR: Authorization failed '
                                          '(see console for details)',
                                          msecs=5000)
-        self.do_authorize_gdrive.setText('Request Google Drive authorization now')
-        self.do_authorize_gdrive.setEnabled(True)
+        self.menu_bar.setEnabled(True)
         self.metadata_selector.setEnabled(True)
         self.stacked_layout.setCurrentIndex(0)  # show metadata selector
 
