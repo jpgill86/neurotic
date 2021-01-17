@@ -43,5 +43,6 @@
 
 [app]
 # When the app is launched, neurotic automatically checks for updates unless
-# this parameter is set to false.
+# the "auto_check_for_updates" parameter is set to false.
+
 # auto_check_for_updates = true

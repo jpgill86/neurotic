@@ -1,0 +1,58 @@
+.. _v1.5.0:
+
+neurotic 1.5.0
+==============
+
+2021-01-17
+
+This release's biggest feature is Google Drive integration: Use *neurotic* to
+fetch data files from either My Drive or Shared Drives (formerly known as Team
+Drives). Read more here: :ref:`gdrive-urls` and :ref:`gdrive`.
+
+Additionally, you can now customize some default settings for *neurotic*, such
+as which metadata file is opened by default. Read more here:
+:ref:`global-config`.
+
+New features
+------------
+
+* Add capability to download files from Google Drive
+  (:pr:`294`, :pr:`297`, :pr:`309`)
+
+* Allow users to change defaults in a global configuration file
+  (:pr:`285`, :pr:`304`)
+
+Improvements
+------------
+
+* Automatically check for updates when the app is launched
+  (:pr:`307`, :pr:`310`)
+
+* Remove incomplete files when a download is interrupted
+  (:pr:`280`)
+
+* Add amplitude discriminator parameter for extrema type (detect peaks or
+  troughs)
+  (:pr:`284`)
+
+* Annotate detected spike trains with amplitude discriminator units and epoch
+  (:pr:`281`, :pr:`282`, :pr:`284`)
+
+Documentation
+-------------
+
+* Many aesthetic and content improvements to the documentation
+  (:pr:`256`, :pr:`268`, :pr:`269`, :pr:`272`, :pr:`273`, :pr:`274`, :pr:`275`,
+  :pr:`295`, :pr:`298`, :pr:`302`, :pr:`303`, :pr:`305`, :pr:`306`, :pr:`308`)
+
+Testing
+-------
+
+* Transition to GitHub Actions for automated testing
+  (:pr:`286`, :pr:`287`, :pr:`299`, :pr:`301`)
+
+* Add tests for and declare support for Python 3.9
+  (:pr:`283`)
+
+* Exclude py files not part of the main package from coverage reports
+  (:pr:`300`)

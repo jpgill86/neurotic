@@ -11,9 +11,9 @@ from setuptools import setup, find_packages
 # Change version number here, not in neurotic/version.py, which is generated
 # by this script. Try to follow recommended versioning guidelines at semver.org.
 MAJOR       = 1     # increment for backwards-incompatible changes
-MINOR       = 4     # increment for backwards-compatible feature additions
-MICRO       = 2     # increment for backwards-compatible bug fixes
-IS_RELEASED = False # determines whether version will be marked as development
+MINOR       = 5     # increment for backwards-compatible feature additions
+MICRO       = 0     # increment for backwards-compatible bug fixes
+IS_RELEASED = True  # determines whether version will be marked as development
 VERSION     = f'{MAJOR}.{MINOR}.{MICRO}'
 
 # Try to fetch the git revision number from the .git directory if it exists,
@@ -105,10 +105,11 @@ setup(
     author_email = 'jeffrey.p.gill@gmail.com',
     license = 'MIT',
     url = 'https://github.com/jpgill86/neurotic',
-    project_urls={
+    project_urls = {
         'Documentation': 'https://neurotic.readthedocs.io',
         'Source code': 'https://github.com/jpgill86/neurotic',
         'Bug tracker': 'https://github.com/jpgill86/neurotic/issues',
+        'Change log': 'https://neurotic.readthedocs.io/en/latest/releasenotes.html',
     },
     classifiers = [
         'Development Status :: 5 - Production/Stable',
