@@ -64,6 +64,7 @@ class MainWindow(QT.QMainWindow):
     """
 
     request_download = QT.pyqtSignal()
+    request_check_for_updates = QT.pyqtSignal(bool)
     request_load_dataset = QT.pyqtSignal()
 
     def __init__(self, file=None, initial_selection=None, lazy=True, theme='light', ui_scale='medium', support_increased_line_width=False, show_datetime=False):
@@ -125,12 +126,14 @@ class MainWindow(QT.QMainWindow):
         central_widget.setLayout(self.stacked_layout)
         self.setCentralWidget(central_widget)
 
-        # create a worker thread for downloading data
-        self.download_thread = QT.QThread()
-        self.download_worker = _DownloadWorker(self)
-        self.download_worker.moveToThread(self.download_thread)
-        self.request_download.connect(self.download_worker.download)
-        self.download_worker.download_finished.connect(self.on_download_finished)
+        # create a worker thread for downloading data and checking for updates
+        self.network_thread = QT.QThread()
+        self.network_worker = _NetworkWorker(self)
+        self.network_worker.moveToThread(self.network_thread)
+        self.request_download.connect(self.network_worker.download)
+        self.network_worker.download_finished.connect(self.on_download_finished)
+        self.request_check_for_updates.connect(self.network_worker.get_latest_release_number)
+        self.network_worker.version_check_finished.connect(self.on_version_check_finished)
 
         # create a worker thread for loading datasets
         self.load_dataset_thread = QT.QThread()
@@ -163,6 +166,15 @@ class MainWindow(QT.QMainWindow):
                 logger.error(f'Bad dataset key, will ignore: {e}')
                 self.statusBar().showMessage('ERROR: Bad dataset key, will '
                                              'ignore', msecs=5000)
+
+    def showEvent(self, event):
+        """
+        Executed when the window is shown.
+        """
+        QT.QMainWindow.showEvent(self, event)
+
+        if global_config['auto_check_for_updates']:
+            self.check_for_updates(show_new_only=True)
 
     def create_menus(self):
         """
@@ -283,8 +295,8 @@ class MainWindow(QT.QMainWindow):
 
         help_menu.addSeparator()
 
-        do_show_check_for_updates = help_menu.addAction('Check for updates')
-        do_show_check_for_updates.triggered.connect(self.show_check_for_updates)
+        do_check_for_updates = help_menu.addAction('Check for updates')
+        do_check_for_updates.triggered.connect(self.check_for_updates)
 
         do_open_update_docs = help_menu.addAction('How to update')
         do_open_update_docs.triggered.connect(lambda: open_url('https://neurotic.readthedocs.io/en/latest/update.html'))
@@ -345,7 +357,7 @@ class MainWindow(QT.QMainWindow):
         Download all files for the selected dataset in a separate thread.
         """
 
-        self.download_thread.start()
+        self.network_thread.start()
         self.request_download.emit()
         self.do_download_data.setText('&Download in progress!')
         self.do_download_data.setEnabled(False)
@@ -354,11 +366,11 @@ class MainWindow(QT.QMainWindow):
 
     def on_download_finished(self, success):
         """
-        Cleanup download thread and reload the metadata list content to update
+        Cleanup network thread and reload the metadata list content to update
         file indicators.
         """
 
-        self.download_thread.quit()
+        self.network_thread.quit()
         self.metadata_selector.load()
         self.do_download_data.setText('&Download data')
         self.do_download_data.setEnabled(True)
@@ -558,43 +570,62 @@ class MainWindow(QT.QMainWindow):
         self.statusBar().showMessage('Purged Google Drive authorization token',
                                      msecs=5000)
 
-    def show_check_for_updates(self):
+    def check_for_updates(self, *args, show_new_only=False):
         """
-        Check for new releases and display results in a message box.
+        Check for new releases in a separate thread.
         """
+
+        self.network_thread.start()
+        self.request_check_for_updates.emit(show_new_only)
+
+    def on_version_check_finished(self, latest_release, show_new_only):
+        """
+        Cleanup network thread and display a dialog window showing the state of
+        available updates.
+        """
+        self.network_thread.quit()
 
         urls = {}
-        urls['query-latest-release'] = 'https://api.github.com/repos/jpgill86/neurotic/releases/latest'
-        urls['updating'] = 'https://neurotic.readthedocs.io/en/latest/update.html'
+        urls['globalconfig'] = 'https://neurotic.readthedocs.io/en/latest/globalconfig.html'
         urls['releases'] = 'https://github.com/jpgill86/neurotic/releases'
+        urls['updating'] = 'https://neurotic.readthedocs.io/en/latest/update.html'
 
-        try:
-            # query GitHub for the latest release
-            r = requests.get(urls['query-latest-release'])
-            latest = r.json()['tag_name']
-
-            if version.parse(latest) > version.parse(__version__):
+        if latest_release:
+            if version.parse(latest_release) > version.parse(__version__):
                 text = f"""
                 <h2>A new version is available</h2>
 
                 <p><table>
                 <tr><td>Installed version:</td>  <td>{__version__}</td></tr>
-                <tr><td>Latest version:</td>     <td>{latest}</td></tr>
+                <tr><td>Latest version:</td>     <td>{latest_release}</td></tr>
                 </table></p>
 
                 <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
+
+                <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+                <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
                 """
-            else:
+                title = 'Check for updates'
+                return QT.QMessageBox.about(self, title, text)
+
+            elif not show_new_only:
+                # display up to date
                 text = f"""
                 <h2>neurotic is up to date</h2>
 
                 <p><table>
                 <tr><td>Installed version:</td>  <td>{__version__}</td></tr>
-                <tr><td>Latest version:</td>     <td>{latest}</td></tr>
+                <tr><td>Latest version:</td>     <td>{latest_release}</td></tr>
                 </table></p>
+
+                <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+                <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
                 """
-        except:
-            # something went wrong with the query
+                title = 'Check for updates'
+                return QT.QMessageBox.about(self, title, text)
+
+        elif not show_new_only:
+            # display failure message
             text = f"""
             <h2>Could not detect latest version</h2>
 
@@ -606,11 +637,12 @@ class MainWindow(QT.QMainWindow):
             <p><a href='{urls['releases']}'>Check for latest version manually</a></p>
 
             <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
+
+            <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+            <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
             """
-
-        title = 'Check for updates'
-
-        QT.QMessageBox.about(self, title, text)
+            title = 'Check for updates'
+            return QT.QMessageBox.about(self, title, text)
 
     def show_about(self):
         """
@@ -788,16 +820,17 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
                 self.setCurrentRow(0)
 
 
-class _DownloadWorker(QT.QObject):
+class _NetworkWorker(QT.QObject):
     """
-    A thread worker for downloading data files.
+    A thread worker for downloading data files and checking for updates.
     """
 
     download_finished = QT.pyqtSignal(bool)
+    version_check_finished = QT.pyqtSignal(str, bool)
 
     def __init__(self, mainwindow):
         """
-        Initialize a new _DownloadWorker.
+        Initialize a new _NetworkWorker.
         """
 
         QT.QObject.__init__(self)
@@ -817,6 +850,26 @@ class _DownloadWorker(QT.QObject):
             pass
         finally:
             self.download_finished.emit(success)
+
+    def get_latest_release_number(self, show_new_only):
+        """
+        Query GitHub for the version number of the latest release and emit a
+        signal when complete.
+        """
+
+        latest_release = None
+        try:
+            # query GitHub for the latest release
+            logger.debug('Checking for new release versions of neurotic')
+            url = 'https://api.github.com/repos/jpgill86/neurotic/releases/latest'
+            r = requests.get(url)
+            latest_release = r.json()['tag_name']
+            logger.debug(f'Found latest release version: {latest_release}')
+        except Exception as e:
+            # something went wrong with the query
+            logger.error(f'Query for latest release version failed: {e}')
+        finally:
+            self.version_check_finished.emit(latest_release, show_new_only)
 
 
 class _LoadDatasetWorker(QT.QObject):

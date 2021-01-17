@@ -78,6 +78,7 @@ logger.addHandler(logger_streamhandler)
 
 
 global_config = {
+    'auto_check_for_updates': True,
     'defaults': {
         # defaults used by the command line interface
         'file': False,
