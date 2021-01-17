@@ -105,10 +105,11 @@ setup(
     author_email = 'jeffrey.p.gill@gmail.com',
     license = 'MIT',
     url = 'https://github.com/jpgill86/neurotic',
-    project_urls={
+    project_urls = {
         'Documentation': 'https://neurotic.readthedocs.io',
         'Source code': 'https://github.com/jpgill86/neurotic',
         'Bug tracker': 'https://github.com/jpgill86/neurotic/issues',
+        'Change log': 'https://neurotic.readthedocs.io/en/latest/releasenotes.html',
     },
     classifiers = [
         'Development Status :: 5 - Production/Stable',
