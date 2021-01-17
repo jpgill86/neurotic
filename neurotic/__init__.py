@@ -78,7 +78,6 @@ logger.addHandler(logger_streamhandler)
 
 
 global_config = {
-    'auto_check_for_updates': True,
     'defaults': {
         # defaults used by the command line interface
         'file': False,
@@ -95,6 +94,9 @@ global_config = {
         'client_secret_file': os.path.join(neurotic_dir, 'gdrive-creds', 'client_secret.json'),
         'tokens_file': os.path.join(neurotic_dir, 'gdrive-creds', 'tokens.json'),
         'save_tokens': False,
+    },
+    'app': {
+        'auto_check_for_updates': True,
     },
 }
 

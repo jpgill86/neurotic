@@ -192,7 +192,7 @@ class MainWindow(QT.QMainWindow):
         """
         QT.QMainWindow.showEvent(self, event)
 
-        if global_config['auto_check_for_updates']:
+        if global_config['app']['auto_check_for_updates']:
             self.check_for_updates(show_new_only=True)
 
     def create_menus(self):
@@ -627,7 +627,7 @@ class MainWindow(QT.QMainWindow):
 
                 <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
 
-                <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+                <p>Automatically check for updates at launch: {'Yes' if global_config['app']['auto_check_for_updates'] else 'No'}<br/>
                 <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
                 """
                 title = 'Check for updates'
@@ -643,7 +643,7 @@ class MainWindow(QT.QMainWindow):
                 <tr><td>Latest version:</td>     <td>{latest_release}</td></tr>
                 </table></p>
 
-                <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+                <p>Automatically check for updates at launch: {'Yes' if global_config['app']['auto_check_for_updates'] else 'No'}<br/>
                 <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
                 """
                 title = 'Check for updates'
@@ -663,7 +663,7 @@ class MainWindow(QT.QMainWindow):
 
             <p><a href='{urls['updating']}'>How do I update <i>neurotic</i>?</a></p>
 
-            <p>Automatically check for updates at launch: {'Yes' if global_config['auto_check_for_updates'] else 'No'}<br/>
+            <p>Automatically check for updates at launch: {'Yes' if global_config['app']['auto_check_for_updates'] else 'No'}<br/>
             <a href='{urls['globalconfig']}'>Learn how to change this</a></p>
             """
             title = 'Check for updates'

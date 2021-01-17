@@ -2,9 +2,6 @@
 # Use this file to configure the way neurotic behaves. This file uses the TOML
 # format.
 
-# When the app is launched, neurotic automatically checks for updates unless
-# this parameter is set to false.
-# auto_check_for_updates = true
 
 [defaults]
 # When the app is launched, the following customizable defaults are used unless
@@ -42,3 +39,9 @@
 #     file.
 
 # save_tokens = false
+
+
+[app]
+# When the app is launched, neurotic automatically checks for updates unless
+# this parameter is set to false.
+# auto_check_for_updates = true
