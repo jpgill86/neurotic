@@ -3,47 +3,25 @@ name: tests
 on: [push, pull_request]
 
 jobs:
-  sphinx-docs:
+  test-docs:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.7']
     steps:
-        - name: Set up Python ${{ matrix.python-version }}
-          run: |
-            echo $CONDA/bin >> $GITHUB_PATH  # prioritize conda over system python
-            conda config --add channels conda-forge
-            conda install -y -q python=${{ matrix.python-version }}
-        #     conda create -y -q -n test-environment python=${{ matrix.python-version }}
-        #     source activate test-environment
+        - name: Set up Python 3.7
+          uses: actions/setup-python@v2
+          with:
+            python-version: 3.7
 
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        - name: Install package from repository
+        - name: Install package from repository with docs dependencies
           run: |
-            pip install -e .
-
-        - name: Install extra depenencies
-          run: |
-            conda install -y -q av
-            pip install -r requirements-docs.txt
-
-        - name: Verify Python version
-          run: |
-            which python
-            python --version
-            python -c "import os, sys; assert sys.version_info[:2] == tuple(map(int, '${{ matrix.python-version }}'.split('.')))[:2]"
+            pip install -e .[docs]
 
         - name: List pip packages
           run: |
             pip -V
             pip list
-
-        - name: List conda packages
-          run: |
-            conda env list
-            conda list
 
         - name: Build docs
           run: |
@@ -76,14 +54,13 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v2
 
-        - name: Install package from repository
+        - name: Install package from repository with tests dependencies
           run: |
-            pip install -e .
+            pip install -e .[tests]
 
-        - name: Install extra depenencies
+        - name: Install PyAV
           run: |
             conda install -y -q av
-            pip install -r requirements-tests.txt
 
         - name: Verify Python version
           run: |
