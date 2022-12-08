@@ -137,7 +137,14 @@ class GoogleDriveDownloader(GoogleDrive):
         Return information about available Shared Drives.
         """
         # no PyDrive2 interface for this, so implement it here
-        return self.auth.service.drives().list().execute(http=self.http)
+        # - TODO: maxResults has default value 10 and upper limit 100. Setting
+        #   maxResults=100 is a quick workaround for users with more than 10
+        #   Shared Drives but may be insufficient for users with more than 100.
+        #   Ideally, this function should iterate through pages of results
+        #   exhaustively. Also, this parameter was renamed to pageSize in newer
+        #   versions of the API. See API docs here:
+        #   https://developers.google.com/drive/api/v3/reference/drives/list
+        return self.auth.service.drives().list(maxResults=100).execute(http=self.http)
 
     def download(self, gdrive_url, local_file, overwrite_existing=False, show_progress=True, bytes_per_chunk=1024*1024*5):
         """
@@ -177,7 +184,9 @@ class GoogleDriveDownloader(GoogleDrive):
             os.makedirs(os.path.dirname(local_file))
 
         # locate the Google Drive file
+        logger.debug(f'Locating {gdrive_url}')
         file_id = self._get_file_id(gdrive_url)
+        logger.debug(f'Found file id {file_id}')
         if file_id is None:
             raise ValueError(f'error locating file on server for account "{self.GetUserEmail()}"')
         file = self.CreateFile({'id': file_id})
