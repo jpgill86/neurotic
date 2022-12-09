@@ -44,30 +44,30 @@ Aplysia feeding:
           ylabel: I2 muscle EMG
           units: uV
           ylim: [-60, 60]
-          color: '666666'
+          color: '#666666'
 
         - channel: RN
           ylabel: Radular nerve (RN)
           units: uV
           ylim: [-25, 25]
-          color: '666666'
+          color: '#666666'
 
         - channel: BN2
           ylabel: Buccal nerve 2 (BN2)
           units: uV
           ylim: [-45, 45]
-          color: '666666'
+          color: '#666666'
 
         - channel: BN3-DIST
           ylabel: Buccal nerve 3 (BN3)
           units: uV
           ylim: [-60, 60]
-          color: '666666'
+          color: '#666666'
 
         - channel: Force
           units: mN
           ylim: [-50, 450]
-          color: '666666'
+          color: '#666666'
 
     # SIGNAL FILTERS
     # - used here to remove high-frequency noise
@@ -88,42 +88,42 @@ Aplysia feeding:
           units: uV
           amplitude: [7, 20]
           epoch: B38 activity
-          color: 'EFBF46'
+          color: '#EFBF46'
 
         - name: B31/B32/B61/B62 neurons
           channel: I2
           units: uV
           amplitude: [2, 75]
           epoch: I2 protraction activity
-          color: 'DC5151'
+          color: '#DC5151'
 
         - name: B8a/b neurons
           channel: RN
           units: uV
           amplitude: [-30, -8]
           epoch: B8 activity
-          color: 'DA8BC3'
+          color: '#DA8BC3'
 
         - name: B6/B9 neurons
           channel: BN2
           units: uV
           amplitude: [-25, -9]
           epoch: B3/6/9/10 activity
-          color: '64B5CD'
+          color: '#64B5CD'
 
         - name: B3 neuron
           channel: BN2
           units: uV
           amplitude: [-60, -25]
           epoch: B3/6/9/10 activity
-          color: '4F80BD'
+          color: '#4F80BD'
 
         - name: B4/B5 neurons
           channel: BN3-DIST
           units: uV
           amplitude: [-80, -20]
           epoch: B4/B5 activity
-          color: '00A86B'
+          color: '#00A86B'
 
     # NEURONAL FIRING RATES
     # - used here to model synaptic output
