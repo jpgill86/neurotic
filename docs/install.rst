@@ -3,7 +3,7 @@
 Installing *neurotic*
 =====================
 
-*neurotic* requires Python 3.6 or later.
+*neurotic* requires Python 3.7 or later.
 
 .. _installation-installers:
 

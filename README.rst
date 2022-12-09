@@ -100,7 +100,7 @@ share the *neurotic* experience with your colleagues! 🤪
 Installing *neurotic*
 ---------------------
 
-*neurotic* requires Python 3.6 or later.
+*neurotic* requires Python 3.7 or later.
 
 Standalone Installers (recommended for beginners)
 .................................................
