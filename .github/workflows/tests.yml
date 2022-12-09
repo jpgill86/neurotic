@@ -80,7 +80,7 @@ jobs:
 
         - name: Run tests
           run: |
-            nosetests --with-coverage --cover-package=neurotic
+            pytest -v --cov
 
         - name: Report coverage to Coveralls
           run: coveralls
