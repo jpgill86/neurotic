@@ -409,7 +409,9 @@ Plot Parameters
 Use the ``plots`` parameter to specify which signal channels from ``data_file``
 you want plotted and how to scale them. Optionally, a color may be specified
 for channels using a single letter color code (e.g., ``'b'`` for blue or
-``'k'`` for black) or a hexadecimal color code (e.g., ``'1b9e77'``).
+``'k'`` for black) or a hexadecimal color code (e.g., ``'#1b9e77'``; note that
+with PyQtGraph 0.13.0 and later, hexadecimal color codes must begin with
+``#``).
 
 Consider the following example, and notice the use of hyphens and indentation
 for each channel.
@@ -431,7 +433,7 @@ for each channel.
               ylabel: B3 neuron
               units: mV
               ylim: [-100, 50]
-              color: '666666'
+              color: '#666666'
 
             - channel: Force
               units: mN
@@ -536,7 +538,9 @@ loading is off (``lazy=False``).
 Detected spikes are indicated on the signals with markers, and spike trains are
 displayed in a raster plot. Optionally, a color may be specified for an
 amplitude discriminator using a single letter color code (e.g., ``'b'`` for
-blue or ``'k'`` for black) or a hexadecimal color code (e.g., ``'1b9e77'``).
+blue or ``'k'`` for black) or a hexadecimal color code (e.g., ``'#1b9e77'``;
+note that with PyQtGraph 0.13.0 and later, hexadecimal color codes must begin
+with ``#``).
 
 The algorithm can detect either peaks or troughs in the signal. When both the
 lower and upper bounds for amplitude windows are positive, the default behavior
@@ -572,7 +576,7 @@ for each amplitude discriminator.
               units: uV
               amplitude: [20, 50]
               epoch: Unit 2 activity
-              color: 'e6ab02'
+              color: '#e6ab02'
 
             - name: Unit 3
               channel: Intracellular

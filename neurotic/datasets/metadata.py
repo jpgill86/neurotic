@@ -383,7 +383,7 @@ def _defaults_for_key(key):
         'epoch_encoder_possible_labels': [],
 
         # list of dicts giving name, channel, units, amplitude window, epoch window, color for each unit
-        # - e.g. [{'name': 'Unit X', 'channel': 'Channel A', 'units': 'uV', 'amplitude': [75, 150], 'epoch': 'Type 1', 'color': 'ff0000'}, ...]
+        # - e.g. [{'name': 'Unit X', 'channel': 'Channel A', 'units': 'uV', 'amplitude': [75, 150], 'epoch': 'Type 1', 'color': '#ff0000'}, ...]
         'amplitude_discriminators': None,
 
         # list of dicts giving name of a spiketrain, start and stop firing rate
@@ -441,7 +441,7 @@ def _defaults_for_key(key):
         'video_rate_correction': None,
 
         # list the channels in the order they should be plotted
-        # - e.g. [{'channel': 'Channel A', 'ylabel': 'My channel', 'ylim': [-120, 120], 'units': 'uV', 'color': 'ff0000'}, ...]
+        # - e.g. [{'channel': 'Channel A', 'ylabel': 'My channel', 'ylim': [-120, 120], 'units': 'uV', 'color': '#ff0000'}, ...]
         'plots': None,
 
         # amount of time in seconds to plot initially
