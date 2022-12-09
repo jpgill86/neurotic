@@ -90,7 +90,7 @@ def load_dataset(metadata, blk=None, lazy=False, signal_group_mode='split-all', 
 
     # classify spikes by amplitude if not using lazy loading of signals
     if not lazy:
-        blk.segments[0].spiketrains += _run_amplitude_discriminators(metadata, blk)
+        blk.segments[0].spiketrains.extend(_run_amplitude_discriminators(metadata, blk))
 
     # read in spikes identified by spike sorting using tridesclous
     spikes_dataframe = _read_spikes_file(metadata, blk)
@@ -99,7 +99,7 @@ def load_dataset(metadata, blk=None, lazy=False, signal_group_mode='split-all', 
             t_start = blk.segments[0].analogsignals[0].t_start                 # assuming all AnalogSignals start at the same time
             t_stop = blk.segments[0].analogsignals[0].t_stop                   # assuming all AnalogSignals start at the same time
             sampling_period = blk.segments[0].analogsignals[0].sampling_period # assuming all AnalogSignals have the same sampling rate
-            blk.segments[0].spiketrains += _create_neo_spike_trains_from_dataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period)
+            blk.segments[0].spiketrains.extend(_create_neo_spike_trains_from_dataframe(spikes_dataframe, metadata, t_start, t_stop, sampling_period))
         else:
             logger.warning('Ignoring tridesclous_file because the sampling rate and start time could not be inferred from analog signals')
 
