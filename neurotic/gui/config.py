@@ -874,7 +874,7 @@ def _neo_epoch_to_dataframe(neo_epochs, exclude_epoch_encoder_epochs=False):
     for ep in neo_epochs:
         if len(ep.times) > 0 and (not exclude_epoch_encoder_epochs or '(from epoch encoder file)' not in ep.labels):
             data = np.array([ep.times, ep.times+ep.durations, ep.durations, [ep.name]*len(ep), ep.labels]).T
-            df = df.append(pd.DataFrame(data, columns=columns), ignore_index=True)
+            df = pd.concat([df, pd.DataFrame(data, columns=columns)], ignore_index=True)
     return df.astype(dtype=dtypes).sort_values(['Start (s)', 'End (s)', 'Type', 'Label']).reset_index(drop=True)
 
 def _estimate_video_jump_times(blk):
@@ -892,13 +892,13 @@ def _estimate_video_jump_times(blk):
     else:
 
         # obtain approximate start and stop times according to AxoGraph notes
-        note_start_times = np.array([0], dtype=np.int)
-        note_stop_times = np.array([], dtype=np.int)
+        note_start_times = np.array([0], dtype=int)
+        note_stop_times = np.array([], dtype=int)
         for note_line in blk.annotations['notes'].split('\n'):
-            m = re.match('\d\d\d: Start at (\d*) s', note_line)
+            m = re.match(r'\d\d\d: Start at (\d*) s', note_line)
             if m:
                 note_start_times = np.append(note_start_times, int(m.group(1)))
-            m = re.match('\d\d\d: Stop at (\d*) s', note_line)
+            m = re.match(r'\d\d\d: Stop at (\d*) s', note_line)
             if m:
                 note_stop_times = np.append(note_stop_times, int(m.group(1)))
 
@@ -906,7 +906,7 @@ def _estimate_video_jump_times(blk):
         pause_durations = note_start_times[1:]-note_stop_times[:-1]
 
         # obtain exact stop times (AxoGraph time, not video time)
-        event_stop_times = np.array([], dtype=np.float)
+        event_stop_times = np.array([], dtype=float)
         ev = next((ev for ev in blk.segments[0].events if ev.name == 'AxoGraph Tags'), None)
         if ev is not None:
             for time, label in zip(ev.times, ev.labels):
