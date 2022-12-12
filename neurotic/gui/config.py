@@ -690,32 +690,24 @@ class EphyviewerConfigurator():
                 if label not in possible_labels:
                     possible_labels.append(label)
 
-            if not possible_labels:
+            writable_epoch_source = NeuroticWritableEpochSource(
+                filename = _abs_path(self.metadata, 'epoch_encoder_file'),
+                possible_labels = possible_labels,
+            )
 
-                # an empty epoch encoder file and an empty list of possible
-                # labels were provided
-                logger.warning('Ignoring epoch_encoder_file because epoch_encoder_possible_labels was unspecified')
+            epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'Epoch encoder')
+            epoch_encoder.params['exclusive_mode'] = False
+            win.add_view(epoch_encoder)
 
-            else:
+            # set the theme
+            if theme != 'original':
+                epoch_encoder.params['background_color'] = self.themes[theme]['background_color']
+                epoch_encoder.params['vline_color'] = self.themes[theme]['vline_color']
+                epoch_encoder.params['label_fill_color'] = self.themes[theme]['label_fill_color']
+                # TODO add support for combo_cmap
 
-                writable_epoch_source = NeuroticWritableEpochSource(
-                    filename = _abs_path(self.metadata, 'epoch_encoder_file'),
-                    possible_labels = possible_labels,
-                )
-
-                epoch_encoder = ephyviewer.EpochEncoder(source = writable_epoch_source, name = 'Epoch encoder')
-                epoch_encoder.params['exclusive_mode'] = False
-                win.add_view(epoch_encoder)
-
-                # set the theme
-                if theme != 'original':
-                    epoch_encoder.params['background_color'] = self.themes[theme]['background_color']
-                    epoch_encoder.params['vline_color'] = self.themes[theme]['vline_color']
-                    epoch_encoder.params['label_fill_color'] = self.themes[theme]['label_fill_color']
-                    # TODO add support for combo_cmap
-
-                epoch_encoder.params['xratio'] = self.metadata.get('past_fraction', 0.3)
-                epoch_encoder.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
+            epoch_encoder.params['xratio'] = self.metadata.get('past_fraction', 0.3)
+            epoch_encoder.params['label_size'] = ui_scales[ui_scale]['channel_label_size']
 
         ########################################################################
         # VIDEO

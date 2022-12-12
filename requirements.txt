@@ -1,5 +1,5 @@
 # av  # required but typically not installable via pip, try `conda install -c conda-forge av`
-ephyviewer>=1.3.0
+ephyviewer>=1.4.0
 neo>=0.7.2
 numpy
 packaging
