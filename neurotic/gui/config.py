@@ -347,13 +347,20 @@ class EphyviewerConfigurator():
                 # Intan-specific tricks
                 if isinstance(io, neo.io.IntanIO):
                     # dirty trick for getting ungrouped channels into a single source
-                    io.header['signal_channels']['group_id'] = 0
+                    # TODO handle other signal streams (stim, analog out), not just the first
+                    try:
+                        # Neo >= 0.10.0
+                        io.header['signal_channels']['stream_id'] = io.header['signal_streams'][0]['id']
+                        io.header['signal_streams'] = io.header['signal_streams'][:1]
+                    except KeyError:
+                        # Neo < 0.10.0
+                        io.header['signal_channels']['group_id'] = 0
 
                     # prepare to append custom channel names stored in data file to ylabels
                     custom_channel_names = {c['native_channel_name']: c['custom_channel_name'] for c in io._ordered_channels}
 
                 channel_indexes = [p['index'] for p in self.metadata['plots']]
-                sources['signal'].append(ephyviewer.AnalogSignalFromNeoRawIOSource(io, channel_indexes))
+                sources['signal'].append(ephyviewer.AnalogSignalFromNeoRawIOSource(io, channel_indexes=channel_indexes))
 
                 # modify loaded channel names to use ylabels
                 for i, p in enumerate(self.metadata['plots']):
