@@ -78,7 +78,19 @@ plain-text-axograph:
           units: V
           ylim: [-0.1, 5.1]
 
-matlab example:
+matlab-example:
     data_dir: matlab-example
     remote_data_dir: matlab-example
     data_file: neo-matlab.mat
+
+intan-example:
+    data_dir: intan-example
+    remote_data_dir: intan-example
+    data_file: intan-rhx-demo.rhd
+
+    plots:  # TODO: make this example work without specifying "plots"
+        - channel: A-000
+        - channel: A-001
+        - channel: A-002
+        - channel: A-003
+        - channel: A-004

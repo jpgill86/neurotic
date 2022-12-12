@@ -86,5 +86,26 @@ class GUITestCase(unittest.TestCase):
         # close thread properly
         win.close()
 
+    def test_intan_lazy_loading(self):
+        """Test creating an ephyviewer window for Intan with lazy loading"""
+        file = self.test_file
+        dataset = 'intan-example'
+        metadata = neurotic.MetadataSelector(file=file,
+                                             initial_selection=dataset)
+        metadata.download_all_data_files()
+
+        lazy = True
+        blk = neurotic.load_dataset(metadata=metadata, lazy=lazy)
+        ephyviewer_config = neurotic.EphyviewerConfigurator(metadata, blk,
+                                                            lazy=lazy)
+        ephyviewer_config.show_all()
+
+        app = mkQApp()
+        win = ephyviewer_config.create_ephyviewer_window()
+        self.assertIsInstance(win, MainViewer)
+
+        # close thread properly
+        win.close()
+
 if __name__ == '__main__':
     unittest.main()
