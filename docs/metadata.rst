@@ -475,9 +475,9 @@ to display "the past" and the last 70% to display "the future".
 Epoch Encoder Parameters
 ------------------------
 
-The labels available to the epoch encoder must be specified ahead of time using
-``epoch_encoder_possible_labels`` (this is a current limitation of ephyviewer
-that may eventually be improved upon).
+The labels available to the epoch encoder can be specified using
+``epoch_encoder_possible_labels``. (Additionally, they may be created on the
+fly using the "New label" button in the epoch encoder.)
 
 For example:
 
