@@ -14,6 +14,7 @@ import subprocess
 import pkg_resources
 import warnings
 from packaging import version
+import pprint
 
 import quantities as pq
 import neo
@@ -180,7 +181,7 @@ class MainWindow(QT.QMainWindow):
         # select a dataset if the user provided one
         if initial_selection:
             try:
-                self.metadata_selector.setCurrentRow(list(self.metadata_selector.all_metadata).index(initial_selection))
+                self.metadata_selector.dataset_list.setCurrentRow(list(self.metadata_selector.all_metadata).index(initial_selection))
             except (TypeError, ValueError) as e:
                 logger.error(f'Bad dataset key, will ignore: {e}')
                 self.statusBar().showMessage('ERROR: Bad dataset key, will '
@@ -782,9 +783,11 @@ class MainWindow(QT.QMainWindow):
         gc.collect()
 
 
-class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
+class _MetadataSelectorQt(MetadataSelector, QT.QWidget):
     """
-    A QListWidget that displays the state of a MetadataSelector.
+    A QWidget that displays the state of a MetadataSelector, providing a
+    QListWidget for selecting one dataset and a QTextEdit for displaying parsed
+    metadata.
     """
 
     def __init__(self, mainwindow):
@@ -793,18 +796,38 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
         """
 
         MetadataSelector.__init__(self)
-        QT.QListWidget.__init__(self, parent=mainwindow)
+        QT.QWidget.__init__(self, parent=mainwindow)
 
         self.mainwindow = mainwindow
 
-        self.setSelectionMode(QT.QListWidget.SingleSelection)
+        self.layout = QT.QVBoxLayout()
+        self.setLayout(self.layout)
 
-        font = self.font()
+        self.dataset_list = QT.QListWidget(self)
+        self.layout.addWidget(self.dataset_list)
+
+        self.dataset_list.setSelectionMode(QT.QListWidget.SingleSelection)
+
+        font = self.dataset_list.font()
         font.setFamily('Courier')
-        self.setFont(font)
+        self.dataset_list.setFont(font)
 
-        self.currentRowChanged.connect(self._on_select)
-        self.itemDoubleClicked.connect(self.mainwindow.start_launch)
+        self.dataset_list.currentRowChanged.connect(self._on_select)
+        self.dataset_list.itemDoubleClicked.connect(self.mainwindow.start_launch)
+
+        parsed_metadata_checkbox = QT.QCheckBox('&Show parsed metadata')
+        parsed_metadata_checkbox.setChecked(False)
+        parsed_metadata_checkbox.stateChanged.connect(self.toggle_parsed_metadata)
+        self.layout.addWidget(parsed_metadata_checkbox)
+
+        self.parsed_metadata_widget = QT.QTextEdit()
+        self.parsed_metadata_widget.setReadOnly(True)
+        self.layout.addWidget(self.parsed_metadata_widget)
+        self.toggle_parsed_metadata(parsed_metadata_checkbox.checkState())
+
+        font = self.parsed_metadata_widget.font()
+        font.setFamily('Courier')
+        self.parsed_metadata_widget.setFont(font)
 
     def _on_select(self, currentRow):
         """
@@ -814,6 +837,9 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
 
         if currentRow >= 0:
             self._selection = list(self.all_metadata)[currentRow]
+
+            self.parsed_metadata_widget.setText(pprint.pformat(
+                self.selected_metadata, sort_dicts=False, width=200))
         else:
             self._selection = None
 
@@ -837,17 +863,26 @@ class _MetadataSelectorQt(MetadataSelector, QT.QListWidget):
 
             # clear and repopulate the list,
             # which triggers the selection to change
-            self.clear()
+            self.dataset_list.clear()
             for label in _selector_labels(self.all_metadata):
-                QT.QListWidgetItem(label, self)
+                QT.QListWidgetItem(label, self.dataset_list)
 
             if old_selection in self.all_metadata:
                 # reselect the original selection if it still exists
-                self.setCurrentRow(list(self.all_metadata).index(old_selection))
+                self.dataset_list.setCurrentRow(list(self.all_metadata).index(old_selection))
             else:
                 # otherwise select the first item
-                self.setCurrentRow(0)
+                self.dataset_list.setCurrentRow(0)
 
+    def toggle_parsed_metadata(self, checked):
+        """
+        Toggle visibility of the parsed metadata QTextEdit
+        """
+
+        if checked == QT.Checked:
+            self.parsed_metadata_widget.show()
+        else:
+            self.parsed_metadata_widget.hide()
 
 class _NetworkWorker(QT.QObject):
     """
