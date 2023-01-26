@@ -67,7 +67,7 @@ Table of Contents
     :target: `constructor recipe`_
     :alt: constructor recipe
 
-.. |GitHub Actions badge| image:: https://img.shields.io/github/workflow/status/jpgill86/neurotic/tests/master?label=tests&logo=github&logoColor=white
+.. |GitHub Actions badge| image:: https://img.shields.io/github/actions/workflow/status/jpgill86/neurotic/tests.yml?branch=master&label=tests&logo=github&logoColor=white
     :target: `GitHub Actions`_
     :alt: Tests status
 
