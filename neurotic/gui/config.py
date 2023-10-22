@@ -782,14 +782,15 @@ class EphyviewerConfigurator():
                 win.add_view(data_frame_view, split_with = 'Video')
             else:
                 win.add_view(data_frame_view, location = 'bottom', orientation = 'horizontal')
-        # saving datasource to csv
-        if self.metadata.get('epoch_encoder_file', None) is not None:
-            filename = _abs_path(self.metadata, 'epoch_encoder_file')
-            if filename.endswith('csv'):
-                filename = filename[:-len('csv')] + 'table.csv'
-                if not os.path.exists(filename):
-                    annotations_dataframe.to_csv(filename, index=False)
-                    logger.info(f'Saving table to {filename}')
+
+            # saving datasource to csv
+            if self.metadata.get('epoch_encoder_file', None) is not None:
+                filename = _abs_path(self.metadata, 'epoch_encoder_file')
+                if filename.endswith('csv'):
+                    filename = filename[:-len('csv')] + 'table.csv'
+                    if not os.path.exists(filename):
+                        annotations_dataframe.to_csv(filename, index=False)
+                        logger.info(f'Saving table to {filename}')
 
         ########################################################################
         # FINAL TOUCHES
