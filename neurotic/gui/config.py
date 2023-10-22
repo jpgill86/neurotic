@@ -8,6 +8,7 @@ launching ephyviewer for a loaded dataset.
 """
 
 import re
+import os
 
 import numpy as np
 import pandas as pd
